@@ -43,6 +43,7 @@ def run_step(kettle, poison_delta, epoch, stats, model, defs, optimizer, schedul
         else:
             activate_defenses = True
 
+    device_type = kettle.setup['device'].type
     for batch, (inputs, labels, ids) in enumerate(train_loader):
         # Prep Mini-Batch
         optimizer.zero_grad()
@@ -112,8 +113,9 @@ def run_step(kettle, poison_delta, epoch, stats, model, defs, optimizer, schedul
                 labels = torch.cat((labels, temp_true_labels))
 
         # Do normal model updates, possibly on modified inputs
-        outputs = model(inputs)
-        loss, preds = criterion(outputs, labels)
+        with torch.autocast(device_type=device_type, dtype=torch.bfloat16, enabled=(device_type == 'cuda')):
+            outputs = model(inputs)
+            loss, preds = criterion(outputs, labels)
         correct_preds += preds
 
         total_preds += labels.shape[0]
@@ -155,14 +157,15 @@ def run_step(kettle, poison_delta, epoch, stats, model, defs, optimizer, schedul
         scheduler.step()
 
     if epoch % defs.validate == 0 or epoch == (defs.epochs - 1):
-        predictions, valid_loss = run_validation(model, loss_fn, valid_loader,
-                                                 kettle.poison_setup['intended_class'],
-                                                 kettle.poison_setup['target_class'],
-                                                 kettle.setup, kettle.args.dryrun)
-        target_acc, target_loss, target_clean_acc, target_clean_loss = check_targets(
-            model, loss_fn, kettle.targetset, kettle.poison_setup['intended_class'],
-            kettle.poison_setup['target_class'],
-            kettle.setup)
+        with torch.autocast(device_type=device_type, dtype=torch.bfloat16, enabled=(device_type == 'cuda')):
+            predictions, valid_loss = run_validation(model, loss_fn, valid_loader,
+                                                     kettle.poison_setup['intended_class'],
+                                                     kettle.poison_setup['target_class'],
+                                                     kettle.setup, kettle.args.dryrun)
+            target_acc, target_loss, target_clean_acc, target_clean_loss = check_targets(
+                model, loss_fn, kettle.targetset, kettle.poison_setup['intended_class'],
+                kettle.poison_setup['target_class'],
+                kettle.setup)
     else:
         predictions, valid_loss = None, None
         target_acc, target_loss, target_clean_acc, target_clean_loss = [None] * 4

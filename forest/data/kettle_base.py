@@ -131,11 +131,16 @@ class _Kettle():
 
     def get_num_workers(self):
         """Check devices and set an appropriate number of workers."""
+        try:
+            available_cpus = len(os.sched_getaffinity(0))
+        except AttributeError:
+            available_cpus = os.cpu_count() or 1
+
         if torch.cuda.is_available():
             num_gpus = torch.cuda.device_count()
-            max_num_workers = 4 * num_gpus
+            max_num_workers = min(4 * num_gpus, available_cpus)
         else:
-            max_num_workers = 4
+            max_num_workers = min(4, available_cpus)
         if torch.get_num_threads() > 1 and MAX_THREADING > 0:
             worker_count = min(min(2 * torch.get_num_threads(), max_num_workers), MAX_THREADING)
         else:

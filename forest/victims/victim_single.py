@@ -5,6 +5,9 @@ import numpy as np
 
 from collections import defaultdict
 import copy
+import os
+import json
+import hashlib
 
 from .models import get_model
 from .training import get_optimizers
@@ -143,10 +146,12 @@ class _VictimSingle(_VictimBase):
 
     def gradient(self, images, labels, criterion=None):
         """Compute the gradient of criterion(model) w.r.t to given data."""
-        if criterion is None:
-            loss = self.loss_fn(self.model(images), labels)
-        else:
-            loss = criterion(self.model(images), labels)
+        device_type = self.setup['device'].type
+        with torch.autocast(device_type=device_type, dtype=torch.bfloat16, enabled=(device_type == 'cuda')):
+            if criterion is None:
+                loss = self.loss_fn(self.model(images), labels)
+            else:
+                loss = criterion(self.model(images), labels)
         differentiable_params = [p for p in self.model.parameters() if p.requires_grad]
         gradients = torch.autograd.grad(loss, differentiable_params, only_inputs=True)
         grad_norm = 0
@@ -161,3 +166,37 @@ class _VictimSingle(_VictimBase):
         Function has arguments: model, criterion
         """
         return function(self.model, self.optimizer, *args)
+
+    def _compute_clean_model_cache_path(self):
+        config = self.defs.asdict()
+        config.update(
+            net=self.args.net[0],
+            dataset=self.args.dataset,
+            pretrain_dataset=self.args.pretrain_dataset,
+            pretrained_model=self.args.pretrained_model,
+            max_epoch=self.args.max_epoch,
+        )
+        digest = hashlib.md5(json.dumps(config, sort_keys=True, default=str).encode()).hexdigest()[:12]
+        filename = f'clean_{self.args.net[0]}_{self.args.dataset}_seed{self.model_init_seed}_{digest}.pt'
+        return os.path.join(os.path.expanduser(self.args.modelsave_path), filename)
+
+    def _try_load_cached_clean_model(self):
+        if not self.args.cache_clean_model or self.args.scenario != 'from-scratch':
+            return False
+        path = self._compute_clean_model_cache_path()
+        if not os.path.isfile(path):
+            return False
+        state = torch.load(path, map_location=self.setup['device'])
+        target = self.model.module if isinstance(self.model, torch.nn.DataParallel) else self.model
+        target.load_state_dict(state)
+        print(f'Loaded cached clean model from {path}.')
+        return True
+
+    def _save_cached_clean_model(self):
+        if not self.args.cache_clean_model or self.args.scenario != 'from-scratch':
+            return
+        path = self._compute_clean_model_cache_path()
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        target = self.model.module if isinstance(self.model, torch.nn.DataParallel) else self.model
+        torch.save(target.state_dict(), path)
+        print(f'Saved clean model to {path}.')

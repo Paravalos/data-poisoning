@@ -38,6 +38,7 @@ def options():
     parser.add_argument('--poison_path', default='poisons/', type=str)
     parser.add_argument('--data_path', default='~/data', type=str)
     parser.add_argument('--modelsave_path', default='./models/', type=str)
+    parser.add_argument('--cache_clean_model', action='store_true', help='Cache the clean-trained model to skip clean training on repeat runs with the same training config and seed. Single-model from-scratch scenario only.')
     ###########################################################################
 
     # Mixing defense

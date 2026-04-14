@@ -21,6 +21,11 @@ result/
 
 poisons/benchmark_results/
 
+# Local model checkpoints and assistant workspace state
+models/
+.codex/
+.codex
+
 
 
 # Byte-compiled / optimized / DLL files

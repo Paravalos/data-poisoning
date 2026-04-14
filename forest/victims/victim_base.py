@@ -97,6 +97,9 @@ class _VictimBase:
 
     def train(self, kettle, max_epoch=None):
         """Clean (pre)-training of the chosen model, no poisoning involved."""
+        if self._try_load_cached_clean_model():
+            return None
+
         print('Starting clean training ...')
         stats_clean = self._iterate(kettle, poison_delta=None, max_epoch=max_epoch,
                                     pretraining_phase=True if self.args.pretrain_dataset is not None else False)
@@ -117,7 +120,14 @@ class _VictimBase:
                 print(f'Training clean {self.args.scenario} model on top of {self.args.pretrain_dataset} base model.')
                 stats_clean = self._iterate(kettle, poison_delta=None, max_epoch=max_epoch)
 
+        self._save_cached_clean_model()
         return stats_clean
+
+    def _try_load_cached_clean_model(self):
+        return False
+
+    def _save_cached_clean_model(self):
+        pass
 
     def retrain(self, kettle, poison_delta):
         """Check poison on the initialization it was brewed on."""
