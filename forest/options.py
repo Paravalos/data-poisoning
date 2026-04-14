@@ -24,6 +24,8 @@ def options():
 
     # Reproducibility management:
     parser.add_argument('--poisonkey', default=None, type=str, help='Initialize poison setup with this key.')  # Also takes a triplet 0-3-1
+    parser.add_argument('--target_class', default=None, type=int, help='Fix the victim class; unset means random. Triggers KettleFixedClass mode.')
+    parser.add_argument('--poison_class', default=None, type=int, help='Fix the poison source class; unset means random (or forced None by threatmodel). Triggers KettleFixedClass mode.')
     parser.add_argument('--modelkey', default=None, type=int, help='Initialize the model with this key.')
     parser.add_argument('--deterministic', action='store_true', help='Disable CUDNN non-determinism.')
 

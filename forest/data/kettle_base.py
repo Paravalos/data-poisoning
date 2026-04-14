@@ -178,7 +178,7 @@ class _Kettle():
 
             if self.augmentations == 'default':
                 self.augment = RandomTransform(**params, mode='bilinear')
-            elif not self.defs.augmentations:
+            elif not self.augmentations:
                 print('Data augmentations are disabled.')
                 self.augment = RandomTransform(**params, mode='bilinear')
             else:
