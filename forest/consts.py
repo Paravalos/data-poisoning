@@ -1,12 +1,15 @@
 """Setup constants, ymmv."""
 
+import torch
+
 NORMALIZE = True  # Normalize all datasets
 
 PIN_MEMORY = True
 NON_BLOCKING = True
 BENCHMARK = True
 MAX_THREADING = 40
-SHARING_STRATEGY = 'file_descriptor'  # file_system or file_descriptor
+_sharing_strategies = torch.multiprocessing.get_all_sharing_strategies()
+SHARING_STRATEGY = 'file_descriptor' if 'file_descriptor' in _sharing_strategies else 'file_system'
 
 DISTRIBUTED_BACKEND = 'gloo'  # nccl would be faster, but require gpu-transfers for indexing and stuff
 
