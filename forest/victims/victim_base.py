@@ -5,7 +5,7 @@ import torch
 from .models import get_model
 from .training import get_optimizers, run_step
 from ..hyperparameters import training_strategy
-from ..utils import average_dicts
+from ..utils import average_dicts, set_random_seed
 from ..consts import BENCHMARK, SHARING_STRATEGY
 torch.backends.cudnn.benchmark = BENCHMARK
 torch.multiprocessing.set_sharing_strategy(SHARING_STRATEGY)
@@ -100,6 +100,7 @@ class _VictimBase:
         if self._try_load_cached_clean_model():
             return None
 
+        set_random_seed(self.model_init_seed)
         print('Starting clean training ...')
         stats_clean = self._iterate(kettle, poison_delta=None, max_epoch=max_epoch,
                                     pretraining_phase=True if self.args.pretrain_dataset is not None else False)
