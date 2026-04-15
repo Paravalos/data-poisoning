@@ -1,8 +1,19 @@
 """Data class, holding information about dataloaders and poison ids."""
 
+import hashlib
 import numpy as np
+import warnings
+
 from .kettle_base import _Kettle
 from .datasets import Subset
+
+
+def select_deterministic_poison_ids(class_ids, poison_num, poisonkey, randomize_poison_ids=False):
+    if randomize_poison_ids:
+        seed = int(hashlib.md5(f'{poisonkey}:poison_ids'.encode()).hexdigest()[:8], 16)
+        rng = np.random.default_rng(seed)
+        return rng.choice(class_ids, size=poison_num, replace=False).tolist()
+    return class_ids[:poison_num]
 
 
 class KettleDeterministic(_Kettle):
@@ -53,7 +64,12 @@ class KettleDeterministic(_Kettle):
         if len(class_ids) < poison_num:
             warnings.warn(f'Training set is too small for requested poison budget.')
             poison_num = len(class_ids)
-        self.poison_ids = class_ids[:poison_num]
+        self.poison_ids = select_deterministic_poison_ids(
+            class_ids,
+            poison_num,
+            self.args.poisonkey,
+            randomize_poison_ids=self.args.randomize_deterministic_poison_ids,
+        )
 
         # the target
         # class_ids = []

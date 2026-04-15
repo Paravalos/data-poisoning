@@ -13,6 +13,16 @@ from ..utils import set_random_seed
 from .datasets import Subset
 
 
+def _derived_selection_seed(base_seed, stream_name, class_idx):
+    """Create deterministic sub-seeds for target/poison sampling."""
+    stream_offsets = dict(target=10_003, poison=20_011)
+    if stream_name not in stream_offsets:
+        raise ValueError(f'Unknown fixed-class RNG stream {stream_name}.')
+    stream_offset = stream_offsets[stream_name]
+    class_offset = 0 if class_idx is None else int(class_idx) * 1_009
+    return (int(base_seed) * 65_537 + stream_offset + class_offset) % (2**32 - 1)
+
+
 class KettleFixedClass(_Kettle):
 
     def prepare_experiment(self):
@@ -116,6 +126,7 @@ class KettleFixedClass(_Kettle):
     def _choose_poisons_randomly(self):
         """Copied from KettleRandom._choose_poisons_randomly to keep this mode independent."""
         if self.poison_setup['poison_class'] is not None:
+            set_random_seed(_derived_selection_seed(self.init_seed, 'poison', self.poison_setup['poison_class']))
             class_ids = []
             for index in range(len(self.trainset)):
                 target, idx = self.trainset.get_target(index)
@@ -130,6 +141,7 @@ class KettleFixedClass(_Kettle):
             self.poison_ids = torch.tensor(np.random.choice(
                 class_ids, size=poison_num, replace=False), dtype=torch.long)
         else:
+            set_random_seed(_derived_selection_seed(self.init_seed, 'poison', None))
             total_ids = []
             for index in range(len(self.trainset)):
                 _, idx = self.trainset.get_target(index)
@@ -143,6 +155,7 @@ class KettleFixedClass(_Kettle):
                 total_ids, size=poison_num, replace=False), dtype=torch.long)
 
         if self.poison_setup['target_class'] is not None:
+            set_random_seed(_derived_selection_seed(self.init_seed, 'target', self.poison_setup['target_class']))
             class_ids = []
             for index in range(len(self.validset)):
                 target, idx = self.validset.get_target(index)
@@ -150,6 +163,7 @@ class KettleFixedClass(_Kettle):
                     class_ids.append(idx)
             self.target_ids = np.random.choice(class_ids, size=self.args.targets, replace=False)
         else:
+            set_random_seed(_derived_selection_seed(self.init_seed, 'target', None))
             total_ids = []
             for index in range(len(self.validset)):
                 _, idx = self.validset.get_target(index)
