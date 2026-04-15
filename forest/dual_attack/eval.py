@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+
 import torch
 import torch.nn.functional as F
 
@@ -44,18 +46,29 @@ def _prepare_reference_model(model, args, kettle):
         model.train(kettle, max_epoch=args.max_epoch)
 
 
+@contextmanager
+def _victim_seed_modelkey_override(args):
+    original_modelkey = args.modelkey
+    args.modelkey = None
+    try:
+        yield
+    finally:
+        args.modelkey = original_modelkey
+
+
 def _prepare_model_for_seed(model, args, seed):
-    if args.scenario == 'from-scratch':
-        model.initialize(seed=seed)
-    elif args.scenario == 'transfer':
-        model.load_feature_representation()
-        model.reinitialize_last_layer(reduce_lr_factor=1.0, seed=seed)
-    elif args.scenario == 'finetuning':
-        set_random_seed(seed)
-        model.load_feature_representation()
-        model.reinitialize_last_layer(reduce_lr_factor=FINETUNING_LR_DROP, keep_last_layer=True)
-    else:
-        raise ValueError(f'Unsupported scenario {args.scenario}.')
+    with _victim_seed_modelkey_override(args):
+        if args.scenario == 'from-scratch':
+            model.initialize(seed=seed)
+        elif args.scenario == 'transfer':
+            model.load_feature_representation()
+            model.reinitialize_last_layer(reduce_lr_factor=1.0, seed=seed)
+        elif args.scenario == 'finetuning':
+            set_random_seed(seed)
+            model.load_feature_representation()
+            model.reinitialize_last_layer(reduce_lr_factor=FINETUNING_LR_DROP, keep_last_layer=True)
+        else:
+            raise ValueError(f'Unsupported scenario {args.scenario}.')
 
 
 def _target_rows(

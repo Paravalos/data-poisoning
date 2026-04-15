@@ -1,10 +1,12 @@
 import os
 import tempfile
 import unittest
+from types import SimpleNamespace
 
 import torch
 
 from forest.data.kettle_det_experiment import select_deterministic_poison_ids
+from forest.dual_attack.eval import _prepare_model_for_seed
 from forest.dual_attack.experiment import build_args_namespace, load_experiment, save_experiment
 from forest.dual_attack.planners import build_c1_experiment
 from forest.dual_attack.runtime import _artifact_poison_indices, resolve_dual_overlap, validate_brew_artifact
@@ -205,6 +207,23 @@ class DualAttackRuntimeTests(unittest.TestCase):
     def test_artifact_poison_indices_accepts_lists(self):
         poison_indices = _artifact_poison_indices([4, 1, 9])
         self.assertTrue(torch.equal(poison_indices, torch.tensor([4, 1, 9], dtype=torch.long)))
+
+    def test_prepare_model_for_seed_uses_victim_seed_when_modelkey_is_fixed(self):
+        class DummyModel:
+            def __init__(self, args):
+                self.args = args
+                self.model_init_seed = None
+
+            def initialize(self, seed=None):
+                self.model_init_seed = self.args.modelkey if self.args.modelkey is not None else seed
+
+        args = SimpleNamespace(scenario='from-scratch', modelkey=0)
+        model = DummyModel(args)
+
+        _prepare_model_for_seed(model, args, seed=7)
+
+        self.assertEqual(model.model_init_seed, 7)
+        self.assertEqual(args.modelkey, 0)
 
     def test_validate_brew_artifact_rejects_mismatched_poisonkey(self):
         experiment = dict(
