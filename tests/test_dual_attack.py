@@ -7,7 +7,8 @@ import torch
 from forest.data.kettle_det_experiment import select_deterministic_poison_ids
 from forest.dual_attack.experiment import build_args_namespace, load_experiment, save_experiment
 from forest.dual_attack.planners import build_c1_experiment
-from forest.dual_attack.runtime import resolve_dual_overlap, validate_brew_artifact
+from forest.dual_attack.runtime import _artifact_poison_indices, resolve_dual_overlap, validate_brew_artifact
+from forest.dual_attack.summary import summarize_experiment
 from forest.dual_attack.submitter import build_sbatch_command, plan_submission_specs
 
 
@@ -63,8 +64,7 @@ class DualAttackPlannerTests(unittest.TestCase):
         )
         self.assertEqual(len(experiment['dual_jobs']), 9 * 3)
         self.assertEqual(len(experiment['solo_jobs']), len(experiment['brew_jobs']))
-        self.assertEqual(experiment['metadata']['shared_target_class_name'], 'airplane')
-        self.assertEqual(experiment['metadata']['fixed_attacker_a_source_class_name'], 'dog')
+        self.assertEqual(experiment['class_names'][0], 'airplane')
         self.assertEqual(experiment['metadata']['pair_selection_strategy'], 'fixed_attacker_a_source_sweep')
         self.assertEqual(experiment['metadata']['planning_seed'], 17)
         self.assertTrue(experiment['common_args']['randomize_deterministic_poison_ids'])
@@ -140,6 +140,33 @@ class DualAttackPlannerTests(unittest.TestCase):
         self.assertEqual(first['metadata']['sampled_target_indices'], second['metadata']['sampled_target_indices'])
         self.assertNotEqual(first['metadata']['sampled_target_indices'], third['metadata']['sampled_target_indices'])
 
+    def test_summary_uses_top_level_class_names(self):
+        experiment = build_c1_experiment(
+            experiment_id='C1_airplane_v1',
+            class_names=self.class_names,
+            rankings=self.rankings,
+            distance_matrix=self.distance_matrix,
+            class_to_valid_indices=self.class_to_valid_indices,
+            shared_target_class='airplane',
+            fixed_attacker_a_source_class='dog',
+            planning_seed=17,
+            repeats=1,
+            victim_seeds=[0],
+            common_args=dict(
+                dataset='CIFAR10',
+                net=['ResNet18'],
+                scenario='from-scratch',
+                randomize_deterministic_poison_ids=True,
+            ),
+            output_root='artifacts/dual_attack',
+            scheduler={},
+            overlap_seed_base=0,
+            distance_artifact_path='artifact.pt',
+        )
+        summary = summarize_experiment(experiment)
+        self.assertIn('Target class: airplane (0)', summary)
+        self.assertIn('Fixed attacker A source: dog (5)', summary)
+
 
 class DualAttackRuntimeTests(unittest.TestCase):
     def test_build_args_namespace_preserves_lists(self):
@@ -174,6 +201,10 @@ class DualAttackRuntimeTests(unittest.TestCase):
         baseline = select_deterministic_poison_ids(class_ids, 5, '5-0-2731', randomize_poison_ids=False)
         self.assertEqual(first, second)
         self.assertNotEqual(first, baseline)
+
+    def test_artifact_poison_indices_accepts_lists(self):
+        poison_indices = _artifact_poison_indices([4, 1, 9])
+        self.assertTrue(torch.equal(poison_indices, torch.tensor([4, 1, 9], dtype=torch.long)))
 
     def test_validate_brew_artifact_rejects_mismatched_poisonkey(self):
         experiment = dict(

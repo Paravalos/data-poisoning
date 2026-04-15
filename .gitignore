@@ -1,6 +1,15 @@
 
 *.npy
 *.zip
+.DS_Store
+
+# Local assistant/generated analysis artifacts
+.claude/
+.factory/
+architecture_overview.html
+codebase_connections.html
+kettle_base_annotated.html
+options_walkthrough.html
 
 # Logs and tables
 *.pdf

@@ -125,7 +125,6 @@ def build_c1_experiment(
                         poisonkey=f'{source_class_idx}-{target_class_idx}-{target_index}',
                         name=brew_job_id,
                         targets=1,
-                        vruns=0,
                     )
                     attacker_meta = dict(
                         attacker_id=attacker_id,
@@ -134,11 +133,8 @@ def build_c1_experiment(
                         selection_key=selection_key,
                         target_index=target_index,
                         source_class=source_class_idx,
-                        source_class_name=class_names[source_class_idx],
                         target_true_class=source_class_idx,
-                        target_true_class_name=class_names[source_class_idx],
                         target_adv_class=target_class_idx,
-                        target_adv_class_name=target_class_name,
                         source_target_distance=float(distance_matrix[target_class_idx, source_class_idx]),
                         source_target_rank=source_target_ranks[source_class_idx],
                     )
@@ -153,7 +149,7 @@ def build_c1_experiment(
                         attacker=attacker_meta,
                         brew_artifact_path=artifact_path,
                         victim_seeds=list(victim_seeds),
-                        arg_overrides=dict(name=f'solo_{attacker_id}', poisonkey=None, vruns=0),
+                        arg_overrides=dict(name=f'solo_{attacker_id}', poisonkey=None),
                         output_path=os.path.join(solo_dir, f'solo_{attacker_id}.csv'),
                     ))
                     artifact_by_attacker[attacker_id] = artifact_path
@@ -176,7 +172,7 @@ def build_c1_experiment(
                 overlap_seed=overlap_seed_base + repeat_idx,
                 overlap_policy='assign_one_owner',
                 source_source_distance=pair['source_source_distance'],
-                arg_overrides=dict(name=f'dual_{pairing_id}', poisonkey=None, vruns=0),
+                arg_overrides=dict(name=f'dual_{pairing_id}', poisonkey=None),
                 output_path=os.path.join(dual_dir, f'dual_{pairing_id}.csv'),
             ))
 
@@ -184,11 +180,10 @@ def build_c1_experiment(
         schema_version=SCHEMA_VERSION,
         experiment_id=experiment_id,
         family='C1',
+        class_names=list(class_names),
         metadata=dict(
             shared_target_class=target_class_idx,
-            shared_target_class_name=target_class_name,
             fixed_attacker_a_source_class=fixed_attacker_a_source_class_idx,
-            fixed_attacker_a_source_class_name=class_names[fixed_attacker_a_source_class_idx],
             planning_seed=planning_seed,
             repeats=repeats,
             sampled_pair_count=len(sampled_pairs),

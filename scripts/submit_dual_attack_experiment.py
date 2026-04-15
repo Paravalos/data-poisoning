@@ -12,6 +12,7 @@ from _dual_attack_script_utils import ensure_repo_root
 REPO_ROOT = ensure_repo_root(__file__)
 
 from forest.dual_attack.experiment import load_experiment
+from forest.dual_attack.summary import summarize_experiment
 from forest.dual_attack.submitter import (
     build_sbatch_command,
     default_submission_log_path,
@@ -39,6 +40,7 @@ if __name__ == "__main__":
     parser.add_argument('--dual-dependency-stage', default='solo', choices=['solo', 'brew'],
                         help='What dual jobs should depend on.')
     parser.add_argument('--print-only', action='store_true', help='Print sbatch commands instead of submitting them.')
+    parser.add_argument('--print-summary', action='store_true', help='Print a human-friendly summary of the experiment JSON and exit.')
     parser.add_argument('--submission-log', default=None, type=str, help='Where to store/load submitted Slurm ids.')
     parser.add_argument('--output-dir', default=None, type=str, help='Directory for Slurm stdout/stderr files.')
     parser.add_argument('--python-executable', default=sys.executable, type=str)
@@ -51,6 +53,10 @@ if __name__ == "__main__":
 
     experiment_path = os.path.expanduser(args.experiment)
     experiment = load_experiment(experiment_path)
+    if args.print_summary:
+        print(summarize_experiment(experiment))
+        raise SystemExit(0)
+
     submission_log_path = os.path.expanduser(
         args.submission_log or default_submission_log_path(experiment_path)
     )

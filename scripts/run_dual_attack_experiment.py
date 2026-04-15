@@ -10,6 +10,7 @@ ensure_repo_root(__file__)
 
 from forest.dual_attack.experiment import iter_stage_jobs, load_experiment
 from forest.dual_attack.runtime import run_brew_job, run_dual_job, run_solo_job
+from forest.dual_attack.summary import summarize_experiment
 
 
 def _print_commands(experiment_path, selected_jobs):
@@ -27,9 +28,14 @@ if __name__ == "__main__":
     parser.add_argument('--job-id', default=None, type=str, help='Optional single job id to run.')
     parser.add_argument('--dryrun', action='store_true')
     parser.add_argument('--print-commands', action='store_true', help='Print stage/job commands instead of running them.')
+    parser.add_argument('--print-summary', action='store_true', help='Print a human-friendly summary of the experiment JSON and exit.')
     args = parser.parse_args()
 
     experiment = load_experiment(args.experiment)
+    if args.print_summary:
+        print(summarize_experiment(experiment))
+        raise SystemExit(0)
+
     selected_jobs = [
         (stage_name, job)
         for stage_name, job in iter_stage_jobs(experiment, args.stage)

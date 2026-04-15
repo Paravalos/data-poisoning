@@ -6,6 +6,7 @@ import datetime
 import time
 
 import forest
+import torch
 
 from forest.dual_attack.artifacts import compute_delta_norm_summary, load_brew_artifact, save_brew_artifact, write_rows
 from forest.dual_attack.eval import evaluate_job
@@ -30,7 +31,6 @@ def _expected_brew_args(experiment, attacker):
             poisonkey=attacker['poisonkey'],
             name=attacker['brew_job_id'],
             targets=1,
-            vruns=0,
         ),
     )
 
@@ -41,6 +41,10 @@ def _system_startup(args):
 
 def _timedelta_string(seconds):
     return str(datetime.timedelta(seconds=seconds)).replace(',', '')
+
+
+def _artifact_poison_indices(poison_ids):
+    return torch.as_tensor(poison_ids, dtype=torch.long).cpu()
 
 
 def _validate_dual_artifacts(left, right):
@@ -81,15 +85,15 @@ def run_brew_job(experiment, job, force_dryrun=False):
         job_id=job['job_id'],
         attacker=job['attacker'],
         poison_delta=poison_delta.detach().cpu(),
-        poison_indices=data.poison_ids.detach().cpu(),
+        poison_indices=_artifact_poison_indices(data.poison_ids),
         target_index=int(job['attacker']['target_index']),
         target_image=target_image.detach().cpu(),
         target_true_class=int(job['attacker']['target_true_class']),
-        target_true_class_name=job['attacker']['target_true_class_name'],
+        target_true_class_name=data.trainset.classes[int(job['attacker']['target_true_class'])],
         target_adv_class=int(job['attacker']['target_adv_class']),
-        target_adv_class_name=job['attacker']['target_adv_class_name'],
+        target_adv_class_name=data.trainset.classes[int(job['attacker']['target_adv_class'])],
         source_class=int(job['attacker']['source_class']),
-        source_class_name=job['attacker']['source_class_name'],
+        source_class_name=data.trainset.classes[int(job['attacker']['source_class'])],
         brew_config=dict(
             args={key: value for key, value in vars(args).items()},
             model_init_seed=model.model_init_seed,

@@ -46,7 +46,7 @@ def _class_to_valid_indices(dataset):
 
 if __name__ == "__main__":
     parser = forest.options()
-    parser.set_defaults(randomize_deterministic_poison_ids=True)
+    parser.set_defaults(randomize_deterministic_poison_ids=True, modelkey=0, cache_clean_model=True)
     parser.add_argument('--distance_artifact', required=True, type=str, help='Saved class-distance matrix artifact.')
     parser.add_argument('--output', required=True, type=str, help='Where to save the experiment JSON.')
     parser.add_argument('--shared_target_class', default='airplane', type=str,
