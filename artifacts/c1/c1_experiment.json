@@ -1,0 +1,3303 @@
+{
+  "brew_jobs": [
+    {
+      "arg_overrides": {
+        "name": "brew_src5_sel0_to0",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0",
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src1_sel1_to0",
+        "poisonkey": "1-0-1614",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src1_sel1_to0.pt",
+      "attacker": {
+        "attacker_id": "src1_sel1_to0",
+        "brew_job_id": "brew_src1_sel1_to0",
+        "poisonkey": "1-0-1614",
+        "selection_key": 1,
+        "source_class": 1,
+        "source_target_distance": 0.6062602996826172,
+        "source_target_rank": 6,
+        "target_adv_class": 0,
+        "target_index": 1614,
+        "target_true_class": 1
+      },
+      "job_id": "brew_src1_sel1_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src5_sel2_to0",
+        "poisonkey": "5-0-5047",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+      "attacker": {
+        "attacker_id": "src5_sel2_to0",
+        "brew_job_id": "brew_src5_sel2_to0",
+        "poisonkey": "5-0-5047",
+        "selection_key": 2,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 5047,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel2_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src1_sel3_to0",
+        "poisonkey": "1-0-3730",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src1_sel3_to0.pt",
+      "attacker": {
+        "attacker_id": "src1_sel3_to0",
+        "brew_job_id": "brew_src1_sel3_to0",
+        "poisonkey": "1-0-3730",
+        "selection_key": 3,
+        "source_class": 1,
+        "source_target_distance": 0.6062602996826172,
+        "source_target_rank": 6,
+        "target_adv_class": 0,
+        "target_index": 3730,
+        "target_true_class": 1
+      },
+      "job_id": "brew_src1_sel3_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src5_sel4_to0",
+        "poisonkey": "5-0-9589",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+      "attacker": {
+        "attacker_id": "src5_sel4_to0",
+        "brew_job_id": "brew_src5_sel4_to0",
+        "poisonkey": "5-0-9589",
+        "selection_key": 4,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9589,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel4_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src1_sel5_to0",
+        "poisonkey": "1-0-7903",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src1_sel5_to0.pt",
+      "attacker": {
+        "attacker_id": "src1_sel5_to0",
+        "brew_job_id": "brew_src1_sel5_to0",
+        "poisonkey": "1-0-7903",
+        "selection_key": 5,
+        "source_class": 1,
+        "source_target_distance": 0.6062602996826172,
+        "source_target_rank": 6,
+        "target_adv_class": 0,
+        "target_index": 7903,
+        "target_true_class": 1
+      },
+      "job_id": "brew_src1_sel5_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src2_sel1_to0",
+        "poisonkey": "2-0-655",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src2_sel1_to0.pt",
+      "attacker": {
+        "attacker_id": "src2_sel1_to0",
+        "brew_job_id": "brew_src2_sel1_to0",
+        "poisonkey": "2-0-655",
+        "selection_key": 1,
+        "source_class": 2,
+        "source_target_distance": 0.49285149574279785,
+        "source_target_rank": 1,
+        "target_adv_class": 0,
+        "target_index": 655,
+        "target_true_class": 2
+      },
+      "job_id": "brew_src2_sel1_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src2_sel3_to0",
+        "poisonkey": "2-0-4438",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src2_sel3_to0.pt",
+      "attacker": {
+        "attacker_id": "src2_sel3_to0",
+        "brew_job_id": "brew_src2_sel3_to0",
+        "poisonkey": "2-0-4438",
+        "selection_key": 3,
+        "source_class": 2,
+        "source_target_distance": 0.49285149574279785,
+        "source_target_rank": 1,
+        "target_adv_class": 0,
+        "target_index": 4438,
+        "target_true_class": 2
+      },
+      "job_id": "brew_src2_sel3_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src2_sel5_to0",
+        "poisonkey": "2-0-6137",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src2_sel5_to0.pt",
+      "attacker": {
+        "attacker_id": "src2_sel5_to0",
+        "brew_job_id": "brew_src2_sel5_to0",
+        "poisonkey": "2-0-6137",
+        "selection_key": 5,
+        "source_class": 2,
+        "source_target_distance": 0.49285149574279785,
+        "source_target_rank": 1,
+        "target_adv_class": 0,
+        "target_index": 6137,
+        "target_true_class": 2
+      },
+      "job_id": "brew_src2_sel5_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src3_sel1_to0",
+        "poisonkey": "3-0-5733",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src3_sel1_to0.pt",
+      "attacker": {
+        "attacker_id": "src3_sel1_to0",
+        "brew_job_id": "brew_src3_sel1_to0",
+        "poisonkey": "3-0-5733",
+        "selection_key": 1,
+        "source_class": 3,
+        "source_target_distance": 0.5680851936340332,
+        "source_target_rank": 3,
+        "target_adv_class": 0,
+        "target_index": 5733,
+        "target_true_class": 3
+      },
+      "job_id": "brew_src3_sel1_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src3_sel3_to0",
+        "poisonkey": "3-0-8200",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src3_sel3_to0.pt",
+      "attacker": {
+        "attacker_id": "src3_sel3_to0",
+        "brew_job_id": "brew_src3_sel3_to0",
+        "poisonkey": "3-0-8200",
+        "selection_key": 3,
+        "source_class": 3,
+        "source_target_distance": 0.5680851936340332,
+        "source_target_rank": 3,
+        "target_adv_class": 0,
+        "target_index": 8200,
+        "target_true_class": 3
+      },
+      "job_id": "brew_src3_sel3_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src3_sel5_to0",
+        "poisonkey": "3-0-63",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src3_sel5_to0.pt",
+      "attacker": {
+        "attacker_id": "src3_sel5_to0",
+        "brew_job_id": "brew_src3_sel5_to0",
+        "poisonkey": "3-0-63",
+        "selection_key": 5,
+        "source_class": 3,
+        "source_target_distance": 0.5680851936340332,
+        "source_target_rank": 3,
+        "target_adv_class": 0,
+        "target_index": 63,
+        "target_true_class": 3
+      },
+      "job_id": "brew_src3_sel5_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src4_sel1_to0",
+        "poisonkey": "4-0-9795",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src4_sel1_to0.pt",
+      "attacker": {
+        "attacker_id": "src4_sel1_to0",
+        "brew_job_id": "brew_src4_sel1_to0",
+        "poisonkey": "4-0-9795",
+        "selection_key": 1,
+        "source_class": 4,
+        "source_target_distance": 0.6046143770217896,
+        "source_target_rank": 5,
+        "target_adv_class": 0,
+        "target_index": 9795,
+        "target_true_class": 4
+      },
+      "job_id": "brew_src4_sel1_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src4_sel3_to0",
+        "poisonkey": "4-0-2218",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src4_sel3_to0.pt",
+      "attacker": {
+        "attacker_id": "src4_sel3_to0",
+        "brew_job_id": "brew_src4_sel3_to0",
+        "poisonkey": "4-0-2218",
+        "selection_key": 3,
+        "source_class": 4,
+        "source_target_distance": 0.6046143770217896,
+        "source_target_rank": 5,
+        "target_adv_class": 0,
+        "target_index": 2218,
+        "target_true_class": 4
+      },
+      "job_id": "brew_src4_sel3_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src4_sel5_to0",
+        "poisonkey": "4-0-6664",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src4_sel5_to0.pt",
+      "attacker": {
+        "attacker_id": "src4_sel5_to0",
+        "brew_job_id": "brew_src4_sel5_to0",
+        "poisonkey": "4-0-6664",
+        "selection_key": 5,
+        "source_class": 4,
+        "source_target_distance": 0.6046143770217896,
+        "source_target_rank": 5,
+        "target_adv_class": 0,
+        "target_index": 6664,
+        "target_true_class": 4
+      },
+      "job_id": "brew_src4_sel5_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src5_sel1_to0",
+        "poisonkey": "5-0-3115",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel1_to0.pt",
+      "attacker": {
+        "attacker_id": "src5_sel1_to0",
+        "brew_job_id": "brew_src5_sel1_to0",
+        "poisonkey": "5-0-3115",
+        "selection_key": 1,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 3115,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel1_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src5_sel3_to0",
+        "poisonkey": "5-0-2219",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel3_to0.pt",
+      "attacker": {
+        "attacker_id": "src5_sel3_to0",
+        "brew_job_id": "brew_src5_sel3_to0",
+        "poisonkey": "5-0-2219",
+        "selection_key": 3,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 2219,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel3_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src5_sel5_to0",
+        "poisonkey": "5-0-2335",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel5_to0.pt",
+      "attacker": {
+        "attacker_id": "src5_sel5_to0",
+        "brew_job_id": "brew_src5_sel5_to0",
+        "poisonkey": "5-0-2335",
+        "selection_key": 5,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 2335,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel5_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src6_sel1_to0",
+        "poisonkey": "6-0-1838",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src6_sel1_to0.pt",
+      "attacker": {
+        "attacker_id": "src6_sel1_to0",
+        "brew_job_id": "brew_src6_sel1_to0",
+        "poisonkey": "6-0-1838",
+        "selection_key": 1,
+        "source_class": 6,
+        "source_target_distance": 0.681496262550354,
+        "source_target_rank": 9,
+        "target_adv_class": 0,
+        "target_index": 1838,
+        "target_true_class": 6
+      },
+      "job_id": "brew_src6_sel1_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src6_sel3_to0",
+        "poisonkey": "6-0-9068",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src6_sel3_to0.pt",
+      "attacker": {
+        "attacker_id": "src6_sel3_to0",
+        "brew_job_id": "brew_src6_sel3_to0",
+        "poisonkey": "6-0-9068",
+        "selection_key": 3,
+        "source_class": 6,
+        "source_target_distance": 0.681496262550354,
+        "source_target_rank": 9,
+        "target_adv_class": 0,
+        "target_index": 9068,
+        "target_true_class": 6
+      },
+      "job_id": "brew_src6_sel3_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src6_sel5_to0",
+        "poisonkey": "6-0-710",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src6_sel5_to0.pt",
+      "attacker": {
+        "attacker_id": "src6_sel5_to0",
+        "brew_job_id": "brew_src6_sel5_to0",
+        "poisonkey": "6-0-710",
+        "selection_key": 5,
+        "source_class": 6,
+        "source_target_distance": 0.681496262550354,
+        "source_target_rank": 9,
+        "target_adv_class": 0,
+        "target_index": 710,
+        "target_true_class": 6
+      },
+      "job_id": "brew_src6_sel5_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src7_sel1_to0",
+        "poisonkey": "7-0-3359",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src7_sel1_to0.pt",
+      "attacker": {
+        "attacker_id": "src7_sel1_to0",
+        "brew_job_id": "brew_src7_sel1_to0",
+        "poisonkey": "7-0-3359",
+        "selection_key": 1,
+        "source_class": 7,
+        "source_target_distance": 0.6319902539253235,
+        "source_target_rank": 7,
+        "target_adv_class": 0,
+        "target_index": 3359,
+        "target_true_class": 7
+      },
+      "job_id": "brew_src7_sel1_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src7_sel3_to0",
+        "poisonkey": "7-0-6004",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src7_sel3_to0.pt",
+      "attacker": {
+        "attacker_id": "src7_sel3_to0",
+        "brew_job_id": "brew_src7_sel3_to0",
+        "poisonkey": "7-0-6004",
+        "selection_key": 3,
+        "source_class": 7,
+        "source_target_distance": 0.6319902539253235,
+        "source_target_rank": 7,
+        "target_adv_class": 0,
+        "target_index": 6004,
+        "target_true_class": 7
+      },
+      "job_id": "brew_src7_sel3_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src7_sel5_to0",
+        "poisonkey": "7-0-4592",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src7_sel5_to0.pt",
+      "attacker": {
+        "attacker_id": "src7_sel5_to0",
+        "brew_job_id": "brew_src7_sel5_to0",
+        "poisonkey": "7-0-4592",
+        "selection_key": 5,
+        "source_class": 7,
+        "source_target_distance": 0.6319902539253235,
+        "source_target_rank": 7,
+        "target_adv_class": 0,
+        "target_index": 4592,
+        "target_true_class": 7
+      },
+      "job_id": "brew_src7_sel5_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src8_sel1_to0",
+        "poisonkey": "8-0-9233",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src8_sel1_to0.pt",
+      "attacker": {
+        "attacker_id": "src8_sel1_to0",
+        "brew_job_id": "brew_src8_sel1_to0",
+        "poisonkey": "8-0-9233",
+        "selection_key": 1,
+        "source_class": 8,
+        "source_target_distance": 0.507644772529602,
+        "source_target_rank": 2,
+        "target_adv_class": 0,
+        "target_index": 9233,
+        "target_true_class": 8
+      },
+      "job_id": "brew_src8_sel1_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src8_sel3_to0",
+        "poisonkey": "8-0-3046",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src8_sel3_to0.pt",
+      "attacker": {
+        "attacker_id": "src8_sel3_to0",
+        "brew_job_id": "brew_src8_sel3_to0",
+        "poisonkey": "8-0-3046",
+        "selection_key": 3,
+        "source_class": 8,
+        "source_target_distance": 0.507644772529602,
+        "source_target_rank": 2,
+        "target_adv_class": 0,
+        "target_index": 3046,
+        "target_true_class": 8
+      },
+      "job_id": "brew_src8_sel3_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src8_sel5_to0",
+        "poisonkey": "8-0-1866",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src8_sel5_to0.pt",
+      "attacker": {
+        "attacker_id": "src8_sel5_to0",
+        "brew_job_id": "brew_src8_sel5_to0",
+        "poisonkey": "8-0-1866",
+        "selection_key": 5,
+        "source_class": 8,
+        "source_target_distance": 0.507644772529602,
+        "source_target_rank": 2,
+        "target_adv_class": 0,
+        "target_index": 1866,
+        "target_true_class": 8
+      },
+      "job_id": "brew_src8_sel5_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src9_sel1_to0",
+        "poisonkey": "9-0-9692",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src9_sel1_to0.pt",
+      "attacker": {
+        "attacker_id": "src9_sel1_to0",
+        "brew_job_id": "brew_src9_sel1_to0",
+        "poisonkey": "9-0-9692",
+        "selection_key": 1,
+        "source_class": 9,
+        "source_target_distance": 0.5797238945960999,
+        "source_target_rank": 4,
+        "target_adv_class": 0,
+        "target_index": 9692,
+        "target_true_class": 9
+      },
+      "job_id": "brew_src9_sel1_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src9_sel3_to0",
+        "poisonkey": "9-0-9560",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src9_sel3_to0.pt",
+      "attacker": {
+        "attacker_id": "src9_sel3_to0",
+        "brew_job_id": "brew_src9_sel3_to0",
+        "poisonkey": "9-0-9560",
+        "selection_key": 3,
+        "source_class": 9,
+        "source_target_distance": 0.5797238945960999,
+        "source_target_rank": 4,
+        "target_adv_class": 0,
+        "target_index": 9560,
+        "target_true_class": 9
+      },
+      "job_id": "brew_src9_sel3_to0"
+    },
+    {
+      "arg_overrides": {
+        "name": "brew_src9_sel5_to0",
+        "poisonkey": "9-0-1927",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_experiment/brews/brew_src9_sel5_to0.pt",
+      "attacker": {
+        "attacker_id": "src9_sel5_to0",
+        "brew_job_id": "brew_src9_sel5_to0",
+        "poisonkey": "9-0-1927",
+        "selection_key": 5,
+        "source_class": 9,
+        "source_target_distance": 0.5797238945960999,
+        "source_target_rank": 4,
+        "target_adv_class": 0,
+        "target_index": 1927,
+        "target_true_class": 9
+      },
+      "job_id": "brew_src9_sel5_to0"
+    }
+  ],
+  "class_names": [
+    "airplane",
+    "automobile",
+    "bird",
+    "cat",
+    "deer",
+    "dog",
+    "frog",
+    "horse",
+    "ship",
+    "truck"
+  ],
+  "common_args": {
+    "ablation": 1.0,
+    "attackiter": 250,
+    "attackoptim": "signAdam",
+    "benchmark": "",
+    "benchmark_idx": 0,
+    "budget": 0.01,
+    "cache_clean_model": true,
+    "cache_dataset": false,
+    "centreg": 0,
+    "clean_grad": false,
+    "data_aug": "default",
+    "data_path": "~/data",
+    "dataset": "CIFAR10",
+    "defend_features_only": false,
+    "defense_steps": null,
+    "defense_strength": null,
+    "defense_targets": null,
+    "defense_type": null,
+    "deterministic": false,
+    "disable_adaptive_attack": true,
+    "dryrun": false,
+    "ensemble": 1,
+    "epochs": null,
+    "eps": 16,
+    "filter_defense": "",
+    "full_data": false,
+    "gradient_clip": null,
+    "gradient_noise": null,
+    "init": "randn",
+    "lmdb_path": null,
+    "load_patch": "",
+    "local_rank": null,
+    "loss": "similarity",
+    "lr": null,
+    "max_epoch": null,
+    "mixing_disable_correction": true,
+    "mixing_method": null,
+    "mixing_strength": null,
+    "modelkey": 0,
+    "modelsave_path": "./models/",
+    "nadapt": 2,
+    "name": "",
+    "net": [
+      "ResNet18"
+    ],
+    "noaugment": false,
+    "normreg": 0,
+    "optimization": "conservative",
+    "padversarial": null,
+    "patch_size": 8,
+    "paugment": true,
+    "pbatch": 512,
+    "pmix": false,
+    "poison_class": null,
+    "poison_path": "poisons/",
+    "poisonkey": null,
+    "pretrain_dataset": null,
+    "pretrained_model": false,
+    "pshuffle": false,
+    "randomize_deterministic_poison_ids": true,
+    "recipe": "gradient-matching",
+    "repel": 0,
+    "restarts": 8,
+    "retrain_from_init": false,
+    "save": null,
+    "scenario": "from-scratch",
+    "scheduling": true,
+    "skip_clean_training": false,
+    "stagger": null,
+    "step": false,
+    "table_path": "tables/",
+    "target_class": null,
+    "target_criterion": "cross-entropy",
+    "targets": 1,
+    "tau": 0.1,
+    "threatmodel": "single-class",
+    "vnet": null,
+    "vruns": 1
+  },
+  "dual_jobs": [
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_automobile_rep1",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel0_to0",
+          "brew_job_id": "brew_src5_sel0_to0",
+          "poisonkey": "5-0-9514",
+          "selection_key": 0,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9514,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src1_sel1_to0",
+          "brew_job_id": "brew_src1_sel1_to0",
+          "poisonkey": "1-0-1614",
+          "selection_key": 1,
+          "source_class": 1,
+          "source_target_distance": 0.6062602996826172,
+          "source_target_rank": 6,
+          "target_adv_class": 0,
+          "target_index": 1614,
+          "target_true_class": 1
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src1_sel1_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_automobile",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_automobile_rep1",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_automobile_rep1.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 0,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_automobile_rep1",
+      "source_source_distance": 0.6543991565704346,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_automobile_rep2",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel2_to0",
+          "brew_job_id": "brew_src5_sel2_to0",
+          "poisonkey": "5-0-5047",
+          "selection_key": 2,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 5047,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src1_sel3_to0",
+          "brew_job_id": "brew_src1_sel3_to0",
+          "poisonkey": "1-0-3730",
+          "selection_key": 3,
+          "source_class": 1,
+          "source_target_distance": 0.6062602996826172,
+          "source_target_rank": 6,
+          "target_adv_class": 0,
+          "target_index": 3730,
+          "target_true_class": 1
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src1_sel3_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_automobile",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_automobile_rep2",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_automobile_rep2.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 1,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_automobile_rep2",
+      "source_source_distance": 0.6543991565704346,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_automobile_rep3",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel4_to0",
+          "brew_job_id": "brew_src5_sel4_to0",
+          "poisonkey": "5-0-9589",
+          "selection_key": 4,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9589,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src1_sel5_to0",
+          "brew_job_id": "brew_src1_sel5_to0",
+          "poisonkey": "1-0-7903",
+          "selection_key": 5,
+          "source_class": 1,
+          "source_target_distance": 0.6062602996826172,
+          "source_target_rank": 6,
+          "target_adv_class": 0,
+          "target_index": 7903,
+          "target_true_class": 1
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src1_sel5_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_automobile",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_automobile_rep3",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_automobile_rep3.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 2,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_automobile_rep3",
+      "source_source_distance": 0.6543991565704346,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_bird_rep1",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel0_to0",
+          "brew_job_id": "brew_src5_sel0_to0",
+          "poisonkey": "5-0-9514",
+          "selection_key": 0,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9514,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src2_sel1_to0",
+          "brew_job_id": "brew_src2_sel1_to0",
+          "poisonkey": "2-0-655",
+          "selection_key": 1,
+          "source_class": 2,
+          "source_target_distance": 0.49285149574279785,
+          "source_target_rank": 1,
+          "target_adv_class": 0,
+          "target_index": 655,
+          "target_true_class": 2
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src2_sel1_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_bird",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_bird_rep1",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_bird_rep1.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 0,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_bird_rep1",
+      "source_source_distance": 0.5690615177154541,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_bird_rep2",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel2_to0",
+          "brew_job_id": "brew_src5_sel2_to0",
+          "poisonkey": "5-0-5047",
+          "selection_key": 2,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 5047,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src2_sel3_to0",
+          "brew_job_id": "brew_src2_sel3_to0",
+          "poisonkey": "2-0-4438",
+          "selection_key": 3,
+          "source_class": 2,
+          "source_target_distance": 0.49285149574279785,
+          "source_target_rank": 1,
+          "target_adv_class": 0,
+          "target_index": 4438,
+          "target_true_class": 2
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src2_sel3_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_bird",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_bird_rep2",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_bird_rep2.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 1,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_bird_rep2",
+      "source_source_distance": 0.5690615177154541,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_bird_rep3",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel4_to0",
+          "brew_job_id": "brew_src5_sel4_to0",
+          "poisonkey": "5-0-9589",
+          "selection_key": 4,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9589,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src2_sel5_to0",
+          "brew_job_id": "brew_src2_sel5_to0",
+          "poisonkey": "2-0-6137",
+          "selection_key": 5,
+          "source_class": 2,
+          "source_target_distance": 0.49285149574279785,
+          "source_target_rank": 1,
+          "target_adv_class": 0,
+          "target_index": 6137,
+          "target_true_class": 2
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src2_sel5_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_bird",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_bird_rep3",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_bird_rep3.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 2,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_bird_rep3",
+      "source_source_distance": 0.5690615177154541,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_cat_rep1",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel0_to0",
+          "brew_job_id": "brew_src5_sel0_to0",
+          "poisonkey": "5-0-9514",
+          "selection_key": 0,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9514,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src3_sel1_to0",
+          "brew_job_id": "brew_src3_sel1_to0",
+          "poisonkey": "3-0-5733",
+          "selection_key": 1,
+          "source_class": 3,
+          "source_target_distance": 0.5680851936340332,
+          "source_target_rank": 3,
+          "target_adv_class": 0,
+          "target_index": 5733,
+          "target_true_class": 3
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src3_sel1_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_cat",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_cat_rep1",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_cat_rep1.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 0,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_cat_rep1",
+      "source_source_distance": 0.39107412099838257,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_cat_rep2",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel2_to0",
+          "brew_job_id": "brew_src5_sel2_to0",
+          "poisonkey": "5-0-5047",
+          "selection_key": 2,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 5047,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src3_sel3_to0",
+          "brew_job_id": "brew_src3_sel3_to0",
+          "poisonkey": "3-0-8200",
+          "selection_key": 3,
+          "source_class": 3,
+          "source_target_distance": 0.5680851936340332,
+          "source_target_rank": 3,
+          "target_adv_class": 0,
+          "target_index": 8200,
+          "target_true_class": 3
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src3_sel3_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_cat",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_cat_rep2",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_cat_rep2.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 1,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_cat_rep2",
+      "source_source_distance": 0.39107412099838257,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_cat_rep3",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel4_to0",
+          "brew_job_id": "brew_src5_sel4_to0",
+          "poisonkey": "5-0-9589",
+          "selection_key": 4,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9589,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src3_sel5_to0",
+          "brew_job_id": "brew_src3_sel5_to0",
+          "poisonkey": "3-0-63",
+          "selection_key": 5,
+          "source_class": 3,
+          "source_target_distance": 0.5680851936340332,
+          "source_target_rank": 3,
+          "target_adv_class": 0,
+          "target_index": 63,
+          "target_true_class": 3
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src3_sel5_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_cat",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_cat_rep3",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_cat_rep3.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 2,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_cat_rep3",
+      "source_source_distance": 0.39107412099838257,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_deer_rep1",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel0_to0",
+          "brew_job_id": "brew_src5_sel0_to0",
+          "poisonkey": "5-0-9514",
+          "selection_key": 0,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9514,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src4_sel1_to0",
+          "brew_job_id": "brew_src4_sel1_to0",
+          "poisonkey": "4-0-9795",
+          "selection_key": 1,
+          "source_class": 4,
+          "source_target_distance": 0.6046143770217896,
+          "source_target_rank": 5,
+          "target_adv_class": 0,
+          "target_index": 9795,
+          "target_true_class": 4
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src4_sel1_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_deer",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_deer_rep1",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_deer_rep1.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 0,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_deer_rep1",
+      "source_source_distance": 0.5543463230133057,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_deer_rep2",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel2_to0",
+          "brew_job_id": "brew_src5_sel2_to0",
+          "poisonkey": "5-0-5047",
+          "selection_key": 2,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 5047,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src4_sel3_to0",
+          "brew_job_id": "brew_src4_sel3_to0",
+          "poisonkey": "4-0-2218",
+          "selection_key": 3,
+          "source_class": 4,
+          "source_target_distance": 0.6046143770217896,
+          "source_target_rank": 5,
+          "target_adv_class": 0,
+          "target_index": 2218,
+          "target_true_class": 4
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src4_sel3_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_deer",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_deer_rep2",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_deer_rep2.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 1,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_deer_rep2",
+      "source_source_distance": 0.5543463230133057,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_deer_rep3",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel4_to0",
+          "brew_job_id": "brew_src5_sel4_to0",
+          "poisonkey": "5-0-9589",
+          "selection_key": 4,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9589,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src4_sel5_to0",
+          "brew_job_id": "brew_src4_sel5_to0",
+          "poisonkey": "4-0-6664",
+          "selection_key": 5,
+          "source_class": 4,
+          "source_target_distance": 0.6046143770217896,
+          "source_target_rank": 5,
+          "target_adv_class": 0,
+          "target_index": 6664,
+          "target_true_class": 4
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src4_sel5_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_deer",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_deer_rep3",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_deer_rep3.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 2,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_deer_rep3",
+      "source_source_distance": 0.5543463230133057,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_dog_rep1",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel0_to0",
+          "brew_job_id": "brew_src5_sel0_to0",
+          "poisonkey": "5-0-9514",
+          "selection_key": 0,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9514,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src5_sel1_to0",
+          "brew_job_id": "brew_src5_sel1_to0",
+          "poisonkey": "5-0-3115",
+          "selection_key": 1,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 3115,
+          "target_true_class": 5
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel1_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_dog",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_dog_rep1",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_dog_rep1.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 0,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_dog_rep1",
+      "source_source_distance": 0.0,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_dog_rep2",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel2_to0",
+          "brew_job_id": "brew_src5_sel2_to0",
+          "poisonkey": "5-0-5047",
+          "selection_key": 2,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 5047,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src5_sel3_to0",
+          "brew_job_id": "brew_src5_sel3_to0",
+          "poisonkey": "5-0-2219",
+          "selection_key": 3,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 2219,
+          "target_true_class": 5
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel3_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_dog",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_dog_rep2",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_dog_rep2.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 1,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_dog_rep2",
+      "source_source_distance": 0.0,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_dog_rep3",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel4_to0",
+          "brew_job_id": "brew_src5_sel4_to0",
+          "poisonkey": "5-0-9589",
+          "selection_key": 4,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9589,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src5_sel5_to0",
+          "brew_job_id": "brew_src5_sel5_to0",
+          "poisonkey": "5-0-2335",
+          "selection_key": 5,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 2335,
+          "target_true_class": 5
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel5_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_dog",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_dog_rep3",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_dog_rep3.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 2,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_dog_rep3",
+      "source_source_distance": 0.0,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_frog_rep1",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel0_to0",
+          "brew_job_id": "brew_src5_sel0_to0",
+          "poisonkey": "5-0-9514",
+          "selection_key": 0,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9514,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src6_sel1_to0",
+          "brew_job_id": "brew_src6_sel1_to0",
+          "poisonkey": "6-0-1838",
+          "selection_key": 1,
+          "source_class": 6,
+          "source_target_distance": 0.681496262550354,
+          "source_target_rank": 9,
+          "target_adv_class": 0,
+          "target_index": 1838,
+          "target_true_class": 6
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src6_sel1_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_frog",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_frog_rep1",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_frog_rep1.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 0,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_frog_rep1",
+      "source_source_distance": 0.6073779463768005,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_frog_rep2",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel2_to0",
+          "brew_job_id": "brew_src5_sel2_to0",
+          "poisonkey": "5-0-5047",
+          "selection_key": 2,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 5047,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src6_sel3_to0",
+          "brew_job_id": "brew_src6_sel3_to0",
+          "poisonkey": "6-0-9068",
+          "selection_key": 3,
+          "source_class": 6,
+          "source_target_distance": 0.681496262550354,
+          "source_target_rank": 9,
+          "target_adv_class": 0,
+          "target_index": 9068,
+          "target_true_class": 6
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src6_sel3_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_frog",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_frog_rep2",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_frog_rep2.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 1,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_frog_rep2",
+      "source_source_distance": 0.6073779463768005,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_frog_rep3",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel4_to0",
+          "brew_job_id": "brew_src5_sel4_to0",
+          "poisonkey": "5-0-9589",
+          "selection_key": 4,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9589,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src6_sel5_to0",
+          "brew_job_id": "brew_src6_sel5_to0",
+          "poisonkey": "6-0-710",
+          "selection_key": 5,
+          "source_class": 6,
+          "source_target_distance": 0.681496262550354,
+          "source_target_rank": 9,
+          "target_adv_class": 0,
+          "target_index": 710,
+          "target_true_class": 6
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src6_sel5_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_frog",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_frog_rep3",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_frog_rep3.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 2,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_frog_rep3",
+      "source_source_distance": 0.6073779463768005,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_horse_rep1",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel0_to0",
+          "brew_job_id": "brew_src5_sel0_to0",
+          "poisonkey": "5-0-9514",
+          "selection_key": 0,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9514,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src7_sel1_to0",
+          "brew_job_id": "brew_src7_sel1_to0",
+          "poisonkey": "7-0-3359",
+          "selection_key": 1,
+          "source_class": 7,
+          "source_target_distance": 0.6319902539253235,
+          "source_target_rank": 7,
+          "target_adv_class": 0,
+          "target_index": 3359,
+          "target_true_class": 7
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src7_sel1_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_horse",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_horse_rep1",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_horse_rep1.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 0,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_horse_rep1",
+      "source_source_distance": 0.5162463784217834,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_horse_rep2",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel2_to0",
+          "brew_job_id": "brew_src5_sel2_to0",
+          "poisonkey": "5-0-5047",
+          "selection_key": 2,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 5047,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src7_sel3_to0",
+          "brew_job_id": "brew_src7_sel3_to0",
+          "poisonkey": "7-0-6004",
+          "selection_key": 3,
+          "source_class": 7,
+          "source_target_distance": 0.6319902539253235,
+          "source_target_rank": 7,
+          "target_adv_class": 0,
+          "target_index": 6004,
+          "target_true_class": 7
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src7_sel3_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_horse",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_horse_rep2",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_horse_rep2.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 1,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_horse_rep2",
+      "source_source_distance": 0.5162463784217834,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_horse_rep3",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel4_to0",
+          "brew_job_id": "brew_src5_sel4_to0",
+          "poisonkey": "5-0-9589",
+          "selection_key": 4,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9589,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src7_sel5_to0",
+          "brew_job_id": "brew_src7_sel5_to0",
+          "poisonkey": "7-0-4592",
+          "selection_key": 5,
+          "source_class": 7,
+          "source_target_distance": 0.6319902539253235,
+          "source_target_rank": 7,
+          "target_adv_class": 0,
+          "target_index": 4592,
+          "target_true_class": 7
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src7_sel5_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_horse",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_horse_rep3",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_horse_rep3.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 2,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_horse_rep3",
+      "source_source_distance": 0.5162463784217834,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_ship_rep1",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel0_to0",
+          "brew_job_id": "brew_src5_sel0_to0",
+          "poisonkey": "5-0-9514",
+          "selection_key": 0,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9514,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src8_sel1_to0",
+          "brew_job_id": "brew_src8_sel1_to0",
+          "poisonkey": "8-0-9233",
+          "selection_key": 1,
+          "source_class": 8,
+          "source_target_distance": 0.507644772529602,
+          "source_target_rank": 2,
+          "target_adv_class": 0,
+          "target_index": 9233,
+          "target_true_class": 8
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src8_sel1_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_ship",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_ship_rep1",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_ship_rep1.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 0,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_ship_rep1",
+      "source_source_distance": 0.678178608417511,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_ship_rep2",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel2_to0",
+          "brew_job_id": "brew_src5_sel2_to0",
+          "poisonkey": "5-0-5047",
+          "selection_key": 2,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 5047,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src8_sel3_to0",
+          "brew_job_id": "brew_src8_sel3_to0",
+          "poisonkey": "8-0-3046",
+          "selection_key": 3,
+          "source_class": 8,
+          "source_target_distance": 0.507644772529602,
+          "source_target_rank": 2,
+          "target_adv_class": 0,
+          "target_index": 3046,
+          "target_true_class": 8
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src8_sel3_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_ship",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_ship_rep2",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_ship_rep2.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 1,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_ship_rep2",
+      "source_source_distance": 0.678178608417511,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_ship_rep3",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel4_to0",
+          "brew_job_id": "brew_src5_sel4_to0",
+          "poisonkey": "5-0-9589",
+          "selection_key": 4,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9589,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src8_sel5_to0",
+          "brew_job_id": "brew_src8_sel5_to0",
+          "poisonkey": "8-0-1866",
+          "selection_key": 5,
+          "source_class": 8,
+          "source_target_distance": 0.507644772529602,
+          "source_target_rank": 2,
+          "target_adv_class": 0,
+          "target_index": 1866,
+          "target_true_class": 8
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src8_sel5_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_ship",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_ship_rep3",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_ship_rep3.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 2,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_ship_rep3",
+      "source_source_distance": 0.678178608417511,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_truck_rep1",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel0_to0",
+          "brew_job_id": "brew_src5_sel0_to0",
+          "poisonkey": "5-0-9514",
+          "selection_key": 0,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9514,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src9_sel1_to0",
+          "brew_job_id": "brew_src9_sel1_to0",
+          "poisonkey": "9-0-9692",
+          "selection_key": 1,
+          "source_class": 9,
+          "source_target_distance": 0.5797238945960999,
+          "source_target_rank": 4,
+          "target_adv_class": 0,
+          "target_index": 9692,
+          "target_true_class": 9
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src9_sel1_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_truck",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_truck_rep1",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_truck_rep1.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 0,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_truck_rep1",
+      "source_source_distance": 0.659410834312439,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_truck_rep2",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel2_to0",
+          "brew_job_id": "brew_src5_sel2_to0",
+          "poisonkey": "5-0-5047",
+          "selection_key": 2,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 5047,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src9_sel3_to0",
+          "brew_job_id": "brew_src9_sel3_to0",
+          "poisonkey": "9-0-9560",
+          "selection_key": 3,
+          "source_class": 9,
+          "source_target_distance": 0.5797238945960999,
+          "source_target_rank": 4,
+          "target_adv_class": 0,
+          "target_index": 9560,
+          "target_true_class": 9
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src9_sel3_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_truck",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_truck_rep2",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_truck_rep2.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 1,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_truck_rep2",
+      "source_source_distance": 0.659410834312439,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "dual_fixed_dog_vs_truck_rep3",
+        "poisonkey": null
+      },
+      "attackers": [
+        {
+          "attacker_id": "src5_sel4_to0",
+          "brew_job_id": "brew_src5_sel4_to0",
+          "poisonkey": "5-0-9589",
+          "selection_key": 4,
+          "source_class": 5,
+          "source_target_distance": 0.6689342260360718,
+          "source_target_rank": 8,
+          "target_adv_class": 0,
+          "target_index": 9589,
+          "target_true_class": 5
+        },
+        {
+          "attacker_id": "src9_sel5_to0",
+          "brew_job_id": "brew_src9_sel5_to0",
+          "poisonkey": "9-0-1927",
+          "selection_key": 5,
+          "source_class": 9,
+          "source_target_distance": 0.5797238945960999,
+          "source_target_rank": 4,
+          "target_adv_class": 0,
+          "target_index": 1927,
+          "target_true_class": 9
+        }
+      ],
+      "brew_artifact_paths": [
+        "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+        "artifacts/c1/c1_experiment/brews/brew_src9_sel5_to0.pt"
+      ],
+      "condition": "fixed_dog_vs_truck",
+      "distance_bucket": "fixed_source_sweep",
+      "job_id": "dual_fixed_dog_vs_truck_rep3",
+      "output_path": "artifacts/c1/c1_experiment/dual/dual_fixed_dog_vs_truck_rep3.csv",
+      "overlap_policy": "assign_one_owner",
+      "overlap_seed": 2,
+      "pair_distance_rank": "",
+      "pair_distance_rank_fraction": "",
+      "pairing_id": "fixed_dog_vs_truck_rep3",
+      "source_source_distance": 0.659410834312439,
+      "symmetric": "",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  ],
+  "experiment_id": "c1_experiment",
+  "family": "C1",
+  "metadata": {
+    "distance_artifact_path": "artifacts/c1/class_distance_matrix_cifar10_resnet18_modelkey0.pt",
+    "fixed_attacker_a_source_class": 5,
+    "pair_selection_strategy": "fixed_attacker_a_source_sweep",
+    "planning_seed": 0,
+    "repeats": 3,
+    "sampled_pair_count": 9,
+    "sampled_target_indices": {
+      "1": [
+        5056,
+        1614,
+        1549,
+        3730,
+        2179,
+        7903
+      ],
+      "2": [
+        2690,
+        655,
+        799,
+        4438,
+        5687,
+        6137
+      ],
+      "3": [
+        3594,
+        5733,
+        2314,
+        8200,
+        4442,
+        63
+      ],
+      "4": [
+        7725,
+        9795,
+        2785,
+        2218,
+        3326,
+        6664
+      ],
+      "5": [
+        9514,
+        3115,
+        5047,
+        2219,
+        9589,
+        2335
+      ],
+      "6": [
+        5412,
+        1838,
+        5831,
+        9068,
+        1094,
+        710
+      ],
+      "7": [
+        2658,
+        3359,
+        7633,
+        6004,
+        7882,
+        4592
+      ],
+      "8": [
+        5610,
+        9233,
+        7106,
+        3046,
+        6217,
+        1866
+      ],
+      "9": [
+        6897,
+        9692,
+        3970,
+        9560,
+        47,
+        1927
+      ]
+    },
+    "shared_target_class": 0,
+    "victim_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "output_root": "artifacts/c1/c1_experiment",
+  "scheduler": {
+    "account": "aip-yiweilu",
+    "cpus": 4,
+    "gpu": "l40s",
+    "mem": "20G",
+    "time": "0:30:00"
+  },
+  "schema_version": 1,
+  "solo_jobs": [
+    {
+      "arg_overrides": {
+        "name": "solo_src5_sel0_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0",
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel0_to0.pt",
+      "job_id": "solo_src5_sel0_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src5_sel0_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src1_sel1_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src1_sel1_to0",
+        "brew_job_id": "brew_src1_sel1_to0",
+        "poisonkey": "1-0-1614",
+        "selection_key": 1,
+        "source_class": 1,
+        "source_target_distance": 0.6062602996826172,
+        "source_target_rank": 6,
+        "target_adv_class": 0,
+        "target_index": 1614,
+        "target_true_class": 1
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src1_sel1_to0.pt",
+      "job_id": "solo_src1_sel1_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src1_sel1_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src5_sel2_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel2_to0",
+        "brew_job_id": "brew_src5_sel2_to0",
+        "poisonkey": "5-0-5047",
+        "selection_key": 2,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 5047,
+        "target_true_class": 5
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel2_to0.pt",
+      "job_id": "solo_src5_sel2_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src5_sel2_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src1_sel3_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src1_sel3_to0",
+        "brew_job_id": "brew_src1_sel3_to0",
+        "poisonkey": "1-0-3730",
+        "selection_key": 3,
+        "source_class": 1,
+        "source_target_distance": 0.6062602996826172,
+        "source_target_rank": 6,
+        "target_adv_class": 0,
+        "target_index": 3730,
+        "target_true_class": 1
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src1_sel3_to0.pt",
+      "job_id": "solo_src1_sel3_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src1_sel3_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src5_sel4_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel4_to0",
+        "brew_job_id": "brew_src5_sel4_to0",
+        "poisonkey": "5-0-9589",
+        "selection_key": 4,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9589,
+        "target_true_class": 5
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel4_to0.pt",
+      "job_id": "solo_src5_sel4_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src5_sel4_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src1_sel5_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src1_sel5_to0",
+        "brew_job_id": "brew_src1_sel5_to0",
+        "poisonkey": "1-0-7903",
+        "selection_key": 5,
+        "source_class": 1,
+        "source_target_distance": 0.6062602996826172,
+        "source_target_rank": 6,
+        "target_adv_class": 0,
+        "target_index": 7903,
+        "target_true_class": 1
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src1_sel5_to0.pt",
+      "job_id": "solo_src1_sel5_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src1_sel5_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src2_sel1_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src2_sel1_to0",
+        "brew_job_id": "brew_src2_sel1_to0",
+        "poisonkey": "2-0-655",
+        "selection_key": 1,
+        "source_class": 2,
+        "source_target_distance": 0.49285149574279785,
+        "source_target_rank": 1,
+        "target_adv_class": 0,
+        "target_index": 655,
+        "target_true_class": 2
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src2_sel1_to0.pt",
+      "job_id": "solo_src2_sel1_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src2_sel1_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src2_sel3_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src2_sel3_to0",
+        "brew_job_id": "brew_src2_sel3_to0",
+        "poisonkey": "2-0-4438",
+        "selection_key": 3,
+        "source_class": 2,
+        "source_target_distance": 0.49285149574279785,
+        "source_target_rank": 1,
+        "target_adv_class": 0,
+        "target_index": 4438,
+        "target_true_class": 2
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src2_sel3_to0.pt",
+      "job_id": "solo_src2_sel3_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src2_sel3_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src2_sel5_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src2_sel5_to0",
+        "brew_job_id": "brew_src2_sel5_to0",
+        "poisonkey": "2-0-6137",
+        "selection_key": 5,
+        "source_class": 2,
+        "source_target_distance": 0.49285149574279785,
+        "source_target_rank": 1,
+        "target_adv_class": 0,
+        "target_index": 6137,
+        "target_true_class": 2
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src2_sel5_to0.pt",
+      "job_id": "solo_src2_sel5_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src2_sel5_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src3_sel1_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src3_sel1_to0",
+        "brew_job_id": "brew_src3_sel1_to0",
+        "poisonkey": "3-0-5733",
+        "selection_key": 1,
+        "source_class": 3,
+        "source_target_distance": 0.5680851936340332,
+        "source_target_rank": 3,
+        "target_adv_class": 0,
+        "target_index": 5733,
+        "target_true_class": 3
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src3_sel1_to0.pt",
+      "job_id": "solo_src3_sel1_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src3_sel1_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src3_sel3_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src3_sel3_to0",
+        "brew_job_id": "brew_src3_sel3_to0",
+        "poisonkey": "3-0-8200",
+        "selection_key": 3,
+        "source_class": 3,
+        "source_target_distance": 0.5680851936340332,
+        "source_target_rank": 3,
+        "target_adv_class": 0,
+        "target_index": 8200,
+        "target_true_class": 3
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src3_sel3_to0.pt",
+      "job_id": "solo_src3_sel3_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src3_sel3_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src3_sel5_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src3_sel5_to0",
+        "brew_job_id": "brew_src3_sel5_to0",
+        "poisonkey": "3-0-63",
+        "selection_key": 5,
+        "source_class": 3,
+        "source_target_distance": 0.5680851936340332,
+        "source_target_rank": 3,
+        "target_adv_class": 0,
+        "target_index": 63,
+        "target_true_class": 3
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src3_sel5_to0.pt",
+      "job_id": "solo_src3_sel5_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src3_sel5_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src4_sel1_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src4_sel1_to0",
+        "brew_job_id": "brew_src4_sel1_to0",
+        "poisonkey": "4-0-9795",
+        "selection_key": 1,
+        "source_class": 4,
+        "source_target_distance": 0.6046143770217896,
+        "source_target_rank": 5,
+        "target_adv_class": 0,
+        "target_index": 9795,
+        "target_true_class": 4
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src4_sel1_to0.pt",
+      "job_id": "solo_src4_sel1_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src4_sel1_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src4_sel3_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src4_sel3_to0",
+        "brew_job_id": "brew_src4_sel3_to0",
+        "poisonkey": "4-0-2218",
+        "selection_key": 3,
+        "source_class": 4,
+        "source_target_distance": 0.6046143770217896,
+        "source_target_rank": 5,
+        "target_adv_class": 0,
+        "target_index": 2218,
+        "target_true_class": 4
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src4_sel3_to0.pt",
+      "job_id": "solo_src4_sel3_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src4_sel3_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src4_sel5_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src4_sel5_to0",
+        "brew_job_id": "brew_src4_sel5_to0",
+        "poisonkey": "4-0-6664",
+        "selection_key": 5,
+        "source_class": 4,
+        "source_target_distance": 0.6046143770217896,
+        "source_target_rank": 5,
+        "target_adv_class": 0,
+        "target_index": 6664,
+        "target_true_class": 4
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src4_sel5_to0.pt",
+      "job_id": "solo_src4_sel5_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src4_sel5_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src5_sel1_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel1_to0",
+        "brew_job_id": "brew_src5_sel1_to0",
+        "poisonkey": "5-0-3115",
+        "selection_key": 1,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 3115,
+        "target_true_class": 5
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel1_to0.pt",
+      "job_id": "solo_src5_sel1_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src5_sel1_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src5_sel3_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel3_to0",
+        "brew_job_id": "brew_src5_sel3_to0",
+        "poisonkey": "5-0-2219",
+        "selection_key": 3,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 2219,
+        "target_true_class": 5
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel3_to0.pt",
+      "job_id": "solo_src5_sel3_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src5_sel3_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src5_sel5_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel5_to0",
+        "brew_job_id": "brew_src5_sel5_to0",
+        "poisonkey": "5-0-2335",
+        "selection_key": 5,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 2335,
+        "target_true_class": 5
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src5_sel5_to0.pt",
+      "job_id": "solo_src5_sel5_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src5_sel5_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src6_sel1_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src6_sel1_to0",
+        "brew_job_id": "brew_src6_sel1_to0",
+        "poisonkey": "6-0-1838",
+        "selection_key": 1,
+        "source_class": 6,
+        "source_target_distance": 0.681496262550354,
+        "source_target_rank": 9,
+        "target_adv_class": 0,
+        "target_index": 1838,
+        "target_true_class": 6
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src6_sel1_to0.pt",
+      "job_id": "solo_src6_sel1_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src6_sel1_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src6_sel3_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src6_sel3_to0",
+        "brew_job_id": "brew_src6_sel3_to0",
+        "poisonkey": "6-0-9068",
+        "selection_key": 3,
+        "source_class": 6,
+        "source_target_distance": 0.681496262550354,
+        "source_target_rank": 9,
+        "target_adv_class": 0,
+        "target_index": 9068,
+        "target_true_class": 6
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src6_sel3_to0.pt",
+      "job_id": "solo_src6_sel3_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src6_sel3_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src6_sel5_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src6_sel5_to0",
+        "brew_job_id": "brew_src6_sel5_to0",
+        "poisonkey": "6-0-710",
+        "selection_key": 5,
+        "source_class": 6,
+        "source_target_distance": 0.681496262550354,
+        "source_target_rank": 9,
+        "target_adv_class": 0,
+        "target_index": 710,
+        "target_true_class": 6
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src6_sel5_to0.pt",
+      "job_id": "solo_src6_sel5_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src6_sel5_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src7_sel1_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src7_sel1_to0",
+        "brew_job_id": "brew_src7_sel1_to0",
+        "poisonkey": "7-0-3359",
+        "selection_key": 1,
+        "source_class": 7,
+        "source_target_distance": 0.6319902539253235,
+        "source_target_rank": 7,
+        "target_adv_class": 0,
+        "target_index": 3359,
+        "target_true_class": 7
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src7_sel1_to0.pt",
+      "job_id": "solo_src7_sel1_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src7_sel1_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src7_sel3_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src7_sel3_to0",
+        "brew_job_id": "brew_src7_sel3_to0",
+        "poisonkey": "7-0-6004",
+        "selection_key": 3,
+        "source_class": 7,
+        "source_target_distance": 0.6319902539253235,
+        "source_target_rank": 7,
+        "target_adv_class": 0,
+        "target_index": 6004,
+        "target_true_class": 7
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src7_sel3_to0.pt",
+      "job_id": "solo_src7_sel3_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src7_sel3_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src7_sel5_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src7_sel5_to0",
+        "brew_job_id": "brew_src7_sel5_to0",
+        "poisonkey": "7-0-4592",
+        "selection_key": 5,
+        "source_class": 7,
+        "source_target_distance": 0.6319902539253235,
+        "source_target_rank": 7,
+        "target_adv_class": 0,
+        "target_index": 4592,
+        "target_true_class": 7
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src7_sel5_to0.pt",
+      "job_id": "solo_src7_sel5_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src7_sel5_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src8_sel1_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src8_sel1_to0",
+        "brew_job_id": "brew_src8_sel1_to0",
+        "poisonkey": "8-0-9233",
+        "selection_key": 1,
+        "source_class": 8,
+        "source_target_distance": 0.507644772529602,
+        "source_target_rank": 2,
+        "target_adv_class": 0,
+        "target_index": 9233,
+        "target_true_class": 8
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src8_sel1_to0.pt",
+      "job_id": "solo_src8_sel1_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src8_sel1_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src8_sel3_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src8_sel3_to0",
+        "brew_job_id": "brew_src8_sel3_to0",
+        "poisonkey": "8-0-3046",
+        "selection_key": 3,
+        "source_class": 8,
+        "source_target_distance": 0.507644772529602,
+        "source_target_rank": 2,
+        "target_adv_class": 0,
+        "target_index": 3046,
+        "target_true_class": 8
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src8_sel3_to0.pt",
+      "job_id": "solo_src8_sel3_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src8_sel3_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src8_sel5_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src8_sel5_to0",
+        "brew_job_id": "brew_src8_sel5_to0",
+        "poisonkey": "8-0-1866",
+        "selection_key": 5,
+        "source_class": 8,
+        "source_target_distance": 0.507644772529602,
+        "source_target_rank": 2,
+        "target_adv_class": 0,
+        "target_index": 1866,
+        "target_true_class": 8
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src8_sel5_to0.pt",
+      "job_id": "solo_src8_sel5_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src8_sel5_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src9_sel1_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src9_sel1_to0",
+        "brew_job_id": "brew_src9_sel1_to0",
+        "poisonkey": "9-0-9692",
+        "selection_key": 1,
+        "source_class": 9,
+        "source_target_distance": 0.5797238945960999,
+        "source_target_rank": 4,
+        "target_adv_class": 0,
+        "target_index": 9692,
+        "target_true_class": 9
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src9_sel1_to0.pt",
+      "job_id": "solo_src9_sel1_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src9_sel1_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src9_sel3_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src9_sel3_to0",
+        "brew_job_id": "brew_src9_sel3_to0",
+        "poisonkey": "9-0-9560",
+        "selection_key": 3,
+        "source_class": 9,
+        "source_target_distance": 0.5797238945960999,
+        "source_target_rank": 4,
+        "target_adv_class": 0,
+        "target_index": 9560,
+        "target_true_class": 9
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src9_sel3_to0.pt",
+      "job_id": "solo_src9_sel3_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src9_sel3_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "arg_overrides": {
+        "name": "solo_src9_sel5_to0",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src9_sel5_to0",
+        "brew_job_id": "brew_src9_sel5_to0",
+        "poisonkey": "9-0-1927",
+        "selection_key": 5,
+        "source_class": 9,
+        "source_target_distance": 0.5797238945960999,
+        "source_target_rank": 4,
+        "target_adv_class": 0,
+        "target_index": 1927,
+        "target_true_class": 9
+      },
+      "brew_artifact_path": "artifacts/c1/c1_experiment/brews/brew_src9_sel5_to0.pt",
+      "job_id": "solo_src9_sel5_to0",
+      "output_path": "artifacts/c1/c1_experiment/solo/solo_src9_sel5_to0.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  ]
+}
