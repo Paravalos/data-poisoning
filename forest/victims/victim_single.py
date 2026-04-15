@@ -168,7 +168,12 @@ class _VictimSingle(_VictimBase):
         return function(self.model, self.optimizer, *args)
 
     def _compute_clean_model_cache_path(self):
-        config = self.defs.asdict()
+        defs_dict = self.defs.asdict()
+        clean_training_fields = (
+            'epochs', 'batch_size', 'optimizer', 'lr', 'scheduler',
+            'weight_decay', 'augmentations',
+        )
+        config = {field: defs_dict.get(field) for field in clean_training_fields}
         config.update(
             net=self.args.net[0],
             dataset=self.args.dataset,
