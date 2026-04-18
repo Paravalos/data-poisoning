@@ -8,9 +8,10 @@ from .kettle_base import _Kettle
 from .datasets import Subset
 
 
-def select_deterministic_poison_ids(class_ids, poison_num, poisonkey, randomize_poison_ids=False):
+def select_deterministic_poison_ids(class_ids, poison_num, poisonkey, randomize_poison_ids=False, poison_ids_seed=None):
     if randomize_poison_ids:
-        seed = int(hashlib.md5(f'{poisonkey}:poison_ids'.encode()).hexdigest()[:8], 16)
+        seed_value = poisonkey if poison_ids_seed is None else poison_ids_seed
+        seed = int(hashlib.md5(f'{seed_value}:poison_ids'.encode()).hexdigest()[:8], 16)
         rng = np.random.default_rng(seed)
         return rng.choice(class_ids, size=poison_num, replace=False).tolist()
     return class_ids[:poison_num]
@@ -69,6 +70,7 @@ class KettleDeterministic(_Kettle):
             poison_num,
             self.args.poisonkey,
             randomize_poison_ids=self.args.randomize_deterministic_poison_ids,
+            poison_ids_seed=getattr(self.args, 'poison_ids_seed', None),
         )
 
         # the target

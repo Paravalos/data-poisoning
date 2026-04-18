@@ -52,10 +52,12 @@ def validate_brew_artifact(experiment, artifact, expected_attacker, expected_arg
     for field in (
         'attacker_id',
         'selection_key',
+        'repeat_slot',
         'target_index',
         'source_class',
         'target_true_class',
         'target_adv_class',
+        'poison_ids_seed',
         'bucket',
     ):
         _assert_equal(f'attacker.{field}', expected_attacker.get(field), attacker.get(field))
@@ -70,3 +72,4 @@ def validate_brew_artifact(experiment, artifact, expected_attacker, expected_arg
         _assert_equal(f'brew_config.args.{field}', getattr(expected_args, field), brew_args.get(field))
 
     _assert_equal('brew_config.args.poisonkey', expected_args.poisonkey, brew_args.get('poisonkey'))
+    _assert_equal('brew_config.args.poison_ids_seed', expected_args.poison_ids_seed, brew_args.get('poison_ids_seed'))

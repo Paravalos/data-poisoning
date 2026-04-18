@@ -29,6 +29,7 @@ def _expected_brew_args(experiment, attacker):
         experiment.get('common_args'),
         dict(
             poisonkey=attacker['poisonkey'],
+            poison_ids_seed=attacker.get('poison_ids_seed'),
             name=attacker['brew_job_id'],
             targets=1,
         ),

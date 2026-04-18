@@ -9,15 +9,25 @@ def _class_name(experiment, class_idx):
 
 def summarize_experiment(experiment):
     metadata = experiment.get('metadata', {})
-    lines = [
-        f'Experiment: {experiment["experiment_id"]}',
-        f'Family: {experiment["family"]}',
-        f'Target class: {_class_name(experiment, metadata["shared_target_class"])} ({metadata["shared_target_class"]})',
-        (
+    lines = [f'Experiment: {experiment["experiment_id"]}', f'Family: {experiment["family"]}']
+
+    if 'shared_target_class' in metadata:
+        lines.extend([
+            f'Target class: {_class_name(experiment, metadata["shared_target_class"])} ({metadata["shared_target_class"]})',
+            (
+                'Fixed attacker A source: '
+                f'{_class_name(experiment, metadata["fixed_attacker_a_source_class"])} '
+                f'({metadata["fixed_attacker_a_source_class"]})'
+            ),
+        ])
+    elif 'fixed_attacker_a_source_class' in metadata:
+        lines.append(
             'Fixed attacker A source: '
             f'{_class_name(experiment, metadata["fixed_attacker_a_source_class"])} '
             f'({metadata["fixed_attacker_a_source_class"]})'
-        ),
+        )
+
+    lines.extend([
         f'Planning seed: {metadata["planning_seed"]}',
         f'Repeats: {metadata["repeats"]}',
         f'Victim seeds: {", ".join(str(seed) for seed in metadata["victim_seeds"])}',
@@ -25,7 +35,7 @@ def summarize_experiment(experiment):
         f'Solo jobs: {len(experiment.get("solo_jobs", []))}',
         f'Dual jobs: {len(experiment.get("dual_jobs", []))}',
         'Dual pairings:',
-    ]
+    ])
 
     for dual_job in experiment.get('dual_jobs', []):
         attackers = dual_job['attackers']
@@ -34,9 +44,10 @@ def summarize_experiment(experiment):
         lines.append(
             '  - '
             f'{dual_job["job_id"]}: '
-            f'{_class_name(experiment, left["source_class"])}[{left["target_index"]}] '
-            f'vs {_class_name(experiment, right["source_class"])}[{right["target_index"]}] '
-            f'-> {_class_name(experiment, left["target_adv_class"])}'
+            f'{_class_name(experiment, left["source_class"])}[{left["target_index"]}]'
+            f'->{_class_name(experiment, left["target_adv_class"])} '
+            f'vs {_class_name(experiment, right["source_class"])}[{right["target_index"]}]'
+            f'->{_class_name(experiment, right["target_adv_class"])}'
         )
 
     lines.append('Sampled target indices:')

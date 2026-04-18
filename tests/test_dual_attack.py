@@ -8,7 +8,7 @@ import torch
 from forest.data.kettle_det_experiment import select_deterministic_poison_ids
 from forest.dual_attack.eval import _prepare_model_for_seed
 from forest.dual_attack.experiment import build_args_namespace, load_experiment, save_experiment
-from forest.dual_attack.planners import build_c1_experiment
+from forest.dual_attack.planners import build_c1_experiment, build_c2_experiment
 from forest.dual_attack.runtime import _artifact_poison_indices, resolve_dual_overlap, validate_brew_artifact
 from forest.dual_attack.summary import summarize_experiment
 from forest.dual_attack.submitter import build_sbatch_command, plan_submission_specs
@@ -18,28 +18,76 @@ class DualAttackPlannerTests(unittest.TestCase):
     def setUp(self):
         self.class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
         self.distance_matrix = torch.zeros((10, 10), dtype=torch.float)
-        for row in range(10):
-            for col in range(row + 1, 10):
-                if row == 0 or col == 0:
-                    value = col / 10.0
-                else:
-                    value = (row * 10 + col) / 100.0
-                self.distance_matrix[row, col] = value
-                self.distance_matrix[col, row] = value
-        self.rankings = {
-            'airplane': [
-                dict(class_index=1, class_name='automobile', cosine_distance=0.1),
-                dict(class_index=2, class_name='bird', cosine_distance=0.2),
-                dict(class_index=3, class_name='cat', cosine_distance=0.3),
-                dict(class_index=4, class_name='deer', cosine_distance=0.4),
-                dict(class_index=5, class_name='dog', cosine_distance=0.5),
-                dict(class_index=6, class_name='frog', cosine_distance=0.6),
-                dict(class_index=7, class_name='horse', cosine_distance=0.7),
-                dict(class_index=8, class_name='ship', cosine_distance=0.8),
-                dict(class_index=9, class_name='truck', cosine_distance=0.9),
-            ]
+        pair_distances = {
+            (0, 1): 0.6062602996826172,
+            (0, 2): 0.49285149574279785,
+            (0, 3): 0.5680851936340332,
+            (0, 4): 0.6046143770217896,
+            (0, 5): 0.6689342260360718,
+            (0, 6): 0.681496262550354,
+            (0, 7): 0.6319902539253235,
+            (0, 8): 0.507644772529602,
+            (0, 9): 0.5797238945960999,
+            (1, 2): 0.6768210000000000,
+            (1, 3): 0.6126067638397217,
+            (1, 4): 0.6950000000000000,
+            (1, 5): 0.6543991565704346,
+            (1, 6): 0.6590000000000000,
+            (1, 7): 0.6492404937744141,
+            (1, 8): 0.5940215587615967,
+            (1, 9): 0.49285149574279785,
+            (2, 3): 0.4896228313446045,
+            (2, 4): 0.4731823205947876,
+            (2, 5): 0.5690615177154541,
+            (2, 6): 0.5400000000000000,
+            (2, 7): 0.5737546682357788,
+            (2, 8): 0.6460000000000000,
+            (2, 9): 0.6590000000000000,
+            (3, 4): 0.5025486350059509,
+            (3, 5): 0.39107412099838257,
+            (3, 6): 0.5170000000000000,
+            (3, 7): 0.5820205807685852,
+            (3, 8): 0.6090000000000000,
+            (3, 9): 0.6187872886657715,
+            (4, 5): 0.5543463230133057,
+            (4, 6): 0.5835475325584412,
+            (4, 7): 0.5446214675903320,
+            (4, 8): 0.6710000000000000,
+            (4, 9): 0.6820000000000000,
+            (5, 6): 0.6073779463768005,
+            (5, 7): 0.5162463784217834,
+            (5, 8): 0.6781786084175110,
+            (5, 9): 0.6590000000000000,
+            (6, 7): 0.6753582954406738,
+            (6, 8): 0.6640000000000000,
+            (6, 9): 0.6480000000000000,
+            (7, 8): 0.6868035197257996,
+            (7, 9): 0.6561658382415771,
+            (8, 9): 0.5802785754203796,
         }
+        for (row, col), value in pair_distances.items():
+            self.distance_matrix[row, col] = value
+            self.distance_matrix[col, row] = value
+        self.rankings = {}
+        for target_class_idx, target_class_name in enumerate(self.class_names):
+            ranked_entries = [
+                dict(
+                    class_index=class_idx,
+                    class_name=self.class_names[class_idx],
+                    cosine_distance=float(self.distance_matrix[target_class_idx, class_idx]),
+                )
+                for class_idx in range(len(self.class_names))
+                if class_idx != target_class_idx
+            ]
+            ranked_entries.sort(key=lambda entry: (entry['cosine_distance'], entry['class_index']))
+            self.rankings[target_class_name] = ranked_entries
         self.class_to_valid_indices = {class_idx: [class_idx * 100 + offset for offset in range(8)] for class_idx in range(10)}
+        self.common_args = dict(
+            dataset='CIFAR10',
+            net=['ResNet18'],
+            scenario='from-scratch',
+            randomize_deterministic_poison_ids=True,
+        )
 
     def test_build_c1_experiment_generates_expected_jobs(self):
         experiment = build_c1_experiment(
@@ -53,12 +101,7 @@ class DualAttackPlannerTests(unittest.TestCase):
             planning_seed=17,
             repeats=3,
             victim_seeds=[0, 1],
-            common_args=dict(
-                dataset='CIFAR10',
-                net=['ResNet18'],
-                scenario='from-scratch',
-                randomize_deterministic_poison_ids=True,
-            ),
+            common_args=self.common_args,
             output_root='artifacts/dual_attack',
             scheduler={},
             overlap_seed_base=7,
@@ -95,12 +138,7 @@ class DualAttackPlannerTests(unittest.TestCase):
             planning_seed=17,
             repeats=1,
             victim_seeds=[0],
-            common_args=dict(
-                dataset='CIFAR10',
-                net=['ResNet18'],
-                scenario='from-scratch',
-                randomize_deterministic_poison_ids=True,
-            ),
+            common_args=self.common_args,
             output_root='artifacts/dual_attack',
             scheduler={},
             overlap_seed_base=0,
@@ -125,12 +163,7 @@ class DualAttackPlannerTests(unittest.TestCase):
             fixed_attacker_a_source_class='dog',
             repeats=2,
             victim_seeds=[0],
-            common_args=dict(
-                dataset='CIFAR10',
-                net=['ResNet18'],
-                scenario='from-scratch',
-                randomize_deterministic_poison_ids=True,
-            ),
+            common_args=self.common_args,
             output_root='artifacts/dual_attack',
             scheduler={},
             overlap_seed_base=0,
@@ -154,12 +187,7 @@ class DualAttackPlannerTests(unittest.TestCase):
             planning_seed=17,
             repeats=1,
             victim_seeds=[0],
-            common_args=dict(
-                dataset='CIFAR10',
-                net=['ResNet18'],
-                scenario='from-scratch',
-                randomize_deterministic_poison_ids=True,
-            ),
+            common_args=self.common_args,
             output_root='artifacts/dual_attack',
             scheduler={},
             overlap_seed_base=0,
@@ -167,6 +195,113 @@ class DualAttackPlannerTests(unittest.TestCase):
         )
         summary = summarize_experiment(experiment)
         self.assertIn('Target class: airplane (0)', summary)
+        self.assertIn('Fixed attacker A source: dog (5)', summary)
+
+    def test_build_c2_experiment_generates_expected_jobs(self):
+        experiment = build_c2_experiment(
+            experiment_id='C2_dog_target_sweep_v1',
+            class_names=self.class_names,
+            rankings=self.rankings,
+            distance_matrix=self.distance_matrix,
+            class_to_valid_indices=self.class_to_valid_indices,
+            fixed_attacker_a_source_class='dog',
+            planning_seed=17,
+            repeats=3,
+            victim_seeds=[0, 1],
+            common_args=self.common_args,
+            output_root='artifacts/dual_attack',
+            scheduler={},
+            overlap_seed_base=7,
+            distance_artifact_path='artifact.pt',
+        )
+        self.assertEqual(experiment['family'], 'C2')
+        self.assertEqual(len(experiment['dual_jobs']), 3 * 4 * 3)
+        self.assertEqual(len(experiment['solo_jobs']), len(experiment['brew_jobs']))
+        self.assertEqual(
+            [entry['source_stratum'] for entry in experiment['metadata']['source_strata']],
+            ['near', 'medium', 'far'],
+        )
+        near_pair = experiment['metadata']['source_strata'][0]
+        self.assertEqual(near_pair['partner_source_class_name'], 'cat')
+        self.assertEqual(near_pair['source_source_rank'], 1)
+        self.assertEqual(experiment['dual_jobs'][0]['source_stratum'], 'near')
+        self.assertIn(experiment['dual_jobs'][0]['motif_label'], set(experiment['metadata']['motif_labels']))
+        self.assertIn('G', experiment['dual_jobs'][0])
+        self.assertIn('a_self', experiment['dual_jobs'][0])
+
+    def test_build_c2_experiment_reuses_repeat_slots_across_targets(self):
+        experiment = build_c2_experiment(
+            experiment_id='C2_dog_target_sweep_v1',
+            class_names=self.class_names,
+            rankings=self.rankings,
+            distance_matrix=self.distance_matrix,
+            class_to_valid_indices=self.class_to_valid_indices,
+            fixed_attacker_a_source_class='dog',
+            planning_seed=17,
+            repeats=2,
+            victim_seeds=[0],
+            common_args=self.common_args,
+            output_root='artifacts/dual_attack',
+            scheduler={},
+            overlap_seed_base=0,
+            distance_artifact_path='artifact.pt',
+        )
+        dog_attackers = [
+            job['attacker']
+            for job in experiment['brew_jobs']
+            if job['attacker']['source_class'] == self.class_names.index('dog') and job['attacker']['repeat_slot'] == 0
+        ]
+        self.assertGreater(len(dog_attackers), 1)
+        target_indices = {attacker['target_index'] for attacker in dog_attackers}
+        poison_ids_seeds = {attacker['poison_ids_seed'] for attacker in dog_attackers}
+        self.assertEqual(len(target_indices), 1)
+        self.assertEqual(poison_ids_seeds, {'src5_rep0'})
+
+    def test_build_c2_experiment_reuses_same_seed_for_same_attacker_across_pairings(self):
+        experiment = build_c2_experiment(
+            experiment_id='C2_dog_target_sweep_v1',
+            class_names=self.class_names,
+            rankings=self.rankings,
+            distance_matrix=self.distance_matrix,
+            class_to_valid_indices=self.class_to_valid_indices,
+            fixed_attacker_a_source_class='dog',
+            planning_seed=17,
+            repeats=1,
+            victim_seeds=[0],
+            common_args=self.common_args,
+            output_root='artifacts/dual_attack',
+            scheduler={},
+            overlap_seed_base=0,
+            distance_artifact_path='artifact.pt',
+        )
+        seed_by_attacker = {}
+        for job in experiment['dual_jobs']:
+            for attacker in job['attackers']:
+                key = (attacker['source_class'], attacker['repeat_slot'])
+                seed_by_attacker.setdefault(key, set()).add(attacker['poison_ids_seed'])
+        self.assertTrue(seed_by_attacker)
+        for seeds in seed_by_attacker.values():
+            self.assertEqual(len(seeds), 1)
+
+    def test_c2_summary_uses_top_level_class_names(self):
+        experiment = build_c2_experiment(
+            experiment_id='C2_dog_target_sweep_v1',
+            class_names=self.class_names,
+            rankings=self.rankings,
+            distance_matrix=self.distance_matrix,
+            class_to_valid_indices=self.class_to_valid_indices,
+            fixed_attacker_a_source_class='dog',
+            planning_seed=17,
+            repeats=1,
+            victim_seeds=[0],
+            common_args=self.common_args,
+            output_root='artifacts/dual_attack',
+            scheduler={},
+            overlap_seed_base=0,
+            distance_artifact_path='artifact.pt',
+        )
+        summary = summarize_experiment(experiment)
+        self.assertIn('Family: C2', summary)
         self.assertIn('Fixed attacker A source: dog (5)', summary)
 
 
@@ -203,6 +338,24 @@ class DualAttackRuntimeTests(unittest.TestCase):
         baseline = select_deterministic_poison_ids(class_ids, 5, '5-0-2731', randomize_poison_ids=False)
         self.assertEqual(first, second)
         self.assertNotEqual(first, baseline)
+
+    def test_poison_ids_seed_override_decouples_sampling_from_poisonkey(self):
+        class_ids = list(range(20))
+        first = select_deterministic_poison_ids(
+            class_ids,
+            5,
+            '5-0-2731',
+            randomize_poison_ids=True,
+            poison_ids_seed='src5_rep0',
+        )
+        second = select_deterministic_poison_ids(
+            class_ids,
+            5,
+            '5-3-2731',
+            randomize_poison_ids=True,
+            poison_ids_seed='src5_rep0',
+        )
+        self.assertEqual(first, second)
 
     def test_artifact_poison_indices_accepts_lists(self):
         poison_indices = _artifact_poison_indices([4, 1, 9])
@@ -261,8 +414,10 @@ class DualAttackRuntimeTests(unittest.TestCase):
         attacker = dict(
             attacker_id='src1_sel0_to0',
             poisonkey='1-0-100',
+            poison_ids_seed='src1_rep0',
             brew_job_id='brew_src1_sel0_to0',
             selection_key=0,
+            repeat_slot=0,
             target_index=100,
             source_class=1,
             target_true_class=1,
@@ -274,11 +429,71 @@ class DualAttackRuntimeTests(unittest.TestCase):
             source_class=1,
             target_true_class=1,
             target_adv_class=0,
-            brew_config=dict(args={**experiment['common_args'], 'poisonkey': '2-0-100'}),
+            brew_config=dict(args={**experiment['common_args'], 'poisonkey': '2-0-100', 'poison_ids_seed': 'src1_rep0'}),
         )
         expected_args = build_args_namespace(
             experiment['common_args'],
-            dict(poisonkey='1-0-100', name='brew_src1_sel0_to0', targets=1, vruns=0),
+            dict(poisonkey='1-0-100', poison_ids_seed='src1_rep0', name='brew_src1_sel0_to0', targets=1, vruns=0),
+        )
+        with self.assertRaises(ValueError):
+            validate_brew_artifact(experiment, artifact, attacker, expected_args)
+
+    def test_validate_brew_artifact_rejects_mismatched_poison_ids_seed(self):
+        experiment = dict(
+            family='C2',
+            common_args=dict(
+                dataset='CIFAR10',
+                net=['ResNet18'],
+                scenario='from-scratch',
+                threatmodel='single-class',
+                recipe='gradient-matching',
+                budget=0.01,
+                eps=8,
+                attackoptim='signAdam',
+                attackiter=250,
+                init='randn',
+                tau=0.1,
+                restarts=8,
+                loss='similarity',
+                centreg=0,
+                normreg=0,
+                repel=0,
+                pbatch=512,
+                pshuffle=False,
+                paugment=True,
+                full_data=False,
+                ensemble=1,
+                stagger=None,
+                max_epoch=None,
+                targets=1,
+                patch_size=8,
+                data_aug='default',
+                randomize_deterministic_poison_ids=True,
+            ),
+        )
+        attacker = dict(
+            attacker_id='src5_sel0_to3',
+            poisonkey='5-3-500',
+            poison_ids_seed='src5_rep0',
+            brew_job_id='brew_src5_sel0_to3',
+            selection_key=0,
+            repeat_slot=0,
+            target_index=500,
+            source_class=5,
+            target_true_class=5,
+            target_adv_class=3,
+        )
+        artifact = dict(
+            attacker={**attacker, 'poison_ids_seed': 'src5_rep1'},
+            target_index=500,
+            source_class=5,
+            target_true_class=5,
+            target_adv_class=3,
+            brew_config=dict(args={**experiment['common_args'], 'poisonkey': '5-3-500', 'poison_ids_seed': 'src5_rep1'}),
+        )
+        expected_args = build_args_namespace(
+            experiment['common_args'],
+            dict(poisonkey='5-3-500', poison_ids_seed='src5_rep0', name='brew_src5_sel0_to3', targets=1, vruns=0),
         )
         with self.assertRaises(ValueError):
             validate_brew_artifact(experiment, artifact, attacker, expected_args)

@@ -24,6 +24,8 @@ def options():
 
     # Reproducibility management:
     parser.add_argument('--poisonkey', default=None, type=str, help='Initialize poison setup with this key.')  # Also takes a triplet 0-3-1
+    parser.add_argument('--poison_ids_seed', default=None, type=str,
+                        help='Override deterministic poison-id sampling seed when using dash-triplet poisonkeys.')
     parser.add_argument('--target_class', default=None, type=int, help='Fix the victim class; unset means random. Triggers KettleFixedClass mode.')
     parser.add_argument('--poison_class', default=None, type=int, help='Fix the poison source class; unset means random (or forced None by threatmodel). Triggers KettleFixedClass mode.')
     parser.add_argument('--randomize_deterministic_poison_ids', action='store_true',
