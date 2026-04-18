@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import torch
 
 from forest.data.kettle_det_experiment import select_deterministic_poison_ids
-from forest.dual_attack.eval import _prepare_model_for_seed
+from forest.dual_attack.eval import _prepare_model_for_seed, _target_rows
 from forest.dual_attack.experiment import build_args_namespace, load_experiment, save_experiment
 from forest.dual_attack.planners import build_c1_experiment, build_c2_experiment
 from forest.dual_attack.runtime import _artifact_poison_indices, resolve_dual_overlap, validate_brew_artifact
@@ -377,6 +377,97 @@ class DualAttackRuntimeTests(unittest.TestCase):
 
         self.assertEqual(model.model_init_seed, 7)
         self.assertEqual(args.modelkey, 0)
+
+    def test_target_rows_include_c2_geometry_fields(self):
+        class DummyNetwork:
+            def eval(self):
+                return self
+
+            def __call__(self, target_images):
+                return torch.tensor([[0.1, 0.2, 0.7]], dtype=torch.float)
+
+        class DummyTrainset:
+            classes = ['airplane', 'automobile', 'bird']
+
+        class DummyKettle:
+            trainset = DummyTrainset()
+            targetset = [(torch.zeros(3, 2, 2), 0, 123)]
+            setup = dict(device=torch.device('cpu'), dtype=torch.float)
+
+        experiment = dict(experiment_id='c2_demo', family='C2')
+        job = dict(
+            job_id='dual_demo',
+            pairing_id='pair_demo',
+            condition='dog_vs_cat_own_aligned_easy',
+            distance_bucket='near',
+            source_pair_label='dog_vs_cat',
+            source_stratum='near',
+            source_source_rank=1,
+            motif_label='own_aligned_easy',
+            motif_rank=2,
+            alignment_type='own_aligned',
+            S=0.391,
+            T=0.574,
+            G=0.145,
+            a_self=0.516,
+            b_self=0.49,
+            a_cross=0.569,
+            b_cross=0.582,
+            source_source_distance=0.391,
+            target_target_distance=0.574,
+            cross_alignment_gap=0.145,
+            overlap_policy='assign_one_owner',
+            overlap_seed=17,
+        )
+        attack_artifacts = [
+            dict(
+                artifact_path='/tmp/brew.pt',
+                job_id='brew_src5_sel0_to7',
+                target_adv_class=2,
+                target_true_class=0,
+                target_index=123,
+                source_class=5,
+                source_class_name='dog',
+                target_true_class_name='airplane',
+                target_adv_class_name='bird',
+                attacker=dict(
+                    attacker_id='src5_sel0_to7',
+                    source_target_distance=0.516,
+                    source_target_rank=1,
+                ),
+                brew_loss=0.5,
+            )
+        ]
+
+        rows = _target_rows(
+            experiment=experiment,
+            job=job,
+            run_type='dual',
+            victim_seed=0,
+            victim_run_id=0,
+            network=DummyNetwork(),
+            kettle=DummyKettle(),
+            attack_artifacts=attack_artifacts,
+            clean_accuracy=0.8,
+            overlap_stats=dict(overlap_total=1, lost_by_attacker={'src5_sel0_to7': 1}),
+        )
+
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(row['motif_label'], 'own_aligned_easy')
+        self.assertEqual(row['source_stratum'], 'near')
+        self.assertEqual(row['source_source_rank'], 1)
+        self.assertEqual(row['source_pair_label'], 'dog_vs_cat')
+        self.assertEqual(row['S'], 0.391)
+        self.assertEqual(row['T'], 0.574)
+        self.assertEqual(row['G'], 0.145)
+        self.assertEqual(row['a_self'], 0.516)
+        self.assertEqual(row['b_self'], 0.49)
+        self.assertEqual(row['a_cross'], 0.569)
+        self.assertEqual(row['b_cross'], 0.582)
+        self.assertEqual(row['target_target_distance'], 0.574)
+        self.assertEqual(row['cross_alignment_gap'], 0.145)
+        self.assertEqual(row['alignment_type'], 'own_aligned')
 
     def test_validate_brew_artifact_rejects_mismatched_poisonkey(self):
         experiment = dict(
