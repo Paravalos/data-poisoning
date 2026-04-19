@@ -53,8 +53,12 @@ LAYERED_DESIGN = [
 # Force eps=8 for this experiment family (overrides the shared eps=16 default).
 EPS_OVERRIDE = 8
 
-# Per-stage scheduler overrides. Brews are short (~30 min); keep the limit tight.
-SCHEDULER_PER_STAGE_OVERRIDES = dict(brew=dict(time='1:00:00'))
+# Per-stage scheduler overrides. Brews are short (~30 min); solos/duals ~1h.
+SCHEDULER_PER_STAGE_OVERRIDES = dict(
+    brew=dict(time='1:00:00'),
+    solo=dict(time='1:30:00'),
+    dual=dict(time='1:30:00'),
+)
 
 
 def _validate_design(design, class_names):
