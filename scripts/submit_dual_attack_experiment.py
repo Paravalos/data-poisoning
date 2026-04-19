@@ -15,6 +15,7 @@ from forest.dual_attack.experiment import load_experiment
 from forest.dual_attack.summary import summarize_experiment
 from forest.dual_attack.submitter import (
     build_sbatch_command,
+    collect_completed_job_ids,
     default_submission_log_path,
     load_submission_log,
     plan_submission_specs,
@@ -41,6 +42,8 @@ if __name__ == "__main__":
                         help='What dual jobs should depend on.')
     parser.add_argument('--print-only', action='store_true', help='Print sbatch commands instead of submitting them.')
     parser.add_argument('--print-summary', action='store_true', help='Print a human-friendly summary of the experiment JSON and exit.')
+    parser.add_argument('--skip-completed', action=argparse.BooleanOptionalAction, default=True,
+                        help='Skip jobs whose output file already exists and drop completed deps from afterok.')
     parser.add_argument('--submission-log', default=None, type=str, help='Where to store/load submitted Slurm ids.')
     parser.add_argument('--output-dir', default=None, type=str, help='Directory for Slurm stdout/stderr files.')
     parser.add_argument('--python-executable', default=sys.executable, type=str)
@@ -76,9 +79,19 @@ if __name__ == "__main__":
     if args.job_id is not None:
         specs = [spec for spec in specs if spec['job_id'] == args.job_id]
 
+    completed_job_ids = collect_completed_job_ids(experiment) if args.skip_completed else set()
+    skipped_count = 0
+
     for spec in specs:
+        if spec['job_id'] in completed_job_ids:
+            print(f'{spec["job_id"]}: skipped (output exists)')
+            skipped_count += 1
+            continue
+
         dependency_slurm_ids = []
         for dependency_job_id in spec['dependency_job_ids']:
+            if dependency_job_id in completed_job_ids:
+                continue
             slurm_id = submitted_job_ids.get(dependency_job_id)
             if slurm_id is None:
                 if args.print_only:
@@ -100,6 +113,9 @@ if __name__ == "__main__":
         else:
             submitted_job_ids[spec['job_id']] = slurm_id
             print(f'{spec["job_id"]}: {slurm_id}')
+
+    if args.skip_completed and skipped_count > 0:
+        print(f'Skipped {skipped_count} completed job(s).')
 
     submission_log.update(dict(
         experiment_path=experiment_path,

@@ -8,12 +8,31 @@ import shlex
 import subprocess
 import sys
 
-from forest.dual_attack.experiment import iter_stage_jobs
+from forest.dual_attack.experiment import iter_stage_jobs, stage_to_job_key
 
 
 def default_submission_log_path(experiment_path):
     base, _ = os.path.splitext(experiment_path)
     return f'{base}.submission_log.json'
+
+
+def _job_output_path(stage_name, job):
+    if stage_name == 'brew':
+        return job.get('artifact_path')
+    if stage_name in ('solo', 'dual'):
+        return job.get('output_path')
+    raise ValueError(f'Unsupported stage {stage_name}.')
+
+
+def collect_completed_job_ids(experiment):
+    """Return the set of job_ids whose on-disk output already exists."""
+    completed = set()
+    for stage_name in ('brew', 'solo', 'dual'):
+        for job in experiment.get(stage_to_job_key(stage_name), []):
+            path = _job_output_path(stage_name, job)
+            if path and os.path.isfile(path):
+                completed.add(job['job_id'])
+    return completed
 
 
 def runner_command(experiment_path, stage_name, job_id, repo_root, python_executable=None):
@@ -65,20 +84,25 @@ def plan_submission_specs(experiment, experiment_path, stage, dual_dependency_st
     return specs
 
 
-def _resolve_scheduler_value(experiment_scheduler, overrides, key):
+def _resolve_scheduler_value(experiment_scheduler, overrides, key, stage_name=None):
     override_value = getattr(overrides, key)
     if override_value is not None:
         return override_value
+    if stage_name is not None:
+        per_stage_value = experiment_scheduler.get('per_stage', {}).get(stage_name, {}).get(key)
+        if per_stage_value is not None:
+            return per_stage_value
     return experiment_scheduler.get(key)
 
 
 def build_sbatch_command(spec, experiment, overrides, dependency_slurm_ids, output_dir):
     scheduler = experiment.get('scheduler', {})
-    account = _resolve_scheduler_value(scheduler, overrides, 'account')
-    gpu = _resolve_scheduler_value(scheduler, overrides, 'gpu')
-    mem = _resolve_scheduler_value(scheduler, overrides, 'mem')
-    cpus = _resolve_scheduler_value(scheduler, overrides, 'cpus')
-    time_limit = _resolve_scheduler_value(scheduler, overrides, 'time')
+    stage_name = spec.get('stage')
+    account = _resolve_scheduler_value(scheduler, overrides, 'account', stage_name)
+    gpu = _resolve_scheduler_value(scheduler, overrides, 'gpu', stage_name)
+    mem = _resolve_scheduler_value(scheduler, overrides, 'mem', stage_name)
+    cpus = _resolve_scheduler_value(scheduler, overrides, 'cpus', stage_name)
+    time_limit = _resolve_scheduler_value(scheduler, overrides, 'time', stage_name)
 
     command = ['sbatch', '--parsable']
     if account:
