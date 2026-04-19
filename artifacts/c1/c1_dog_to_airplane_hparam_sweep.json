@@ -1,0 +1,885 @@
+{
+  "brew_jobs": [
+    {
+      "arg_overrides": {
+        "budget": 0.01,
+        "eps": 16.0,
+        "name": "brew_src5_sel0_to0_eps16_budget0p01",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps16_budget0p01.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps16_budget0p01",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps16_budget0p01",
+        "budget": 0.01,
+        "eps": 16.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps16_budget0p01"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.005,
+        "eps": 16.0,
+        "name": "brew_src5_sel0_to0_eps16_budget0p005",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps16_budget0p005.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps16_budget0p005",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps16_budget0p005",
+        "budget": 0.005,
+        "eps": 16.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps16_budget0p005"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.0025,
+        "eps": 16.0,
+        "name": "brew_src5_sel0_to0_eps16_budget0p0025",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps16_budget0p0025.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps16_budget0p0025",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps16_budget0p0025",
+        "budget": 0.0025,
+        "eps": 16.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps16_budget0p0025"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.001,
+        "eps": 16.0,
+        "name": "brew_src5_sel0_to0_eps16_budget0p001",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps16_budget0p001.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps16_budget0p001",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps16_budget0p001",
+        "budget": 0.001,
+        "eps": 16.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps16_budget0p001"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.01,
+        "eps": 8.0,
+        "name": "brew_src5_sel0_to0_eps8_budget0p01",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps8_budget0p01.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps8_budget0p01",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps8_budget0p01",
+        "budget": 0.01,
+        "eps": 8.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps8_budget0p01"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.005,
+        "eps": 8.0,
+        "name": "brew_src5_sel0_to0_eps8_budget0p005",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps8_budget0p005.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps8_budget0p005",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps8_budget0p005",
+        "budget": 0.005,
+        "eps": 8.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps8_budget0p005"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.0025,
+        "eps": 8.0,
+        "name": "brew_src5_sel0_to0_eps8_budget0p0025",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps8_budget0p0025.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps8_budget0p0025",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps8_budget0p0025",
+        "budget": 0.0025,
+        "eps": 8.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps8_budget0p0025"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.001,
+        "eps": 8.0,
+        "name": "brew_src5_sel0_to0_eps8_budget0p001",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps8_budget0p001.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps8_budget0p001",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps8_budget0p001",
+        "budget": 0.001,
+        "eps": 8.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps8_budget0p001"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.01,
+        "eps": 4.0,
+        "name": "brew_src5_sel0_to0_eps4_budget0p01",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps4_budget0p01.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps4_budget0p01",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps4_budget0p01",
+        "budget": 0.01,
+        "eps": 4.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps4_budget0p01"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.005,
+        "eps": 4.0,
+        "name": "brew_src5_sel0_to0_eps4_budget0p005",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps4_budget0p005.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps4_budget0p005",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps4_budget0p005",
+        "budget": 0.005,
+        "eps": 4.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps4_budget0p005"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.0025,
+        "eps": 4.0,
+        "name": "brew_src5_sel0_to0_eps4_budget0p0025",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps4_budget0p0025.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps4_budget0p0025",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps4_budget0p0025",
+        "budget": 0.0025,
+        "eps": 4.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps4_budget0p0025"
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.001,
+        "eps": 4.0,
+        "name": "brew_src5_sel0_to0_eps4_budget0p001",
+        "poisonkey": "5-0-9514",
+        "targets": 1
+      },
+      "artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps4_budget0p001.pt",
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps4_budget0p001",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps4_budget0p001",
+        "budget": 0.001,
+        "eps": 4.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "job_id": "brew_src5_sel0_to0_eps4_budget0p001"
+    }
+  ],
+  "class_names": [
+    "airplane",
+    "automobile",
+    "bird",
+    "cat",
+    "deer",
+    "dog",
+    "frog",
+    "horse",
+    "ship",
+    "truck"
+  ],
+  "common_args": {
+    "ablation": 1.0,
+    "attackiter": 250,
+    "attackoptim": "signAdam",
+    "benchmark": "",
+    "benchmark_idx": 0,
+    "budget": 0.01,
+    "cache_clean_model": true,
+    "cache_dataset": false,
+    "centreg": 0,
+    "clean_grad": false,
+    "data_aug": "default",
+    "data_path": "~/data",
+    "dataset": "CIFAR10",
+    "defend_features_only": false,
+    "defense_steps": null,
+    "defense_strength": null,
+    "defense_targets": null,
+    "defense_type": null,
+    "deterministic": false,
+    "disable_adaptive_attack": true,
+    "dryrun": false,
+    "ensemble": 1,
+    "epochs": null,
+    "eps": 16,
+    "filter_defense": "",
+    "full_data": false,
+    "gradient_clip": null,
+    "gradient_noise": null,
+    "init": "randn",
+    "lmdb_path": null,
+    "load_patch": "",
+    "local_rank": null,
+    "loss": "similarity",
+    "lr": null,
+    "max_epoch": null,
+    "mixing_disable_correction": true,
+    "mixing_method": null,
+    "mixing_strength": null,
+    "modelkey": 0,
+    "modelsave_path": "./models/",
+    "nadapt": 2,
+    "name": "",
+    "net": [
+      "ResNet18"
+    ],
+    "noaugment": false,
+    "normreg": 0,
+    "optimization": "conservative",
+    "padversarial": null,
+    "patch_size": 8,
+    "paugment": true,
+    "pbatch": 512,
+    "pmix": false,
+    "poison_class": null,
+    "poison_path": "poisons/",
+    "poisonkey": null,
+    "pretrain_dataset": null,
+    "pretrained_model": false,
+    "pshuffle": false,
+    "randomize_deterministic_poison_ids": true,
+    "recipe": "gradient-matching",
+    "repel": 0,
+    "restarts": 8,
+    "retrain_from_init": false,
+    "save": null,
+    "scenario": "from-scratch",
+    "scheduling": true,
+    "skip_clean_training": false,
+    "stagger": null,
+    "step": false,
+    "table_path": "tables/",
+    "target_class": null,
+    "target_criterion": "cross-entropy",
+    "targets": 1,
+    "tau": 0.1,
+    "threatmodel": "single-class",
+    "vnet": null,
+    "vruns": 1
+  },
+  "dual_jobs": [],
+  "experiment_id": "c1_dog_to_airplane_hparam_sweep",
+  "family": "C1",
+  "metadata": {
+    "budget_values": [
+      0.01,
+      0.005,
+      0.0025,
+      0.001
+    ],
+    "eps_values": [
+      16.0,
+      8.0,
+      4.0
+    ],
+    "fixed_attacker_a_source_class": 5,
+    "pair_selection_strategy": "single_source_eps_budget_sweep",
+    "planning_seed": 0,
+    "repeats": 1,
+    "sampled_target_indices": {
+      "5": [
+        9514,
+        9514,
+        9514,
+        9514,
+        9514,
+        9514,
+        9514,
+        9514,
+        9514,
+        9514,
+        9514,
+        9514
+      ]
+    },
+    "selection_keys": [
+      0
+    ],
+    "shared_target_class": 0,
+    "source_experiment_id": "c1_experiment",
+    "victim_seeds": [
+      0,
+      1,
+      2
+    ]
+  },
+  "output_root": "artifacts/c1/c1_dog_to_airplane_hparam_sweep",
+  "scheduler": {
+    "account": "aip-yiweilu",
+    "cpus": 4,
+    "gpu": "l40s",
+    "mem": "20G",
+    "time": "1:00:00"
+  },
+  "schema_version": 1,
+  "solo_jobs": [
+    {
+      "arg_overrides": {
+        "budget": 0.01,
+        "eps": 16.0,
+        "name": "solo_src5_sel0_to0_eps16_budget0p01",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps16_budget0p01",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps16_budget0p01",
+        "budget": 0.01,
+        "eps": 16.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.01,
+        "eps": 16.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps16_budget0p01.pt",
+      "job_id": "solo_src5_sel0_to0_eps16_budget0p01",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps16_budget0p01.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.005,
+        "eps": 16.0,
+        "name": "solo_src5_sel0_to0_eps16_budget0p005",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps16_budget0p005",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps16_budget0p005",
+        "budget": 0.005,
+        "eps": 16.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.005,
+        "eps": 16.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps16_budget0p005.pt",
+      "job_id": "solo_src5_sel0_to0_eps16_budget0p005",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps16_budget0p005.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.0025,
+        "eps": 16.0,
+        "name": "solo_src5_sel0_to0_eps16_budget0p0025",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps16_budget0p0025",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps16_budget0p0025",
+        "budget": 0.0025,
+        "eps": 16.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.0025,
+        "eps": 16.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps16_budget0p0025.pt",
+      "job_id": "solo_src5_sel0_to0_eps16_budget0p0025",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps16_budget0p0025.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.001,
+        "eps": 16.0,
+        "name": "solo_src5_sel0_to0_eps16_budget0p001",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps16_budget0p001",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps16_budget0p001",
+        "budget": 0.001,
+        "eps": 16.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.001,
+        "eps": 16.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps16_budget0p001.pt",
+      "job_id": "solo_src5_sel0_to0_eps16_budget0p001",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps16_budget0p001.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.01,
+        "eps": 8.0,
+        "name": "solo_src5_sel0_to0_eps8_budget0p01",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps8_budget0p01",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps8_budget0p01",
+        "budget": 0.01,
+        "eps": 8.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.01,
+        "eps": 8.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps8_budget0p01.pt",
+      "job_id": "solo_src5_sel0_to0_eps8_budget0p01",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps8_budget0p01.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.005,
+        "eps": 8.0,
+        "name": "solo_src5_sel0_to0_eps8_budget0p005",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps8_budget0p005",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps8_budget0p005",
+        "budget": 0.005,
+        "eps": 8.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.005,
+        "eps": 8.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps8_budget0p005.pt",
+      "job_id": "solo_src5_sel0_to0_eps8_budget0p005",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps8_budget0p005.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.0025,
+        "eps": 8.0,
+        "name": "solo_src5_sel0_to0_eps8_budget0p0025",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps8_budget0p0025",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps8_budget0p0025",
+        "budget": 0.0025,
+        "eps": 8.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.0025,
+        "eps": 8.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps8_budget0p0025.pt",
+      "job_id": "solo_src5_sel0_to0_eps8_budget0p0025",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps8_budget0p0025.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.001,
+        "eps": 8.0,
+        "name": "solo_src5_sel0_to0_eps8_budget0p001",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps8_budget0p001",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps8_budget0p001",
+        "budget": 0.001,
+        "eps": 8.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.001,
+        "eps": 8.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps8_budget0p001.pt",
+      "job_id": "solo_src5_sel0_to0_eps8_budget0p001",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps8_budget0p001.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.01,
+        "eps": 4.0,
+        "name": "solo_src5_sel0_to0_eps4_budget0p01",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps4_budget0p01",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps4_budget0p01",
+        "budget": 0.01,
+        "eps": 4.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.01,
+        "eps": 4.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps4_budget0p01.pt",
+      "job_id": "solo_src5_sel0_to0_eps4_budget0p01",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps4_budget0p01.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.005,
+        "eps": 4.0,
+        "name": "solo_src5_sel0_to0_eps4_budget0p005",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps4_budget0p005",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps4_budget0p005",
+        "budget": 0.005,
+        "eps": 4.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.005,
+        "eps": 4.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps4_budget0p005.pt",
+      "job_id": "solo_src5_sel0_to0_eps4_budget0p005",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps4_budget0p005.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.0025,
+        "eps": 4.0,
+        "name": "solo_src5_sel0_to0_eps4_budget0p0025",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps4_budget0p0025",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps4_budget0p0025",
+        "budget": 0.0025,
+        "eps": 4.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.0025,
+        "eps": 4.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps4_budget0p0025.pt",
+      "job_id": "solo_src5_sel0_to0_eps4_budget0p0025",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps4_budget0p0025.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "arg_overrides": {
+        "budget": 0.001,
+        "eps": 4.0,
+        "name": "solo_src5_sel0_to0_eps4_budget0p001",
+        "poisonkey": null
+      },
+      "attacker": {
+        "attacker_id": "src5_sel0_to0_eps4_budget0p001",
+        "base_attacker_id": "src5_sel0_to0",
+        "brew_job_id": "brew_src5_sel0_to0_eps4_budget0p001",
+        "budget": 0.001,
+        "eps": 4.0,
+        "poisonkey": "5-0-9514",
+        "selection_key": 0,
+        "source_class": 5,
+        "source_target_distance": 0.6689342260360718,
+        "source_target_rank": 8,
+        "target_adv_class": 0,
+        "target_index": 9514,
+        "target_true_class": 5
+      },
+      "brew_arg_overrides": {
+        "budget": 0.001,
+        "eps": 4.0
+      },
+      "brew_artifact_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/brews/brew_src5_sel0_to0_eps4_budget0p001.pt",
+      "job_id": "solo_src5_sel0_to0_eps4_budget0p001",
+      "output_path": "artifacts/c1/c1_dog_to_airplane_hparam_sweep/solo/solo_src5_sel0_to0_eps4_budget0p001.csv",
+      "victim_seeds": [
+        0,
+        1,
+        2
+      ]
+    }
+  ]
+}
