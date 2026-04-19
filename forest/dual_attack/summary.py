@@ -27,8 +27,10 @@ def summarize_experiment(experiment):
             f'({metadata["fixed_attacker_a_source_class"]})'
         )
 
+    if 'planning_seed' in metadata:
+        lines.append(f'Planning seed: {metadata["planning_seed"]}')
+
     lines.extend([
-        f'Planning seed: {metadata["planning_seed"]}',
         f'Repeats: {metadata["repeats"]}',
         f'Victim seeds: {", ".join(str(seed) for seed in metadata["victim_seeds"])}',
         f'Brew jobs: {len(experiment.get("brew_jobs", []))}',
@@ -50,8 +52,9 @@ def summarize_experiment(experiment):
             f'->{_class_name(experiment, right["target_adv_class"])}'
         )
 
-    lines.append('Sampled target indices:')
-    for class_idx, indices in sorted(metadata.get('sampled_target_indices', {}).items(), key=lambda item: int(item[0])):
-        lines.append(f'  - {_class_name(experiment, class_idx)} ({class_idx}): {indices}')
+    if metadata.get('sampled_target_indices'):
+        lines.append('Sampled target indices:')
+        for class_idx, indices in sorted(metadata.get('sampled_target_indices', {}).items(), key=lambda item: int(item[0])):
+            lines.append(f'  - {_class_name(experiment, class_idx)} ({class_idx}): {indices}')
 
     return '\n'.join(lines)

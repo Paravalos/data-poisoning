@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 
@@ -9,6 +10,12 @@ import forest
 
 
 SCHEMA_VERSION = 1
+BREW_IDENTITY_ARG_EXCLUDE_FIELDS = (
+    'name',
+    'vruns',
+    'vnet',
+    'retrain_from_init',
+)
 
 
 def _normalize_list_option(value):
@@ -29,6 +36,40 @@ def build_args_namespace(common_args=None, arg_overrides=None):
     args.net = _normalize_list_option(args.net)
     args.vnet = _normalize_list_option(args.vnet)
     return args
+
+
+def _normalize_int_list(value):
+    if value is None:
+        return None
+    return [int(item) for item in value]
+
+
+def canonical_brew_attacker(attacker):
+    return dict(
+        source_class=int(attacker['source_class']),
+        target_true_class=int(attacker['target_true_class']),
+        target_adv_class=int(attacker['target_adv_class']),
+        target_index=int(attacker['target_index']),
+        repeat_slot=None if attacker.get('repeat_slot') is None else int(attacker['repeat_slot']),
+        poison_ids_seed=attacker.get('poison_ids_seed'),
+        explicit_poison_ids=_normalize_int_list(attacker.get('explicit_poison_ids')),
+    )
+
+
+def brew_identity_payload(args, attacker):
+    return dict(
+        args={
+            key: value
+            for key, value in vars(args).items()
+            if key not in BREW_IDENTITY_ARG_EXCLUDE_FIELDS and value is not None
+        },
+        attacker=canonical_brew_attacker(attacker),
+    )
+
+
+def brew_identity_fingerprint(args, attacker):
+    payload = brew_identity_payload(args, attacker)
+    return hashlib.md5(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()
 
 
 def load_experiment(path):

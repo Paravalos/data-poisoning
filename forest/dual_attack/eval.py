@@ -147,8 +147,13 @@ def _target_rows(
             target_target_distance=job.get('target_target_distance', ''),
             cross_alignment_gap=job.get('cross_alignment_gap', ''),
             overlap_policy=job.get('overlap_policy', ''),
+            merge_rule=job.get('merge_rule', overlap_stats.get('merge_rule', '')),
             overlap_seed=job.get('overlap_seed', ''),
+            overlap_percentage=job.get('overlap_percentage', ''),
+            overlap_fraction=job.get('overlap_fraction', ''),
+            overlap_target_count=job.get('overlap_target_count', ''),
             overlap_total=overlap_stats.get('overlap_total', 0),
+            effective_unique_poison_count=overlap_stats.get('effective_unique_poison_count', ''),
             overlaps_lost_by_attacker=overlap_stats.get('lost_by_attacker', {}).get(
                 artifact['attacker']['attacker_id'], 0
             ),

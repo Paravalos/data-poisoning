@@ -9,3 +9,4 @@ pandas==3.0.0
 seaborn>=0.12.0
 wandb==0.18.0
 efficientnet-pytorch>=0.7.1
+PyYAML>=6.0

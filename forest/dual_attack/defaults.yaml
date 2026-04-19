@@ -1,0 +1,57 @@
+common_args:
+  net:
+    - ResNet18
+  dataset: CIFAR10
+  recipe: gradient-matching
+  threatmodel: single-class
+  scenario: from-scratch
+  budget: 0.01
+  eps: 16
+  attackoptim: signAdam
+  attackiter: 250
+  init: randn
+  tau: 0.1
+  restarts: 8
+  loss: similarity
+  centreg: 0
+  normreg: 0
+  repel: 0
+  pbatch: 512
+  pshuffle: false
+  paugment: true
+  full_data: false
+  ensemble: 1
+  stagger: null
+  max_epoch: null
+  targets: 1
+  patch_size: 8
+  data_aug: default
+  data_path: ~/data
+  randomize_deterministic_poison_ids: true
+  modelkey: 0
+  cache_clean_model: true
+
+planner_defaults:
+  fixed_attacker_a_source_class: dog
+  repeats: 3
+  victim_seeds:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+  overlap_seed_base: 0
+
+family_defaults:
+  c1:
+    shared_target_class: airplane
+
+scheduler_defaults:
+  account: null
+  gpu: l40s
+  mem: 20G
+  cpus: 4
+  time: 4:00:00

@@ -65,13 +65,24 @@ class KettleDeterministic(_Kettle):
         if len(class_ids) < poison_num:
             warnings.warn(f'Training set is too small for requested poison budget.')
             poison_num = len(class_ids)
-        self.poison_ids = select_deterministic_poison_ids(
-            class_ids,
-            poison_num,
-            self.args.poisonkey,
-            randomize_poison_ids=self.args.randomize_deterministic_poison_ids,
-            poison_ids_seed=getattr(self.args, 'poison_ids_seed', None),
-        )
+        explicit_poison_ids = getattr(self.args, 'explicit_poison_ids', None)
+        if explicit_poison_ids is not None:
+            self.poison_ids = [int(index) for index in explicit_poison_ids]
+        else:
+            self.poison_ids = select_deterministic_poison_ids(
+                class_ids,
+                poison_num,
+                self.args.poisonkey,
+                randomize_poison_ids=self.args.randomize_deterministic_poison_ids,
+                poison_ids_seed=getattr(self.args, 'poison_ids_seed', None),
+            )
+        if len(self.poison_ids) != poison_num:
+            raise ValueError(f'Expected {poison_num} poison ids, found {len(self.poison_ids)}.')
+        if len(set(self.poison_ids)) != len(self.poison_ids):
+            raise ValueError('Explicit poison ids must be unique.')
+        invalid_ids = [index for index in self.poison_ids if index not in class_ids]
+        if invalid_ids:
+            raise ValueError(f'Explicit poison ids must belong to the poison class, found {invalid_ids[:5]}.')
 
         # the target
         # class_ids = []
