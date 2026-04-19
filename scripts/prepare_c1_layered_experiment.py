@@ -1,8 +1,9 @@
-"""Prepare a layered C1 dual-attacker experiment: 2 targets x 3 anchors x 6 partners.
+"""Prepare a layered C1 dual-attacker experiment: 2 targets x 3 anchors x all partners.
 
 Each dual job pairs an anchor attacker A with a partner attacker B, both targeting the
-same shared class T (the "shared target" case of C1). Anchors and partners are chosen
-to span d(A, T) and d(A, B) respectively, using the precomputed class-distance artifact.
+same shared class T (the "shared target" case of C1). Anchors are hand-picked to span
+d(A, T); partners are every class other than T and A (8 per anchor on CIFAR-10), so no
+selection bias on the partner axis.
 """
 
 from __future__ import annotations
@@ -27,30 +28,24 @@ from forest.dual_attack.planners import (
 )
 
 
-# 2 targets x 3 anchors x 6 partners. Anchors span d(A, T), partners span d(A, B).
-# Class selections chosen from the CIFAR-10 ResNet18 class-mean cosine distance matrix
-# to maximise distance spread while keeping the design balanced.
+# 2 targets x 3 anchors x (all eligible partners). Anchors are hand-picked to span
+# d(A, T); partners are computed at runtime as every class other than T and A
+# (8 per anchor on CIFAR-10), so there is no selection bias on the partner axis.
 LAYERED_DESIGN = [
     dict(
         target='airplane',
         anchors=[
-            dict(name='bird', role='near',
-                 partners=['deer', 'cat', 'dog', 'horse', 'ship', 'automobile']),
-            dict(name='cat', role='mid',
-                 partners=['dog', 'bird', 'deer', 'horse', 'ship', 'truck']),
-            dict(name='frog', role='far',
-                 partners=['cat', 'bird', 'deer', 'dog', 'truck', 'horse']),
+            dict(name='bird', role='near'),
+            dict(name='cat', role='mid'),
+            dict(name='frog', role='far'),
         ],
     ),
     dict(
         target='dog',
         anchors=[
-            dict(name='cat', role='near',
-                 partners=['bird', 'deer', 'frog', 'airplane', 'horse', 'ship']),
-            dict(name='horse', role='mid',
-                 partners=['deer', 'bird', 'cat', 'airplane', 'truck', 'frog']),
-            dict(name='ship', role='far',
-                 partners=['airplane', 'truck', 'automobile', 'cat', 'bird', 'horse']),
+            dict(name='cat', role='near'),
+            dict(name='horse', role='mid'),
+            dict(name='ship', role='far'),
         ],
     ),
 ]
@@ -70,13 +65,17 @@ def _validate_design(design, class_names):
                 raise ValueError(f'Anchor {anchor} cannot equal target {target}.')
             if anchor not in class_names:
                 raise ValueError(f'Unknown anchor class {anchor}.')
-            for partner in anchor_entry['partners']:
-                if partner == anchor or partner == target:
-                    raise ValueError(
-                        f'Partner {partner} must differ from anchor {anchor} and target {target}.'
-                    )
-                if partner not in class_names:
-                    raise ValueError(f'Unknown partner class {partner}.')
+
+
+def _eligible_partners(target_name, anchor_name, class_names, distance_matrix):
+    """All classes other than the target and anchor, ordered by d(anchor, partner)."""
+    anchor_idx = _class_index(class_names, anchor_name)
+    candidates = [
+        name for name in class_names
+        if name != target_name and name != anchor_name
+    ]
+    candidates.sort(key=lambda partner: float(distance_matrix[anchor_idx, _class_index(class_names, partner)]))
+    return candidates
 
 
 def _pairing_id(target_name, anchor_name, partner_name, repeat_slot):
@@ -106,7 +105,8 @@ def build_c1_layered_plan(*, preparation_context, design):
             anchor_role = anchor_entry['role']
 
             partner_summaries = []
-            for partner_name in anchor_entry['partners']:
+            partner_names = _eligible_partners(target_name, anchor_name, class_names, distance_matrix)
+            for partner_name in partner_names:
                 partner_idx = _class_index(class_names, partner_name)
                 source_source_distance = float(distance_matrix[anchor_idx, partner_idx])
 
