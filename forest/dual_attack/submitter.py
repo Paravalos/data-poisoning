@@ -7,6 +7,7 @@ import os
 import shlex
 import subprocess
 import sys
+import time
 
 from forest.dual_attack.experiment import iter_stage_jobs, stage_to_job_key
 
@@ -126,6 +127,12 @@ def build_sbatch_command(spec, experiment, overrides, dependency_slurm_ids, outp
         command.extend(['--dependency', f'afterok:{":".join(dependency_slurm_ids)}'])
 
     wrap_command = ' '.join(shlex.quote(part) for part in spec['command'])
+    # Route temp files to per-job node-local scratch so joblib/pymp memmap dirs
+    # and multiprocessing sockets don't pile inodes onto $HOME (500k quota).
+    wrap_command = (
+        'export TMPDIR="${SLURM_TMPDIR:-$TMPDIR}"; '
+        'export TMP="$TMPDIR"; export TEMP="$TMPDIR"; '
+    ) + wrap_command
     command.extend(['--wrap', wrap_command])
     return command
 
@@ -144,8 +151,32 @@ def submit_sbatch_command(command, print_only=False):
     if print_only:
         return None, format_shell_command(command)
 
-    completed = subprocess.run(command, check=True, capture_output=True, text=True)
-    return completed.stdout.strip(), format_shell_command(command)
+    transient_markers = (
+        'Resource temporarily unavailable',
+        'temporarily unable to accept',
+        'Socket timed out',
+        'Unable to contact slurm controller',
+        'Slurmctld is down',
+        'Connection refused',
+    )
+    attempt = 0
+    max_attempts = 30
+    while True:
+        attempt += 1
+        completed = subprocess.run(command, capture_output=True, text=True)
+        if completed.returncode == 0:
+            return completed.stdout.strip(), format_shell_command(command)
+        stderr = completed.stderr.strip()
+        transient = any(marker in stderr for marker in transient_markers)
+        if transient and attempt < max_attempts:
+            backoff = min(60, 5 * attempt)
+            sys.stderr.write(f'sbatch throttled (attempt {attempt}): {stderr[:200]}; retrying in {backoff}s\n')
+            time.sleep(backoff)
+            continue
+        sys.stderr.write(f'sbatch failed (attempt {attempt}, non-transient or retries exhausted):\n')
+        sys.stderr.write(f'  command: {format_shell_command(command)}\n')
+        sys.stderr.write(f'  stderr: {stderr}\n')
+        completed.check_returncode()
 
 
 def load_submission_log(path):

@@ -87,6 +87,10 @@ if __name__ == "__main__":
             print(f'{spec["job_id"]}: skipped (output exists)')
             skipped_count += 1
             continue
+        if not args.print_only and spec['job_id'] in submitted_job_ids:
+            print(f'{spec["job_id"]}: skipped (already submitted as {submitted_job_ids[spec["job_id"]]})')
+            skipped_count += 1
+            continue
 
         dependency_slurm_ids = []
         for dependency_job_id in spec['dependency_job_ids']:
@@ -113,6 +117,7 @@ if __name__ == "__main__":
         else:
             submitted_job_ids[spec['job_id']] = slurm_id
             print(f'{spec["job_id"]}: {slurm_id}')
+            save_submission_log(submission_log_path, submission_log)
 
     if args.skip_completed and skipped_count > 0:
         print(f'Skipped {skipped_count} completed job(s).')

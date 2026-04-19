@@ -96,10 +96,13 @@ def _target_rows(
     for attack_idx, artifact in enumerate(attack_artifacts):
         adv_class = int(artifact['target_adv_class'])
         true_class = int(artifact['target_true_class'])
+        brew_args = artifact.get('brew_config', {}).get('args', {})
         loss = F.cross_entropy(outputs[attack_idx:attack_idx + 1], torch.tensor([adv_class], device=outputs.device))
         rows.append(dict(
             experiment_id=experiment['experiment_id'],
             family=experiment['family'],
+            eps=brew_args.get('eps', getattr(kettle.args, 'eps', '')),
+            budget=brew_args.get('budget', getattr(kettle.args, 'budget', '')),
             job_id=job['job_id'],
             pairing_id=job.get('pairing_id', ''),
             run_type=run_type,
