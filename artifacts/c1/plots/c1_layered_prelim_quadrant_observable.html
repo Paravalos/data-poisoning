@@ -1,0 +1,1827 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>C1 layered - alignment explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/dist/plot.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root {
+    --bg:        #f6f8fb;
+    --panel:     #ffffff;
+    --ink:       #17202a;
+    --muted:     #5f6b7a;
+    --rule:      #dce3ec;
+    --grid:      #e7edf4;
+    --coop:      #e5f4e9;
+    --suppress:  #fde8eb;
+    --asym-a:    #fff1dc;
+    --asym-b:    #e5f0fb;
+    --blue:      #2b6cb0;
+    --red:       #c2414d;
+    --green:     #2f8f46;
+    --line:      #1f2937;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    padding: 28px 32px 20px;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .button {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--ink);
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 34px;
+    padding: 6px 12px;
+  }
+  .button:hover { border-color: #9fb0c4; }
+  .button.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #ffffff;
+  }
+  .button.secondary {
+    background: #e9f0f7;
+    border-color: #c8d5e3;
+  }
+  .view-controls {
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 6px;
+    padding: 4px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: #eef4fa;
+  }
+  .header-actions {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .dataset-controls {
+    display: inline-flex;
+    gap: 6px;
+    padding: 4px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: #ffffff;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 20px;
+    padding: 0 32px 40px;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+  body.table-mode .layout { grid-template-columns: 1fr; }
+  body.table-mode #side { display: none; }
+  body.full-mode .layout { grid-template-columns: 1fr; }
+  body.full-mode #side { display: none; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: baseline;
+    padding: 18px 20px 0;
+  }
+  .card-head h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .card-head p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .plot-controls {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .segmented {
+    display: inline-flex;
+    gap: 6px;
+    padding: 4px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: #f8fafc;
+  }
+  .stat {
+    flex: 0 0 auto;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    padding: 5px 8px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: #f8fafc;
+  }
+  .is-hidden { display: none !important; }
+  .plot-panel { padding: 8px 20px 18px; overflow: hidden; }
+  #plot { padding-top: 20px; }
+  #trend svg, #plot svg { display: block; margin: 0 auto; overflow: visible; }
+  #table-wrap, #filter-table-wrap { padding: 8px 20px 22px; overflow-x: auto; }
+  .table-unit {
+    color: var(--muted);
+    font-size: 12px;
+    padding: 12px 20px 0;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 980px;
+    font-size: 13px;
+  }
+  th, td {
+    border-bottom: 1px solid var(--rule);
+    padding: 9px 10px;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  th {
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    user-select: none;
+  }
+  th:hover { color: var(--ink); }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover { background: #f8fafc; }
+  td.num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .table-tools {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .column-picker {
+    position: relative;
+  }
+  .column-picker summary {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    list-style: none;
+    min-height: 34px;
+    padding: 7px 12px;
+  }
+  .column-picker summary::-webkit-details-marker { display: none; }
+  .column-picker summary::after {
+    color: var(--muted);
+    content: ' v';
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .column-picker[open] summary {
+    border-color: #9fb0c4;
+  }
+  .subtle-picker summary {
+    background: transparent;
+    border-color: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    min-height: auto;
+    padding: 2px 4px;
+  }
+  .subtle-picker summary:hover,
+  .subtle-picker[open] summary {
+    border-color: var(--rule);
+    color: var(--ink);
+  }
+  .subtle-picker .column-panel {
+    min-width: 196px;
+  }
+  .subtle-picker .column-option {
+    justify-content: flex-start;
+  }
+  .column-panel {
+    background: #ffffff;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+    display: grid;
+    gap: 4px;
+    min-width: 220px;
+    padding: 8px;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 10;
+  }
+  .column-option {
+    align-items: center;
+    border-radius: 6px;
+    color: var(--ink);
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+    padding: 6px 8px;
+    white-space: nowrap;
+  }
+  .column-option:hover { background: #f3f6fa; }
+  .column-option input { margin: 0; }
+  .filter-grid {
+    display: grid;
+    gap: 16px;
+    padding: 16px 20px 0;
+  }
+  .filter-group {
+    display: grid;
+    gap: 8px;
+  }
+  .filter-label {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .filter-chip {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: #eef3f8;
+    color: var(--ink);
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    min-height: 32px;
+    padding: 5px 10px;
+  }
+  .filter-chip.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #ffffff;
+  }
+  .motif-controls {
+    max-width: 560px;
+  }
+  .motif-controls .filter-label {
+    margin-bottom: 6px;
+    text-align: right;
+  }
+  .motif-description {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.45;
+    margin-top: 8px;
+    max-width: 560px;
+    text-align: right;
+  }
+  .filter-summary {
+    color: var(--muted);
+    font-size: 13px;
+    padding: 12px 20px 0;
+  }
+  .table-tools label {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  select {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 13px;
+    min-height: 34px;
+    padding: 5px 30px 5px 10px;
+  }
+  #side { padding: 24px 24px; min-height: 520px; }
+  #side h2 {
+    margin: 0 0 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .placeholder {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .attacker-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 2px 0 14px;
+  }
+  .attacker-route {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: #ffffff;
+  }
+  .attacker-route-main {
+    align-items: center;
+    display: inline-flex;
+    gap: 8px;
+    min-width: 0;
+  }
+  .attacker-role {
+    align-items: center;
+    background: #e9f0f7;
+    border: 1px solid #d3deeb;
+    border-radius: 6px;
+    display: inline-flex;
+    height: 28px;
+    justify-content: center;
+    width: 28px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--ink);
+  }
+  .attacker-name {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .attacker-arrow {
+    color: var(--muted);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 13px;
+  }
+  .attacker-target {
+    font-size: 18px;
+    font-weight: 600;
+    color: #354152;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .role-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .detail-summary {
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.45;
+    margin: 8px 0 14px;
+  }
+  .detail-summary strong {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 13px;
+  }
+  .detail-card {
+    background: transparent;
+    border-top: 1px solid var(--rule);
+    border-radius: 0;
+    padding: 13px 0 0;
+    margin: 13px 0 0;
+  }
+  .detail-card .block-label {
+    margin: 0 0 10px;
+  }
+  .formula {
+    font-size: 13px;
+    color: var(--muted);
+    margin: -4px 0 10px;
+    line-height: 1.45;
+  }
+  .formula .katex { font-size: 1em; }
+  .kv .katex { font-size: 1em; }
+  .value-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 12.5px;
+    background: #eef3f9;
+    color: var(--ink);
+  }
+  .value-pill.pos { background: #e2f3e8; color: #12642b; }
+  .value-pill.neg { background: #fce8eb; color: #a61b2a; }
+  .value-pill .pm {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+  .qtag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .q-coop     { background: var(--coop);     color: #12642b; }
+  .q-suppress { background: var(--suppress); color: #a61b2a; }
+  .q-asym-a   { background: var(--asym-a);   color: #96500e; }
+  .q-asym-b   { background: var(--asym-b);   color: #1f5b99; }
+
+  .n-chip {
+    display: inline-block;
+    margin-left: 8px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+  }
+  hr.sep { border: 0; border-top: 1px solid var(--rule); margin: 16px 0; }
+  .block-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .kv {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    row-gap: 6px;
+    column-gap: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .kv .k {
+    color: var(--muted);
+  }
+  .kv .v {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 12.5px;
+  }
+  .legend {
+    display: flex;
+    gap: 18px;
+    padding: 0 20px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .legend .dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .val-pos { color: #12642b; }
+  .val-neg { color: #a61b2a; }
+  .arrow   { color: var(--muted); margin: 0 4px; }
+  @media (max-width: 1100px) {
+    .layout { grid-template-columns: 1fr; }
+    .topbar, .card-head { flex-direction: column; }
+    .header-actions { align-items: flex-start; }
+    .motif-controls .filter-label { text-align: left; }
+    .motif-description { text-align: left; }
+    .view-controls { flex-wrap: wrap; }
+    .plot-controls, .table-tools { align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div>
+      <h1>C1 layered - alignment explorer</h1>
+      <p>Dual adversarial attacks summarized as pair-level interaction cells. Each point is one attacker pair or target-pair condition averaged over repetitions. Plot colors and the trend x-axis use the selected alignment or distance diagnostic.</p>
+    </div>
+    <div class="header-actions">
+      <div class="dataset-controls" aria-label="Dataset selector">
+        <button class="button active" id="dataset-c1-button" type="button">C1</button>
+        <button class="button" id="dataset-c2-button" type="button">C2</button>
+        <button class="button" id="dataset-c2-mini-button" type="button">C2 mini</button>
+        <button class="button" id="dataset-c6-button" type="button">C6</button>
+      </div>
+      <div class="motif-controls is-hidden" id="motif-controls">
+        <div class="filter-label" id="motif-filter-label">Motif filter</div>
+        <div class="chip-row" id="motif-filter"></div>
+        <div class="motif-description" id="motif-description">Click motifs to filter C2.</div>
+      </div>
+      <div class="view-controls" aria-label="Main view selector">
+        <button class="button active" id="plot-view-button" type="button">Plot view</button>
+        <button class="button" id="table-view-button" type="button">Table view</button>
+        <button class="button" id="filter-view-button" type="button">Filtered view</button>
+      </div>
+      <div class="view-controls" aria-label="Success metric selector">
+        <button class="button active" id="metric-confidence-button" type="button">Target confidence</button>
+        <button class="button" id="metric-success-button" type="button">Success rate</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <main>
+    <section class="card" id="plot-card">
+    <div class="card-head">
+      <div>
+        <h2 id="plot-title">At least one attacker usually degrades</h2>
+        <p id="plot-subtitle">x = cos(attack<sub>A</sub>, attack<sub>B</sub>), y = worst single change min(I<sub>A</sub>, I<sub>B</sub>). Values below zero mean at least one attacker does worse than solo.</p>
+      </div>
+      <div class="plot-controls">
+        <div class="segmented" aria-label="Plot selector">
+          <button class="button active" id="quadrant-button" type="button">Quadrant</button>
+          <button class="button" id="trend-button" type="button">Trend</button>
+        </div>
+        <details class="column-picker subtle-picker" id="alignment-picker-wrap">
+          <summary>Alignment</summary>
+          <div class="column-panel" id="alignment-controls"></div>
+        </details>
+        <div class="stat" id="trend-stat"></div>
+      </div>
+    </div>
+    <div class="plot-panel" id="trend"></div>
+    <div class="plot-panel is-hidden" id="plot"></div>
+    <div class="legend is-hidden" id="quadrant-legend">
+      <span id="colorbar"></span>
+      <span style="color:var(--muted)">uniform point size</span>
+    </div>
+    </section>
+
+    <section class="card is-hidden" id="table-card">
+      <div class="card-head">
+        <div>
+          <h2>Cell table</h2>
+          <p>Sorted summaries for every attacker pair. Click any column header or use the sort menu.</p>
+        </div>
+        <div class="table-tools">
+          <label for="sort-select">Sort by</label>
+          <select id="sort-select">
+            <option value="anchorDrop">Worst A drop</option>
+            <option value="partnerDrop">Worst B drop</option>
+            <option value="meanDrop">Worst mean change</option>
+            <option value="alignmentDesc">Highest alignment</option>
+            <option value="alignmentAsc">Lowest alignment</option>
+	        </select>
+          <details class="column-picker">
+            <summary>Columns</summary>
+            <div class="column-panel" id="table-column-controls"></div>
+          </details>
+        </div>
+      </div>
+      <div class="table-unit" id="table-unit"></div>
+      <div id="table-wrap"></div>
+    </section>
+
+    <section class="card is-hidden" id="filter-card">
+      <div class="card-head">
+        <div>
+          <h2>Filtered table</h2>
+          <p>Select one or more values for Attacker A, Attacker B, and target class. Empty selections include all values.</p>
+        </div>
+        <div class="table-tools">
+          <details class="column-picker">
+            <summary>Columns</summary>
+            <div class="column-panel" id="filter-column-controls"></div>
+          </details>
+          <button class="button" id="clear-filters" type="button">Clear filters</button>
+        </div>
+      </div>
+      <div class="filter-grid">
+        <div class="filter-group">
+          <div class="filter-label">Attacker A</div>
+          <div class="chip-row" id="filter-anchor"></div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Attacker B</div>
+          <div class="chip-row" id="filter-partner"></div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Target class</div>
+          <div class="chip-row" id="filter-target"></div>
+        </div>
+      </div>
+      <div class="filter-summary" id="filter-summary"></div>
+      <div class="table-unit" id="filter-table-unit"></div>
+      <div id="filter-table-wrap"></div>
+    </section>
+  </main>
+
+  <div class="card" id="side">
+    <h2>Details</h2>
+    <div id="placeholder" class="placeholder">Click any point to inspect that cell.<br><br>The four quadrants mean:
+      <ul style="margin:10px 0 0 18px;padding:0;color:var(--muted);line-height:1.9">
+        <li><span style="color:#12642b;font-weight:600">upper-right</span> - mutual cooperation</li>
+        <li><span style="color:#a61b2a;font-weight:600">lower-left</span> - mutual degradation</li>
+        <li><span style="color:#96500e;font-weight:600">lower-right</span> - A improves, B degrades</li>
+        <li><span style="color:#1f5b99;font-weight:600">upper-left</span> - A degrades, B improves</li>
+      </ul>
+    </div>
+    <div id="detail" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+const DATASETS = {"C1": {"label": "C1", "alignment_label": "alignment", "rows": [{"anchor": "bird", "partner": "automobile", "n": 8, "d_ab": 0.6772748231887817, "d_anc_tgt": 0.4928514957427978, "d_par_tgt": 0.6062602996826172, "I_a_s": -0.015625, "I_a_s_sem": 0.015625, "I_b_s": -0.03125, "I_b_s_sem": 0.03917394815800054, "I_a_c": -0.032558890752909526, "I_a_c_sem": 0.02360772879556211, "I_b_c": -0.011551757477377578, "I_b_c_sem": 0.02881815603168835, "solo_anc_s": 0.453125, "solo_par_s": 0.078125, "solo_anc_c": 0.4696987690915648, "solo_par_c": 0.11094201367052388, "dual_anc_s": 0.4375, "dual_par_s": 0.046875, "dual_anc_c": 0.4371398783386553, "dual_par_c": 0.09939025619314631, "cos_attack": 0.38321807980537415, "anchor_role": "near", "row_id": "C1-0", "cos_source": 0.32272517681121826, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "bird", "partner": "cat", "n": 8, "d_ab": 0.4896228313446045, "d_anc_tgt": 0.4928514957427978, "d_par_tgt": 0.5680851936340332, "I_a_s": 0.0, "I_a_s_sem": 0.0236227795630767, "I_b_s": -0.0625, "I_b_s_sem": 0.05786375623578446, "I_a_c": -0.039609094756329455, "I_a_c_sem": 0.030110879415941552, "I_b_c": -0.031392866206488186, "I_b_c_sem": 0.03944488054082129, "solo_anc_s": 0.453125, "solo_par_s": 0.6875, "solo_anc_c": 0.4696987690915648, "solo_par_c": 0.636401152198232, "dual_anc_s": 0.453125, "dual_par_s": 0.625, "dual_anc_c": 0.4300896743352354, "dual_par_c": 0.6050082859917438, "cos_attack": 0.5460137724876404, "anchor_role": "near", "row_id": "C1-1", "cos_source": 0.5103771686553955, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "bird", "partner": "deer", "n": 8, "d_ab": 0.4731823205947876, "d_anc_tgt": 0.4928514957427978, "d_par_tgt": 0.6046143770217896, "I_a_s": -0.015625, "I_a_s_sem": 0.08331007860054251, "I_b_s": -0.109375, "I_b_s_sem": 0.08659448545210188, "I_a_c": -0.03713008982379052, "I_a_c_sem": 0.050035063764358706, "I_b_c": -0.10915398182851277, "I_b_c_sem": 0.059765015824820245, "solo_anc_s": 0.453125, "solo_par_s": 0.734375, "solo_anc_c": 0.4696987690915648, "solo_par_c": 0.7129941993043758, "dual_anc_s": 0.4375, "dual_par_s": 0.625, "dual_anc_c": 0.4325686792677743, "dual_par_c": 0.603840217475863, "cos_attack": 0.5693045258522034, "anchor_role": "near", "row_id": "C1-2", "cos_source": 0.5268176794052124, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "bird", "partner": "dog", "n": 8, "d_ab": 0.5690615177154541, "d_anc_tgt": 0.4928514957427978, "d_par_tgt": 0.6689342260360718, "I_a_s": -0.0625, "I_a_s_sem": 0.08183170883849714, "I_b_s": -0.078125, "I_b_s_sem": 0.04048740434646664, "I_a_c": -0.06917001281738068, "I_a_c_sem": 0.04844328780501514, "I_b_c": -0.09954230510766138, "I_b_c_sem": 0.047452086951723975, "solo_anc_s": 0.453125, "solo_par_s": 0.59375, "solo_anc_c": 0.4696987690915648, "solo_par_c": 0.6141246780589427, "dual_anc_s": 0.390625, "dual_par_s": 0.515625, "dual_anc_c": 0.40052875627418416, "dual_par_c": 0.5145823729512813, "cos_attack": 0.5229266285896301, "anchor_role": "near", "row_id": "C1-3", "cos_source": 0.4309384822845459, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "bird", "partner": "frog", "n": 8, "d_ab": 0.5400217771530151, "d_anc_tgt": 0.4928514957427978, "d_par_tgt": 0.681496262550354, "I_a_s": -0.078125, "I_a_s_sem": 0.06222035653913551, "I_b_s": -0.015625, "I_b_s_sem": 0.036881052772005145, "I_a_c": -0.09488603004712104, "I_a_c_sem": 0.04686738664366492, "I_b_c": -0.03371949916413541, "I_b_c_sem": 0.016460070352001227, "solo_anc_s": 0.453125, "solo_par_s": 0.1875, "solo_anc_c": 0.4696987690915648, "solo_par_c": 0.2309336454220556, "dual_anc_s": 0.375, "dual_par_s": 0.171875, "dual_anc_c": 0.3748127390444438, "dual_par_c": 0.1972141462579202, "cos_attack": 0.5435007810592651, "anchor_role": "near", "row_id": "C1-4", "cos_source": 0.45997822284698486, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "bird", "partner": "horse", "n": 8, "d_ab": 0.5737546682357788, "d_anc_tgt": 0.4928514957427978, "d_par_tgt": 0.6319902539253235, "I_a_s": -0.015625, "I_a_s_sem": 0.036881052772005145, "I_b_s": -0.0625, "I_b_s_sem": 0.05786375623578446, "I_a_c": -0.05142435139293867, "I_a_c_sem": 0.030305185893403364, "I_b_c": -0.05009931566860359, "I_b_c_sem": 0.05450941005240417, "solo_anc_s": 0.453125, "solo_par_s": 0.359375, "solo_anc_c": 0.4696987690915648, "solo_par_c": 0.356031355691357, "dual_anc_s": 0.4375, "dual_par_s": 0.296875, "dual_anc_c": 0.41827441769862617, "dual_par_c": 0.3059320400227534, "cos_attack": 0.4989631474018097, "anchor_role": "near", "row_id": "C1-5", "cos_source": 0.4262453317642212, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "bird", "partner": "ship", "n": 8, "d_ab": 0.6458474397659302, "d_anc_tgt": 0.4928514957427978, "d_par_tgt": 0.507644772529602, "I_a_s": 0.015625, "I_a_s_sem": 0.036881052772005145, "I_b_s": -0.09375, "I_b_s_sem": 0.04574531591946249, "I_a_c": -0.03261714328220933, "I_a_c_sem": 0.03279785554983359, "I_b_c": -0.06887725783849419, "I_b_c_sem": 0.0332363576577432, "solo_anc_s": 0.453125, "solo_par_s": 0.640625, "solo_anc_c": 0.4696987690915648, "solo_par_c": 0.6106041567622924, "dual_anc_s": 0.46875, "dual_par_s": 0.546875, "dual_anc_c": 0.4370816258093555, "dual_par_c": 0.5417268989237982, "cos_attack": 0.3427963852882385, "anchor_role": "near", "row_id": "C1-6", "cos_source": 0.3541525602340698, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "bird", "partner": "truck", "n": 8, "d_ab": 0.6593060493469238, "d_anc_tgt": 0.4928514957427978, "d_par_tgt": 0.5797238945960999, "I_a_s": -0.015625, "I_a_s_sem": 0.07631839730928017, "I_b_s": -0.015625, "I_b_s_sem": 0.05508465481809404, "I_a_c": -0.025598979562801116, "I_a_c_sem": 0.03950087277752988, "I_b_c": -0.02901205017269603, "I_b_c_sem": 0.03330492343721557, "solo_anc_s": 0.453125, "solo_par_s": 0.625, "solo_anc_c": 0.4696987690915648, "solo_par_c": 0.5830709216061223, "dual_anc_s": 0.4375, "dual_par_s": 0.609375, "dual_anc_c": 0.4440997895287637, "dual_par_c": 0.5540588714334262, "cos_attack": 0.38257986307144165, "anchor_role": "near", "row_id": "C1-7", "cos_source": 0.34069395065307617, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "cat", "partner": "automobile", "n": 8, "d_ab": 0.6126067638397217, "d_anc_tgt": 0.5680851936340332, "d_par_tgt": 0.6062602996826172, "I_a_s": -0.046875, "I_a_s_sem": 0.03288151755057195, "I_b_s": -0.015625, "I_b_s_sem": 0.036881052772005145, "I_a_c": -0.029792939375965947, "I_a_c_sem": 0.025014955496526995, "I_b_c": 0.0029716675476265508, "I_b_c_sem": 0.014145902778791554, "solo_anc_s": 0.6875, "solo_par_s": 0.078125, "solo_anc_c": 0.636401152198232, "solo_par_c": 0.11094201367052388, "dual_anc_s": 0.640625, "dual_par_s": 0.0625, "dual_anc_c": 0.6066082128222661, "dual_par_c": 0.11391368121815043, "cos_attack": 0.4930509328842163, "anchor_role": "mid", "row_id": "C1-8", "cos_source": 0.3873932361602783, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "cat", "partner": "bird", "n": 8, "d_ab": 0.4896228313446045, "d_anc_tgt": 0.5680851936340332, "d_par_tgt": 0.4928514957427978, "I_a_s": -0.03125, "I_a_s_sem": 0.05664543544843535, "I_b_s": 0.03125, "I_b_s_sem": 0.03917394815800054, "I_a_c": -0.008133671095492907, "I_a_c_sem": 0.04257441138499731, "I_b_c": -3.947843373452867e-05, "I_b_c_sem": 0.030121777651893687, "solo_anc_s": 0.6875, "solo_par_s": 0.453125, "solo_anc_c": 0.636401152198232, "solo_par_c": 0.4696987690915648, "dual_anc_s": 0.65625, "dual_par_s": 0.484375, "dual_anc_c": 0.6282674811027391, "dual_par_c": 0.4696592906578303, "cos_attack": 0.5460137724876404, "anchor_role": "mid", "row_id": "C1-9", "cos_source": 0.5103771686553955, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "cat", "partner": "deer", "n": 8, "d_ab": 0.5025486350059509, "d_anc_tgt": 0.5680851936340332, "d_par_tgt": 0.6046143770217896, "I_a_s": -0.078125, "I_a_s_sem": 0.05249096435850378, "I_b_s": -0.15625, "I_b_s_sem": 0.06987712429686843, "I_a_c": -0.05696186897648659, "I_a_c_sem": 0.039336733076592384, "I_b_c": -0.1492880682562827, "I_b_c_sem": 0.05880559717664373, "solo_anc_s": 0.6875, "solo_par_s": 0.734375, "solo_anc_c": 0.636401152198232, "solo_par_c": 0.7129941993043758, "dual_anc_s": 0.609375, "dual_par_s": 0.578125, "dual_anc_c": 0.5794392832217454, "dual_par_c": 0.5637061310480931, "cos_attack": 0.5830107927322388, "anchor_role": "mid", "row_id": "C1-10", "cos_source": 0.4974513649940491, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "cat", "partner": "dog", "n": 8, "d_ab": 0.3910741209983825, "d_anc_tgt": 0.5680851936340332, "d_par_tgt": 0.6689342260360718, "I_a_s": -0.078125, "I_a_s_sem": 0.04687499999999999, "I_b_s": -0.046875, "I_b_s_sem": 0.03288151755057195, "I_a_c": -0.03905387310896913, "I_a_c_sem": 0.03223377505925348, "I_b_c": -0.07025321811579488, "I_b_c_sem": 0.03437967141427479, "solo_anc_s": 0.6875, "solo_par_s": 0.59375, "solo_anc_c": 0.636401152198232, "solo_par_c": 0.6141246780589427, "dual_anc_s": 0.609375, "dual_par_s": 0.546875, "dual_anc_c": 0.5973472790892629, "dual_par_c": 0.5438714599431478, "cos_attack": 0.7038105726242065, "anchor_role": "mid", "row_id": "C1-11", "cos_source": 0.6089258790016174, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "cat", "partner": "frog", "n": 8, "d_ab": 0.5166683197021484, "d_anc_tgt": 0.5680851936340332, "d_par_tgt": 0.681496262550354, "I_a_s": -0.171875, "I_a_s_sem": 0.06222035653913551, "I_b_s": 0.015625, "I_b_s_sem": 0.028322717724217676, "I_a_c": -0.10823207230896516, "I_a_c_sem": 0.03869397482910934, "I_b_c": -0.021003415998848148, "I_b_c_sem": 0.024514869575004938, "solo_anc_s": 0.6875, "solo_par_s": 0.1875, "solo_anc_c": 0.636401152198232, "solo_par_c": 0.2309336454220556, "dual_anc_s": 0.515625, "dual_par_s": 0.203125, "dual_anc_c": 0.5281690798892669, "dual_par_c": 0.20993022942320744, "cos_attack": 0.6003531217575073, "anchor_role": "mid", "row_id": "C1-12", "cos_source": 0.48333168029785156, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "cat", "partner": "horse", "n": 8, "d_ab": 0.5820205807685852, "d_anc_tgt": 0.5680851936340332, "d_par_tgt": 0.6319902539253235, "I_a_s": -0.078125, "I_a_s_sem": 0.04687499999999999, "I_b_s": -0.0625, "I_b_s_sem": 0.03340765523905304, "I_a_c": -0.06414709681234855, "I_a_c_sem": 0.03068549681189291, "I_b_c": -0.06992157499485074, "I_b_c_sem": 0.04596674933468535, "solo_anc_s": 0.6875, "solo_par_s": 0.359375, "solo_anc_c": 0.636401152198232, "solo_par_c": 0.356031355691357, "dual_anc_s": 0.609375, "dual_par_s": 0.296875, "dual_anc_c": 0.5722540553858835, "dual_par_c": 0.2861097806965062, "cos_attack": 0.5394700169563293, "anchor_role": "mid", "row_id": "C1-13", "cos_source": 0.4179794192314148, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "cat", "partner": "ship", "n": 8, "d_ab": 0.6089869737625122, "d_anc_tgt": 0.5680851936340332, "d_par_tgt": 0.507644772529602, "I_a_s": -0.0625, "I_a_s_sem": 0.03340765523905304, "I_b_s": -0.140625, "I_b_s_sem": 0.10143364078126574, "I_a_c": -0.009164082268398497, "I_a_c_sem": 0.02668141979739259, "I_b_c": -0.10987044504582855, "I_b_c_sem": 0.055968187606605206, "solo_anc_s": 0.6875, "solo_par_s": 0.640625, "solo_anc_c": 0.636401152198232, "solo_par_c": 0.6106041567622924, "dual_anc_s": 0.625, "dual_par_s": 0.5, "dual_anc_c": 0.6272370699298335, "dual_par_c": 0.5007337117164639, "cos_attack": 0.4377342760562897, "anchor_role": "mid", "row_id": "C1-14", "cos_source": 0.3910130262374878, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "cat", "partner": "truck", "n": 8, "d_ab": 0.6187872886657715, "d_anc_tgt": 0.5680851936340332, "d_par_tgt": 0.5797238945960999, "I_a_s": -0.046875, "I_a_s_sem": 0.04687499999999999, "I_b_s": -0.046875, "I_b_s_sem": 0.05249096435850378, "I_a_c": -0.0339588117440144, "I_a_c_sem": 0.04247594380370137, "I_b_c": -0.033499555510388745, "I_b_c_sem": 0.030054876164935726, "solo_anc_s": 0.6875, "solo_par_s": 0.625, "solo_anc_c": 0.636401152198232, "solo_par_c": 0.5830709216061223, "dual_anc_s": 0.640625, "dual_par_s": 0.578125, "dual_anc_c": 0.6024423404542176, "dual_par_c": 0.5495713660957335, "cos_attack": 0.47367265820503235, "anchor_role": "mid", "row_id": "C1-15", "cos_source": 0.3812127113342285, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "frog", "partner": "automobile", "n": 8, "d_ab": 0.6586825847625732, "d_anc_tgt": 0.681496262550354, "d_par_tgt": 0.6062602996826172, "I_a_s": -0.03125, "I_a_s_sem": 0.03917394815800054, "I_b_s": -0.015625, "I_b_s_sem": 0.028322717724217676, "I_a_c": -0.058947716700231474, "I_a_c_sem": 0.026276189169042032, "I_b_c": -0.00944945971366452, "I_b_c_sem": 0.013828457800268517, "solo_anc_s": 0.1875, "solo_par_s": 0.078125, "solo_anc_c": 0.2309336454220556, "solo_par_c": 0.11094201367052388, "dual_anc_s": 0.15625, "dual_par_s": 0.0625, "dual_anc_c": 0.17198592872182414, "dual_par_c": 0.10149255395685937, "cos_attack": 0.4898283779621124, "anchor_role": "far", "row_id": "C1-16", "cos_source": 0.34131741523742676, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "frog", "partner": "bird", "n": 8, "d_ab": 0.5400217771530151, "d_anc_tgt": 0.681496262550354, "d_par_tgt": 0.4928514957427978, "I_a_s": -0.03125, "I_a_s_sem": 0.020457927209624284, "I_b_s": 0.015625, "I_b_s_sem": 0.028322717724217676, "I_a_c": -0.04594116693594685, "I_a_c_sem": 0.020083600296310757, "I_b_c": -0.019386780788750002, "I_b_c_sem": 0.03164574385575309, "solo_anc_s": 0.1875, "solo_par_s": 0.453125, "solo_anc_c": 0.2309336454220556, "solo_par_c": 0.4696987690915648, "dual_anc_s": 0.15625, "dual_par_s": 0.46875, "dual_anc_c": 0.18499247848610875, "dual_par_c": 0.4503119883028148, "cos_attack": 0.5435007810592651, "anchor_role": "far", "row_id": "C1-17", "cos_source": 0.45997822284698486, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "frog", "partner": "cat", "n": 8, "d_ab": 0.5166683793067932, "d_anc_tgt": 0.681496262550354, "d_par_tgt": 0.5680851936340332, "I_a_s": 0.0, "I_a_s_sem": 0.04091585441924857, "I_b_s": -0.09375, "I_b_s_sem": 0.04574531591946249, "I_a_c": -0.01012551382314087, "I_a_c_sem": 0.01835008969196192, "I_b_c": -0.04697667619711866, "I_b_c_sem": 0.033440505492517, "solo_anc_s": 0.1875, "solo_par_s": 0.6875, "solo_anc_c": 0.2309336454220556, "solo_par_c": 0.636401152198232, "dual_anc_s": 0.1875, "dual_par_s": 0.59375, "dual_anc_c": 0.22080813159891474, "dual_par_c": 0.5894244760011134, "cos_attack": 0.6003531217575073, "anchor_role": "far", "row_id": "C1-18", "cos_source": 0.4833316206932068, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "frog", "partner": "deer", "n": 8, "d_ab": 0.5835475325584412, "d_anc_tgt": 0.681496262550354, "d_par_tgt": 0.6046143770217896, "I_a_s": 0.015625, "I_a_s_sem": 0.05508465481809404, "I_b_s": -0.140625, "I_b_s_sem": 0.049762269664303464, "I_a_c": -0.02643021833159764, "I_a_c_sem": 0.048325032958606635, "I_b_c": -0.12176258090858028, "I_b_c_sem": 0.03329837835527426, "solo_anc_s": 0.1875, "solo_par_s": 0.734375, "solo_anc_c": 0.2309336454220556, "solo_par_c": 0.7129941993043758, "dual_anc_s": 0.203125, "dual_par_s": 0.59375, "dual_anc_c": 0.20450342709045796, "dual_par_c": 0.5912316183957955, "cos_attack": 0.5470362901687622, "anchor_role": "far", "row_id": "C1-19", "cos_source": 0.41645246744155884, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "frog", "partner": "dog", "n": 8, "d_ab": 0.6073779463768005, "d_anc_tgt": 0.681496262550354, "d_par_tgt": 0.6689342260360718, "I_a_s": 0.03125, "I_a_s_sem": 0.051484654440494625, "I_b_s": -0.0625, "I_b_s_sem": 0.07834789631600109, "I_a_c": -0.00914882899590452, "I_a_c_sem": 0.03420297241945006, "I_b_c": -0.09017411832348898, "I_b_c_sem": 0.040773935359745814, "solo_anc_s": 0.1875, "solo_par_s": 0.59375, "solo_anc_c": 0.2309336454220556, "solo_par_c": 0.6141246780589427, "dual_anc_s": 0.21875, "dual_par_s": 0.53125, "dual_anc_c": 0.22178481642615108, "dual_par_c": 0.5239505597354537, "cos_attack": 0.563640832901001, "anchor_role": "far", "row_id": "C1-20", "cos_source": 0.39262205362319946, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "frog", "partner": "horse", "n": 8, "d_ab": 0.6753582954406738, "d_anc_tgt": 0.681496262550354, "d_par_tgt": 0.6319902539253235, "I_a_s": -0.03125, "I_a_s_sem": 0.03125, "I_b_s": -0.125, "I_b_s_sem": 0.06681531047810609, "I_a_c": -0.03196439846129805, "I_a_c_sem": 0.03153702219248395, "I_b_c": -0.09075122340809116, "I_b_c_sem": 0.06139538679452787, "solo_anc_s": 0.1875, "solo_par_s": 0.359375, "solo_anc_c": 0.2309336454220556, "solo_par_c": 0.356031355691357, "dual_anc_s": 0.15625, "dual_par_s": 0.234375, "dual_anc_c": 0.19896924696075755, "dual_par_c": 0.26528013228326586, "cos_attack": 0.49794113636016846, "anchor_role": "far", "row_id": "C1-21", "cos_source": 0.32464170455932617, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "frog", "partner": "ship", "n": 8, "d_ab": 0.6644395589828491, "d_anc_tgt": 0.681496262550354, "d_par_tgt": 0.507644772529602, "I_a_s": 0.015625, "I_a_s_sem": 0.015625, "I_b_s": -0.0625, "I_b_s_sem": 0.03340765523905304, "I_a_c": -0.021322935826219698, "I_a_c_sem": 0.016210122276792655, "I_b_c": -0.06336081219023983, "I_b_c_sem": 0.0264538632334768, "solo_anc_s": 0.1875, "solo_par_s": 0.640625, "solo_anc_c": 0.2309336454220556, "solo_par_c": 0.6106041567622924, "dual_anc_s": 0.203125, "dual_par_s": 0.578125, "dual_anc_c": 0.20961070959583591, "dual_par_c": 0.5472433445720526, "cos_attack": 0.4358178377151489, "anchor_role": "far", "row_id": "C1-22", "cos_source": 0.3355604410171509, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "frog", "partner": "truck", "n": 8, "d_ab": 0.6482031345367432, "d_anc_tgt": 0.681496262550354, "d_par_tgt": 0.5797238945960999, "I_a_s": -0.03125, "I_a_s_sem": 0.03917394815800054, "I_b_s": -0.015625, "I_b_s_sem": 0.043797805514170944, "I_a_c": -0.03301324112953807, "I_a_c_sem": 0.02302410183871304, "I_b_c": -0.018594995133753393, "I_b_c_sem": 0.018890407968462638, "solo_anc_s": 0.1875, "solo_par_s": 0.625, "solo_anc_c": 0.2309336454220556, "solo_par_c": 0.5830709216061223, "dual_anc_s": 0.15625, "dual_par_s": 0.609375, "dual_anc_c": 0.1979204042925175, "dual_par_c": 0.5644759264723689, "cos_attack": 0.48648717999458313, "anchor_role": "far", "row_id": "C1-23", "cos_source": 0.35179686546325684, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane"}, {"anchor": "bird", "partner": "bird", "n": 6, "d_ab": 0.0, "d_anc_tgt": 0.49285149574279785, "d_par_tgt": 0.49285149574279785, "I_a_s": -0.10416666666666667, "I_a_s_sem": 0.05965758776365148, "I_b_s": -0.041666666666666664, "I_b_s_sem": 0.0263523138347365, "I_a_c": -0.08281337076429433, "I_a_c_sem": 0.05762208303944068, "I_b_c": -0.036554623733081826, "I_b_c_sem": 0.0195793247809012, "solo_anc_s": 0.6666666666666666, "solo_par_s": 0.3333333333333333, "solo_anc_c": 0.6285091297516677, "solo_par_c": 0.33344136602712143, "dual_anc_s": 0.5625, "dual_par_s": 0.2916666666666667, "dual_anc_c": 0.5456957589873733, "dual_par_c": 0.2968867422940396, "cos_attack": 1.0, "anchor_role": "same-source", "cos_source": 1.0, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane", "same_source_clone": true, "condition": "bird__clone", "row_id": "C1-same-bird"}, {"anchor": "deer", "partner": "deer", "n": 6, "d_ab": 0.0, "d_anc_tgt": 0.6046143770217896, "d_par_tgt": 0.6046143770217896, "I_a_s": -0.020833333333333332, "I_a_s_sem": 0.0501733107449679, "I_b_s": 0.0, "I_b_s_sem": 0.06454972243679029, "I_a_c": -0.007845497390614279, "I_a_c_sem": 0.030197476599883276, "I_b_c": -0.024105760385282338, "I_b_c_sem": 0.07518848805889099, "solo_anc_s": 0.6458333333333334, "solo_par_s": 0.8125, "solo_anc_c": 0.611532132216477, "solo_par_c": 0.8102223335299641, "dual_anc_s": 0.625, "dual_par_s": 0.8125, "dual_anc_c": 0.6036866348258627, "dual_par_c": 0.7861165731446818, "cos_attack": 1.0, "anchor_role": "same-source", "cos_source": 1.0, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane", "same_source_clone": true, "condition": "deer__clone", "row_id": "C1-same-deer"}, {"anchor": "frog", "partner": "frog", "n": 6, "d_ab": 0.0, "d_anc_tgt": 0.681496262550354, "d_par_tgt": 0.681496262550354, "I_a_s": -0.041666666666666664, "I_a_s_sem": 0.0263523138347365, "I_b_s": -0.041666666666666664, "I_b_s_sem": 0.05270462766947299, "I_a_c": -0.05386532317773648, "I_a_c_sem": 0.029012202925833824, "I_b_c": -0.06542530433004383, "I_b_c_sem": 0.039036609220778756, "solo_anc_s": 0.1875, "solo_par_s": 0.3125, "solo_anc_c": 0.2452086922316994, "solo_par_c": 0.33981922451857827, "dual_anc_s": 0.14583333333333334, "dual_par_s": 0.2708333333333333, "dual_anc_c": 0.1913433690539629, "dual_par_c": 0.2743939201885344, "cos_attack": 1.0, "anchor_role": "same-source", "cos_source": 1.0, "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane", "same_source_clone": true, "condition": "frog__clone", "row_id": "C1-same-frog"}, {"row_id": "C1-fork-0", "dataset": "C1", "anchor": "bird", "partner": "bird", "target_class": "horse / ship", "target_classes": ["horse", "ship"], "target_a_class_name": "horse", "target_b_class_name": "ship", "n": 6, "I_a_s": -0.041666666666666664, "I_b_s": 0.020833333333333332, "I_a_s_sem": 0.04166666666666667, "I_b_s_sem": 0.020833333333333336, "I_a_c": -0.012362212413184656, "I_b_c": 0.009023232727940922, "I_a_c_sem": 0.014213612542061186, "I_b_c_sem": 0.028549154476491364, "solo_anc_s": 0.8333333333333334, "solo_par_s": 0.5625, "dual_anc_s": 0.7916666666666666, "dual_par_s": 0.5833333333333334, "solo_anc_c": 0.759343272424303, "solo_par_c": 0.5467939785823243, "dual_anc_c": 0.7469810600111183, "dual_par_c": 0.5558172113102652, "d_ab": 0.0, "cos_source": 1.0, "d_anc_tgt": 0.5737546682357788, "d_par_tgt": 0.6458474397659302, "a_cross": 0.6458474397659302, "b_cross": 0.5737546682357788, "target_target_distance": 0.6868035197257996, "cross_alignment_gap": 0.0, "cos_attack": 0.45045289397239685, "cos_attack_dir": 0.45045289397239685, "motif_label": "fork_far_apart", "source_stratum": "same-source", "alignment_type": "same_source_fork", "condition": "bird__fork_far_apart", "same_source_fork": true}, {"row_id": "C1-fork-1", "dataset": "C1", "anchor": "deer", "partner": "deer", "target_class": "automobile / frog", "target_classes": ["automobile", "frog"], "target_a_class_name": "automobile", "target_b_class_name": "frog", "n": 6, "I_a_s": -0.041666666666666664, "I_b_s": -0.0625, "I_a_s_sem": 0.04166666666666667, "I_b_s_sem": 0.0625, "I_a_c": -0.04487278525872777, "I_b_c": -0.05103706653850774, "I_a_c_sem": 0.03883652060357491, "I_b_c_sem": 0.04666945136702039, "solo_anc_s": 0.5, "solo_par_s": 0.8333333333333334, "dual_anc_s": 0.4583333333333333, "dual_par_s": 0.7708333333333334, "solo_anc_c": 0.4452782400767319, "solo_par_c": 0.7844797568395734, "dual_anc_c": 0.4004054548180041, "dual_par_c": 0.7334426903010657, "d_ab": 0.0, "cos_source": 1.0, "d_anc_tgt": 0.6954783201217651, "d_par_tgt": 0.5835475325584412, "a_cross": 0.5835475325584412, "b_cross": 0.6954783201217651, "target_target_distance": 0.6586825847625732, "cross_alignment_gap": 0.0, "cos_attack": 0.4858976900577545, "cos_attack_dir": 0.4858976900577545, "motif_label": "fork_far_apart", "source_stratum": "same-source", "alignment_type": "same_source_fork", "condition": "deer__fork_far_apart", "same_source_fork": true}, {"row_id": "C1-fork-2", "dataset": "C1", "anchor": "frog", "partner": "frog", "target_class": "horse / ship", "target_classes": ["horse", "ship"], "target_a_class_name": "horse", "target_b_class_name": "ship", "n": 6, "I_a_s": 0.125, "I_b_s": -0.125, "I_a_s_sem": 0.06454972243679029, "I_b_s_sem": 0.05590169943749474, "I_a_c": 0.0350735486542059, "I_b_c": -0.14229503873502836, "I_a_c_sem": 0.021289477363427504, "I_b_c_sem": 0.0450213473949349, "solo_anc_s": 0.4791666666666667, "solo_par_s": 0.7083333333333334, "dual_anc_s": 0.6041666666666666, "dual_par_s": 0.5833333333333334, "solo_anc_c": 0.503956881405126, "solo_par_c": 0.6650282595849907, "dual_anc_c": 0.5390304300593319, "dual_par_c": 0.5227332208499623, "d_ab": 0.0, "cos_source": 1.0, "d_anc_tgt": 0.6753582954406738, "d_par_tgt": 0.6644394993782043, "a_cross": 0.6644394993782043, "b_cross": 0.6753582954406738, "target_target_distance": 0.6868035197257996, "cross_alignment_gap": 0.0, "cos_attack": 0.49320822954177856, "cos_attack_dir": 0.49320822954177856, "motif_label": "fork_far_apart", "source_stratum": "same-source", "alignment_type": "same_source_fork", "condition": "frog__fork_far_apart", "same_source_fork": true}]}, "C2": {"label": "C2", "alignment_label": "cross-alignment gap", "rows": [{"row_id": "C2-0", "dataset": "C2", "anchor": "dog", "partner": "cat", "target_class": "horse / bird", "target_classes": ["horse", "bird"], "target_a_class_name": "horse", "target_b_class_name": "bird", "n": 3, "I_a_s": 0.0, "I_b_s": -0.125, "I_a_s_sem": 0.07216878364870323, "I_b_s_sem": 0.2602082499332666, "I_a_c": 0.03146129800006745, "I_b_c": -0.06655737594701347, "I_a_c_sem": 0.03948686322507086, "I_b_c_sem": 0.1150297109925652, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.39107412099838257, "cos_source": 0.6089258790016174, "d_anc_tgt": 0.5162463784217834, "d_par_tgt": 0.4896228313446045, "a_cross": 0.5690615177154541, "b_cross": 0.5820205807685852, "cross_alignment_gap": 0.14521288871765137, "cos_attack": 0.14521288871765137, "cos_attack_dir": 0.17817653715610504, "motif_label": "own_aligned_easy", "source_stratum": "near", "alignment_type": "own_aligned", "target_target_distance": 0.5737546682357788}, {"row_id": "C2-1", "dataset": "C2", "anchor": "dog", "partner": "cat", "target_class": "horse / frog", "target_classes": ["horse", "frog"], "target_a_class_name": "horse", "target_b_class_name": "frog", "n": 3, "I_a_s": -0.08333333333333334, "I_b_s": 0.04166666666666667, "I_a_s_sem": 0.11023963796102462, "I_b_s_sem": 0.04166666666666667, "I_a_c": -0.0025155479670502363, "I_b_c": 0.047196437328845285, "I_a_c_sem": 0.05156721309528391, "I_b_c_sem": 0.04149353706830285, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.39107412099838257, "cos_source": 0.6089258790016174, "d_anc_tgt": 0.5162463784217834, "d_par_tgt": 0.5166683197021484, "a_cross": 0.6073779463768005, "b_cross": 0.5820205807685852, "cross_alignment_gap": 0.15648382902145386, "cos_attack": 0.15648382902145386, "cos_attack_dir": 0.11008372157812119, "motif_label": "own_aligned_far_apart", "source_stratum": "near", "alignment_type": "own_aligned", "target_target_distance": 0.6753582954406738}, {"row_id": "C2-2", "dataset": "C2", "anchor": "dog", "partner": "cat", "target_class": "airplane / horse", "target_classes": ["airplane", "horse"], "target_a_class_name": "airplane", "target_b_class_name": "horse", "n": 3, "I_a_s": 0.125, "I_b_s": -0.20833333333333331, "I_a_s_sem": 0.07216878364870323, "I_b_s_sem": 0.04166666666666667, "I_a_c": 0.04745122029756506, "I_b_c": -0.13099411079504839, "I_a_c_sem": 0.06279463109074335, "I_b_c_sem": 0.014116927440349585, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.39107412099838257, "cos_source": 0.6089258790016174, "d_anc_tgt": 0.6689342260360718, "d_par_tgt": 0.5820205807685852, "a_cross": 0.5162463784217834, "b_cross": 0.5680851936340332, "cross_alignment_gap": -0.16662323474884033, "cos_attack": -0.16662323474884033, "cos_attack_dir": 0.04394134506583214, "motif_label": "cross_aligned_swapped", "source_stratum": "near", "alignment_type": "cross_aligned", "target_target_distance": 0.6319902539253235}, {"row_id": "C2-3", "dataset": "C2", "anchor": "dog", "partner": "cat", "target_class": "ship / truck", "target_classes": ["ship", "truck"], "target_a_class_name": "ship", "target_b_class_name": "truck", "n": 3, "I_a_s": -0.125, "I_b_s": 0.0, "I_a_s_sem": 0.07216878364870323, "I_b_s_sem": 0.0, "I_a_c": -0.058707759152942636, "I_b_c": 0.02021450211759657, "I_a_c_sem": 0.007140692326258119, "I_b_c_sem": 0.03171543379579164, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.39107412099838257, "cos_source": 0.6089258790016174, "d_anc_tgt": 0.678178608417511, "d_par_tgt": 0.6187872886657715, "a_cross": 0.659410834312439, "b_cross": 0.6089869737625122, "cross_alignment_gap": -0.0285680890083313, "cos_attack": -0.0285680890083313, "cos_attack_dir": 0.21911877393722534, "motif_label": "both_hard_far", "source_stratum": "near", "alignment_type": "cross_aligned", "target_target_distance": 0.5802785754203796}, {"row_id": "C2-4", "dataset": "C2", "anchor": "dog", "partner": "deer", "target_class": "cat / bird", "target_classes": ["cat", "bird"], "target_a_class_name": "cat", "target_b_class_name": "bird", "n": 3, "I_a_s": 0.25, "I_b_s": 0.0, "I_a_s_sem": 0.0, "I_b_s_sem": 0.0, "I_a_c": 0.10489627299830316, "I_b_c": 0.027094982797279954, "I_a_c_sem": 0.028440231409784456, "I_b_c_sem": 0.0310892267312749, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.5543463230133057, "cos_source": 0.44565367698669434, "d_anc_tgt": 0.39107412099838257, "d_par_tgt": 0.4731823205947876, "a_cross": 0.5690615177154541, "b_cross": 0.5025486350059509, "cross_alignment_gap": 0.20735371112823486, "cos_attack": 0.20735371112823486, "cos_attack_dir": 0.03312765806913376, "motif_label": "own_aligned_easy", "source_stratum": "mid_near", "alignment_type": "own_aligned", "target_target_distance": 0.4896228313446045}, {"row_id": "C2-5", "dataset": "C2", "anchor": "dog", "partner": "deer", "target_class": "automobile / airplane", "target_classes": ["automobile", "airplane"], "target_a_class_name": "automobile", "target_b_class_name": "airplane", "n": 3, "I_a_s": -0.04166666666666667, "I_b_s": -0.08333333333333334, "I_a_s_sem": 0.18162078931419476, "I_b_s_sem": 0.04166666666666667, "I_a_c": -0.06788203015457839, "I_b_c": -0.061644602566957474, "I_a_c_sem": 0.07492827965247058, "I_b_c_sem": 0.06105095750348971, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.5543463230133057, "cos_source": 0.44565367698669434, "d_anc_tgt": 0.6543991565704346, "d_par_tgt": 0.6046143770217896, "a_cross": 0.6689342260360718, "b_cross": 0.6954783201217651, "cross_alignment_gap": 0.10539901256561279, "cos_attack": 0.10539901256561279, "cos_attack_dir": 0.1612260490655899, "motif_label": "own_aligned_far_apart", "source_stratum": "mid_near", "alignment_type": "own_aligned", "target_target_distance": 0.6062602996826172}, {"row_id": "C2-6", "dataset": "C2", "anchor": "dog", "partner": "deer", "target_class": "bird / cat", "target_classes": ["bird", "cat"], "target_a_class_name": "bird", "target_b_class_name": "cat", "n": 3, "I_a_s": -0.16666666666666669, "I_b_s": 0.0, "I_a_s_sem": 0.11023963796102462, "I_b_s_sem": 0.07216878364870323, "I_a_c": -0.01758060734330986, "I_b_c": 0.01156161221054693, "I_a_c_sem": 0.07278449461160535, "I_b_c_sem": 0.03971001509664095, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.5543463230133057, "cos_source": 0.44565367698669434, "d_anc_tgt": 0.5690615177154541, "d_par_tgt": 0.5025486350059509, "a_cross": 0.39107412099838257, "b_cross": 0.4731823205947876, "cross_alignment_gap": -0.20735371112823486, "cos_attack": -0.20735371112823486, "cos_attack_dir": -0.16382324695587158, "motif_label": "cross_aligned_swapped", "source_stratum": "mid_near", "alignment_type": "cross_aligned", "target_target_distance": 0.4896228313446045}, {"row_id": "C2-7", "dataset": "C2", "anchor": "dog", "partner": "deer", "target_class": "ship / automobile", "target_classes": ["ship", "automobile"], "target_a_class_name": "ship", "target_b_class_name": "automobile", "n": 3, "I_a_s": 0.04166666666666667, "I_b_s": -0.04166666666666667, "I_a_s_sem": 0.1502313031443329, "I_b_s_sem": 0.04166666666666667, "I_a_c": 0.02689886622829364, "I_b_c": 0.01175622563672124, "I_a_c_sem": 0.05979486716139377, "I_b_c_sem": 0.02190113787295775, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.5543463230133057, "cos_source": 0.44565367698669434, "d_anc_tgt": 0.678178608417511, "d_par_tgt": 0.6954783201217651, "a_cross": 0.6543991565704346, "b_cross": 0.6706514954566956, "cross_alignment_gap": -0.048606276512145996, "cos_attack": -0.048606276512145996, "cos_attack_dir": 0.12758788466453552, "motif_label": "both_hard_far", "source_stratum": "mid_near", "alignment_type": "cross_aligned", "target_target_distance": 0.5940215587615967}, {"row_id": "C2-8", "dataset": "C2", "anchor": "dog", "partner": "frog", "target_class": "horse / bird", "target_classes": ["horse", "bird"], "target_a_class_name": "horse", "target_b_class_name": "bird", "n": 3, "I_a_s": 0.0, "I_b_s": 0.0, "I_a_s_sem": 0.0, "I_b_s_sem": 0.0, "I_a_c": 0.030814115268488727, "I_b_c": -0.041120117736378824, "I_a_c_sem": 0.05162338627126917, "I_b_c_sem": 0.012933211912981399, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.6073779463768005, "cos_source": 0.39262205362319946, "d_anc_tgt": 0.5162463784217834, "d_par_tgt": 0.5400217771530151, "a_cross": 0.5690615177154541, "b_cross": 0.6753582954406738, "cross_alignment_gap": 0.18815165758132935, "cos_attack": 0.18815165758132935, "cos_attack_dir": 0.06089622154831886, "motif_label": "own_aligned_easy", "source_stratum": "medium", "alignment_type": "own_aligned", "target_target_distance": 0.5737546682357788}, {"row_id": "C2-9", "dataset": "C2", "anchor": "dog", "partner": "frog", "target_class": "horse / ship", "target_classes": ["horse", "ship"], "target_a_class_name": "horse", "target_b_class_name": "ship", "n": 3, "I_a_s": -0.08333333333333334, "I_b_s": 0.08333333333333334, "I_a_s_sem": 0.04166666666666667, "I_b_s_sem": 0.08333333333333334, "I_a_c": 0.010720299149397743, "I_b_c": 0.010402283590641066, "I_a_c_sem": 0.021477182238980114, "I_b_c_sem": 0.08063104248773185, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.6073779463768005, "cos_source": 0.39262205362319946, "d_anc_tgt": 0.5162463784217834, "d_par_tgt": 0.6644395589828491, "a_cross": 0.678178608417511, "b_cross": 0.6753582954406738, "cross_alignment_gap": 0.17285096645355225, "cos_attack": 0.17285096645355225, "cos_attack_dir": 0.04940178990364075, "motif_label": "own_aligned_far_apart", "source_stratum": "medium", "alignment_type": "own_aligned", "target_target_distance": 0.6868035197257996}, {"row_id": "C2-10", "dataset": "C2", "anchor": "dog", "partner": "frog", "target_class": "bird / horse", "target_classes": ["bird", "horse"], "target_a_class_name": "bird", "target_b_class_name": "horse", "n": 3, "I_a_s": -0.08333333333333334, "I_b_s": 0.16666666666666669, "I_a_s_sem": 0.08333333333333334, "I_b_s_sem": 0.08333333333333334, "I_a_c": 0.028755303161839656, "I_b_c": 0.09855997539125383, "I_a_c_sem": 0.0265281832839802, "I_b_c_sem": 0.05126173545299638, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.6073779463768005, "cos_source": 0.39262205362319946, "d_anc_tgt": 0.5690615177154541, "d_par_tgt": 0.6753582954406738, "a_cross": 0.5162463784217834, "b_cross": 0.5400217771530151, "cross_alignment_gap": -0.18815165758132935, "cos_attack": -0.18815165758132935, "cos_attack_dir": -0.10027065128087997, "motif_label": "cross_aligned_swapped", "source_stratum": "medium", "alignment_type": "cross_aligned", "target_target_distance": 0.5737546682357788}, {"row_id": "C2-11", "dataset": "C2", "anchor": "dog", "partner": "frog", "target_class": "ship / airplane", "target_classes": ["ship", "airplane"], "target_a_class_name": "ship", "target_b_class_name": "airplane", "n": 3, "I_a_s": 0.16666666666666669, "I_b_s": -0.08333333333333334, "I_a_s_sem": 0.16666666666666669, "I_b_s_sem": 0.04166666666666667, "I_a_c": 0.07434785222479452, "I_b_c": -0.09491690828144783, "I_a_c_sem": 0.09008428311182978, "I_b_c_sem": 0.053168326189350135, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.6073779463768005, "cos_source": 0.39262205362319946, "d_anc_tgt": 0.678178608417511, "d_par_tgt": 0.681496262550354, "a_cross": 0.6689342260360718, "b_cross": 0.6644395589828491, "cross_alignment_gap": -0.026301085948944092, "cos_attack": -0.026301085948944092, "cos_attack_dir": 0.16323089599609375, "motif_label": "both_hard_far", "source_stratum": "medium", "alignment_type": "cross_aligned", "target_target_distance": 0.507644772529602}, {"row_id": "C2-12", "dataset": "C2", "anchor": "dog", "partner": "ship", "target_class": "cat / airplane", "target_classes": ["cat", "airplane"], "target_a_class_name": "cat", "target_b_class_name": "airplane", "n": 3, "I_a_s": 0.16666666666666669, "I_b_s": 0.0, "I_a_s_sem": 0.08333333333333334, "I_b_s_sem": 0.0, "I_a_c": 0.1308537075916926, "I_b_c": 0.018882955906519776, "I_a_c_sem": 0.05152971908596642, "I_b_c_sem": 0.044269360379023265, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.678178608417511, "cos_source": 0.321821391582489, "d_anc_tgt": 0.39107412099838257, "d_par_tgt": 0.507644772529602, "a_cross": 0.6689342260360718, "b_cross": 0.6089869737625122, "cross_alignment_gap": 0.37920230627059937, "cos_attack": 0.37920230627059937, "cos_attack_dir": 0.03324228525161743, "motif_label": "own_aligned_easy", "source_stratum": "far", "alignment_type": "own_aligned", "target_target_distance": 0.5680851936340332}, {"row_id": "C2-13", "dataset": "C2", "anchor": "dog", "partner": "ship", "target_class": "deer / automobile", "target_classes": ["deer", "automobile"], "target_a_class_name": "deer", "target_b_class_name": "automobile", "n": 3, "I_a_s": 0.0, "I_b_s": 0.04166666666666667, "I_a_s_sem": 0.125, "I_b_s_sem": 0.04166666666666667, "I_a_c": 0.03246869767705599, "I_b_c": -0.01961700449949907, "I_a_c_sem": 0.044250625591555126, "I_b_c_sem": 0.020777964721703023, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.678178608417511, "cos_source": 0.321821391582489, "d_anc_tgt": 0.5543463230133057, "d_par_tgt": 0.5940215587615967, "a_cross": 0.6543991565704346, "b_cross": 0.6706514954566956, "cross_alignment_gap": 0.17668277025222778, "cos_attack": 0.17668277025222778, "cos_attack_dir": -0.04241112619638443, "motif_label": "own_aligned_far_apart", "source_stratum": "far", "alignment_type": "own_aligned", "target_target_distance": 0.6954783201217651}, {"row_id": "C2-14", "dataset": "C2", "anchor": "dog", "partner": "ship", "target_class": "airplane / cat", "target_classes": ["airplane", "cat"], "target_a_class_name": "airplane", "target_b_class_name": "cat", "n": 3, "I_a_s": 0.0, "I_b_s": 0.125, "I_a_s_sem": 0.07216878364870323, "I_b_s_sem": 0.125, "I_a_c": 0.04770499964555104, "I_b_c": 0.0861106307832718, "I_a_c_sem": 0.04718353101537497, "I_b_c_sem": 0.0795013469401107, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.678178608417511, "cos_source": 0.321821391582489, "d_anc_tgt": 0.6689342260360718, "d_par_tgt": 0.6089869737625122, "a_cross": 0.39107412099838257, "b_cross": 0.507644772529602, "cross_alignment_gap": -0.37920230627059937, "cos_attack": -0.37920230627059937, "cos_attack_dir": -0.26740962266921997, "motif_label": "cross_aligned_swapped", "source_stratum": "far", "alignment_type": "cross_aligned", "target_target_distance": 0.5680851936340332}, {"row_id": "C2-15", "dataset": "C2", "anchor": "dog", "partner": "ship", "target_class": "airplane / horse", "target_classes": ["airplane", "horse"], "target_a_class_name": "airplane", "target_b_class_name": "horse", "n": 3, "I_a_s": -0.04166666666666667, "I_b_s": -0.04166666666666667, "I_a_s_sem": 0.08333333333333334, "I_b_s_sem": 0.11023963796102462, "I_a_c": -0.06453408673405647, "I_b_c": -0.0027683628723025166, "I_a_c_sem": 0.029717455257094853, "I_b_c_sem": 0.05835548479011124, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.678178608417511, "cos_source": 0.321821391582489, "d_anc_tgt": 0.6689342260360718, "d_par_tgt": 0.6868035197257996, "a_cross": 0.5162463784217834, "b_cross": 0.507644772529602, "cross_alignment_gap": -0.33184659481048584, "cos_attack": -0.33184659481048584, "cos_attack_dir": -0.21272426843643188, "motif_label": "both_hard_far", "source_stratum": "far", "alignment_type": "cross_aligned", "target_target_distance": 0.6319902539253235}, {"row_id": "C2-16", "dataset": "C2", "anchor": "dog", "partner": "truck", "target_class": "cat / automobile", "target_classes": ["cat", "automobile"], "target_a_class_name": "cat", "target_b_class_name": "automobile", "n": 8, "I_a_s": 0.015625, "I_b_s": -0.09375, "I_a_s_sem": 0.05508465481809404, "I_b_s_sem": 0.0657630351011439, "I_a_c": 0.030317374865262536, "I_b_c": -0.04185032722671167, "I_a_c_sem": 0.036797903779770116, "I_b_c_sem": 0.02629146754328985, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.659410834312439, "cos_source": 0.34058916568756104, "d_anc_tgt": 0.39107412099838257, "d_par_tgt": 0.49322670698165894, "a_cross": 0.6543991565704346, "b_cross": 0.6187872886657715, "cross_alignment_gap": 0.38888561725616455, "cos_attack": 0.38888561725616455, "cos_attack_dir": 0.0011164955794811249, "motif_label": "own_aligned_easy", "source_stratum": "mid_far", "alignment_type": "own_aligned", "target_target_distance": 0.6126067638397217}, {"row_id": "C2-17", "dataset": "C2", "anchor": "dog", "partner": "truck", "target_class": "deer / automobile", "target_classes": ["deer", "automobile"], "target_a_class_name": "deer", "target_b_class_name": "automobile", "n": 3, "I_a_s": 0.0, "I_b_s": 0.04166666666666667, "I_a_s_sem": 0.0, "I_b_s_sem": 0.08333333333333334, "I_a_c": 0.02956432973345121, "I_b_c": 0.014215050265192986, "I_a_c_sem": 0.035687018354967716, "I_b_c_sem": 0.03777314421292985, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.659410834312439, "cos_source": 0.34058916568756104, "d_anc_tgt": 0.5543463230133057, "d_par_tgt": 0.49322670698165894, "a_cross": 0.6543991565704346, "b_cross": 0.6817440986633301, "cross_alignment_gap": 0.28857022523880005, "cos_attack": 0.28857022523880005, "cos_attack_dir": -0.018100496381521225, "motif_label": "own_aligned_far_apart", "source_stratum": "mid_far", "alignment_type": "own_aligned", "target_target_distance": 0.6954783201217651}, {"row_id": "C2-18", "dataset": "C2", "anchor": "dog", "partner": "truck", "target_class": "automobile / cat", "target_classes": ["automobile", "cat"], "target_a_class_name": "automobile", "target_b_class_name": "cat", "n": 3, "I_a_s": 0.0, "I_b_s": 0.0, "I_a_s_sem": 0.125, "I_b_s_sem": 0.0, "I_a_c": -0.024575781038341425, "I_b_c": -0.0066024139523506165, "I_a_c_sem": 0.033040475345902126, "I_b_c_sem": 0.012255132061197837, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.659410834312439, "cos_source": 0.34058916568756104, "d_anc_tgt": 0.6543991565704346, "d_par_tgt": 0.6187872886657715, "a_cross": 0.39107412099838257, "b_cross": 0.49322670698165894, "cross_alignment_gap": -0.38888561725616455, "cos_attack": -0.38888561725616455, "cos_attack_dir": -0.3006381094455719, "motif_label": "cross_aligned_swapped", "source_stratum": "mid_far", "alignment_type": "cross_aligned", "target_target_distance": 0.6126067638397217}, {"row_id": "C2-19", "dataset": "C2", "anchor": "dog", "partner": "truck", "target_class": "ship / deer", "target_classes": ["ship", "deer"], "target_a_class_name": "ship", "target_b_class_name": "deer", "n": 3, "I_a_s": -0.16666666666666669, "I_b_s": 0.08333333333333334, "I_a_s_sem": 0.08333333333333334, "I_b_s_sem": 0.1502313031443329, "I_a_c": -0.07747965956029172, "I_b_c": 0.023919241735711676, "I_a_c_sem": 0.011851296290807051, "I_b_c_sem": 0.10122674285917846, "solo_anc_s": null, "solo_par_s": null, "dual_anc_s": null, "dual_par_s": null, "solo_anc_c": null, "solo_par_c": null, "dual_anc_c": null, "dual_par_c": null, "d_ab": 0.659410834312439, "cos_source": 0.34058916568756104, "d_anc_tgt": 0.678178608417511, "d_par_tgt": 0.6817440986633301, "a_cross": 0.5543463230133057, "b_cross": 0.5802785754203796, "cross_alignment_gap": -0.22529780864715576, "cos_attack": -0.22529780864715576, "cos_attack_dir": -0.14297229051589966, "motif_label": "both_hard_far", "source_stratum": "mid_far", "alignment_type": "cross_aligned", "target_target_distance": 0.6706514954566956}]}, "C2mini": {"label": "C2 mini", "alignment_label": "cross-alignment gap", "rows": [{"row_id": "C2mini-0", "dataset": "C2mini", "anchor": "dog", "partner": "frog", "target_class": "cat / bird", "target_classes": ["cat", "bird"], "target_a_class_name": "cat", "target_b_class_name": "bird", "n": 6, "I_a_s": -0.041666666666666664, "I_b_s": 0.08333333333333333, "I_a_s_sem": 0.0768295371441074, "I_b_s_sem": 0.08936504412303008, "I_a_c": -0.07796468210290186, "I_b_c": 0.04125795855846567, "I_a_c_sem": 0.05455761821040668, "I_b_c_sem": 0.052340090875613234, "solo_anc_s": 0.7291666666666666, "solo_par_s": 0.5625, "dual_anc_s": 0.6875, "dual_par_s": 0.6458333333333334, "solo_anc_c": 0.7023641657724511, "solo_par_c": 0.560070325465252, "dual_anc_c": 0.6243994836695492, "dual_par_c": 0.6013282840237176, "d_ab": 0.6073779463768005, "cos_source": 0.39262205362319946, "d_anc_tgt": 0.39107412099838257, "d_par_tgt": 0.5400217771530151, "a_cross": 0.5690615177154541, "b_cross": 0.5166683793067932, "target_target_distance": 0.4896228313446045, "cross_alignment_gap": 0.1546339988708496, "cos_attack": 0.1546339988708496, "cos_attack_dir": -0.01102370023727417, "motif_label": "c2_mini_easy_close", "source_stratum": "medium", "alignment_type": "mixed", "condition": "dog_vs_frog_easy_close", "same_source_clone": false}, {"row_id": "C2mini-1", "dataset": "C2mini", "anchor": "dog", "partner": "frog", "target_class": "cat / truck", "target_classes": ["cat", "truck"], "target_a_class_name": "cat", "target_b_class_name": "truck", "n": 6, "I_a_s": -0.125, "I_b_s": 0.125, "I_a_s_sem": 0.07216878364870323, "I_b_s_sem": 0.07216878364870323, "I_a_c": -0.1008267778888694, "I_b_c": 0.04407105310504752, "I_a_c_sem": 0.06290073303652774, "I_b_c_sem": 0.03048970432711181, "solo_anc_s": 0.7291666666666666, "solo_par_s": 0.2708333333333333, "dual_anc_s": 0.6041666666666666, "dual_par_s": 0.3958333333333333, "solo_anc_c": 0.7023641657724511, "solo_par_c": 0.32775269410558394, "dual_anc_c": 0.6015373878835817, "dual_par_c": 0.37182374721063144, "d_ab": 0.6073779463768005, "cos_source": 0.39262205362319946, "d_anc_tgt": 0.39107412099838257, "d_par_tgt": 0.6482031345367432, "a_cross": 0.659410834312439, "b_cross": 0.5166683793067932, "target_target_distance": 0.6187872886657715, "cross_alignment_gap": 0.13680195808410645, "cos_attack": 0.13680195808410645, "cos_attack_dir": -0.051028504967689514, "motif_label": "c2_mini_easy_far", "source_stratum": "medium", "alignment_type": "mixed", "condition": "dog_vs_frog_easy_far", "same_source_clone": false}, {"row_id": "C2mini-2", "dataset": "C2mini", "anchor": "dog", "partner": "frog", "target_class": "truck / automobile", "target_classes": ["truck", "automobile"], "target_a_class_name": "truck", "target_b_class_name": "automobile", "n": 6, "I_a_s": -0.0625, "I_b_s": -0.020833333333333332, "I_a_s_sem": 0.05352180241110471, "I_b_s_sem": 0.05965758776365148, "I_a_c": -0.007751480569519724, "I_b_c": -0.04926017787935658, "I_a_c_sem": 0.050919204884403844, "I_b_c_sem": 0.03619087609725099, "solo_anc_s": 0.2916666666666667, "solo_par_s": 0.6041666666666666, "dual_anc_s": 0.22916666666666666, "dual_par_s": 0.5833333333333334, "solo_anc_c": 0.2978220386139583, "solo_par_c": 0.5901061058878744, "dual_anc_c": 0.29007055804443854, "dual_par_c": 0.5408459280085177, "d_ab": 0.6073779463768005, "cos_source": 0.39262205362319946, "d_anc_tgt": 0.659410834312439, "d_par_tgt": 0.6586825847625732, "a_cross": 0.6543991565704346, "b_cross": 0.6482031345367432, "target_target_distance": 0.49322670698165894, "cross_alignment_gap": -0.015491127967834473, "cos_attack": -0.015491127967834473, "cos_attack_dir": 0.1552649289369583, "motif_label": "c2_mini_hard_close", "source_stratum": "medium", "alignment_type": "cross_aligned", "condition": "dog_vs_frog_hard_close", "same_source_clone": false}, {"row_id": "C2mini-3", "dataset": "C2mini", "anchor": "dog", "partner": "frog", "target_class": "ship / horse", "target_classes": ["ship", "horse"], "target_a_class_name": "ship", "target_b_class_name": "horse", "n": 6, "I_a_s": -0.0625, "I_b_s": 0.0, "I_a_s_sem": 0.07034142923389222, "I_b_s_sem": 0.0790569415042095, "I_a_c": 0.010912348070434064, "I_b_c": -0.03948065884227011, "I_a_c_sem": 0.031544883222676824, "I_b_c_sem": 0.032914429018517856, "solo_anc_s": 0.5625, "solo_par_s": 0.5416666666666666, "dual_anc_s": 0.5, "dual_par_s": 0.5416666666666666, "solo_anc_c": 0.5159642449495246, "solo_par_c": 0.5579334739522892, "dual_anc_c": 0.5268765930199587, "dual_par_c": 0.5184528151100191, "d_ab": 0.6073779463768005, "cos_source": 0.39262205362319946, "d_anc_tgt": 0.678178608417511, "d_par_tgt": 0.6753582954406738, "a_cross": 0.5162463784217834, "b_cross": 0.6644395589828491, "target_target_distance": 0.6868035197257996, "cross_alignment_gap": -0.17285096645355225, "cos_attack": -0.17285096645355225, "cos_attack_dir": -0.07840514183044434, "motif_label": "c2_mini_hard_far", "source_stratum": "medium", "alignment_type": "cross_aligned", "condition": "dog_vs_frog_hard_far", "same_source_clone": false}]}, "C6": {"label": "C6", "alignment_label": "target-pair distance", "rows": [{"row_id": "C6-0", "dataset": "C6", "anchor": "airplane", "partner": "airplane", "target_class": "dog", "target_classes": ["dog"], "target_a_class_name": "dog", "target_b_class_name": "dog", "n": 8, "I_a_s": 0.03125, "I_b_s": 0.046875, "I_a_s_sem": 0.020457927209624284, "I_b_s_sem": 0.16184190229753762, "I_a_c": 0.028568903376807953, "I_b_c": 0.01847880039305494, "I_a_c_sem": 0.03396975321617961, "I_b_c_sem": 0.11429296764848759, "solo_anc_s": 0.28125, "solo_par_s": 0.296875, "dual_anc_s": 0.3125, "dual_par_s": 0.34375, "solo_anc_c": 0.2882578220972505, "solo_par_c": 0.32837762409401705, "dual_anc_c": 0.31682672547405843, "dual_par_c": 0.346856424487072, "d_ab": 0.007751360535621643, "cos_source": 0.9922486394643784, "d_anc_tgt": 0.6689342260360718, "d_par_tgt": 0.6689342260360718, "a_cross": null, "b_cross": null, "target_target_distance": 0.007751360535621643, "cross_alignment_gap": 0.007751360535621643, "gradient_cosine": 0.689290426671505, "cos_attack": 0.007751360535621643, "cos_attack_dir": 0.007751360535621643, "motif_label": "c6_closest", "source_stratum": "closest", "alignment_type": "target_pair_similarity", "condition": "airplane_to_dog_closest", "pair_key": "airplane_to_dog_closest", "pair_keys": ["airplane_to_dog_closest_p01", "airplane_to_dog_closest_p02", "airplane_to_dog_closest_p03", "airplane_to_dog_closest_p04", "airplane_to_dog_closest_p05", "airplane_to_dog_closest_p06", "airplane_to_dog_closest_p07", "airplane_to_dog_closest_p08"], "pair_number": null, "pair_numbers": ["1", "2", "3", "4", "5", "6", "7", "8"], "target_pair_left_index": null, "target_pair_right_index": null}, {"row_id": "C6-1", "dataset": "C6", "anchor": "airplane", "partner": "airplane", "target_class": "dog", "target_classes": ["dog"], "target_a_class_name": "dog", "target_b_class_name": "dog", "n": 8, "I_a_s": -0.03125, "I_b_s": -0.109375, "I_a_s_sem": 0.03917394815800054, "I_b_s_sem": 0.06861797387919373, "I_a_c": -0.024399952280305115, "I_b_c": -0.09495969089204692, "I_a_c_sem": 0.028678994422650542, "I_b_c_sem": 0.06014249803129093, "solo_anc_s": 0.4375, "solo_par_s": 0.3125, "dual_anc_s": 0.40625, "dual_par_s": 0.203125, "solo_anc_c": 0.417120438494905, "solo_par_c": 0.35359540663353073, "dual_anc_c": 0.3927204862145999, "dual_par_c": 0.2586357157414838, "d_ab": 0.14614352583885193, "cos_source": 0.8538564741611481, "d_anc_tgt": 0.6689342260360718, "d_par_tgt": 0.6689342260360718, "a_cross": null, "b_cross": null, "target_target_distance": 0.14614352583885193, "cross_alignment_gap": 0.14614352583885193, "gradient_cosine": 0.25355345755815506, "cos_attack": 0.14614352583885193, "cos_attack_dir": 0.14614352583885193, "motif_label": "c6_random", "source_stratum": "random", "alignment_type": "target_pair_similarity", "condition": "airplane_to_dog_random", "pair_key": "airplane_to_dog_random", "pair_keys": ["airplane_to_dog_random_p01", "airplane_to_dog_random_p02", "airplane_to_dog_random_p03", "airplane_to_dog_random_p04", "airplane_to_dog_random_p05", "airplane_to_dog_random_p06", "airplane_to_dog_random_p07", "airplane_to_dog_random_p08"], "pair_number": null, "pair_numbers": ["1", "2", "3", "4", "5", "6", "7", "8"], "target_pair_left_index": null, "target_pair_right_index": null}, {"row_id": "C6-2", "dataset": "C6", "anchor": "bird", "partner": "bird", "target_class": "truck", "target_classes": ["truck"], "target_a_class_name": "truck", "target_b_class_name": "truck", "n": 8, "I_a_s": 0.015625, "I_b_s": -0.015625, "I_a_s_sem": 0.043797805514170944, "I_b_s_sem": 0.028322717724217676, "I_a_c": -0.011861570005152089, "I_b_c": 0.014302136260013754, "I_a_c_sem": 0.03465538331776445, "I_b_c_sem": 0.04469517867777652, "solo_anc_s": 0.453125, "solo_par_s": 0.203125, "dual_anc_s": 0.46875, "dual_par_s": 0.1875, "solo_anc_c": 0.4363464479561969, "solo_par_c": 0.21018114929087517, "dual_anc_c": 0.42448487795104484, "dual_par_c": 0.22448328555088892, "d_ab": 0.0173182412981987, "cos_source": 0.9826817587018013, "d_anc_tgt": 0.6593060493469238, "d_par_tgt": 0.6593060493469238, "a_cross": null, "b_cross": null, "target_target_distance": 0.0173182412981987, "cross_alignment_gap": 0.0173182412981987, "gradient_cosine": 0.48717937245965004, "cos_attack": 0.0173182412981987, "cos_attack_dir": 0.0173182412981987, "motif_label": "c6_closest", "source_stratum": "closest", "alignment_type": "target_pair_similarity", "condition": "bird_to_truck_closest", "pair_key": "bird_to_truck_closest", "pair_keys": ["bird_to_truck_closest_p01", "bird_to_truck_closest_p02", "bird_to_truck_closest_p03", "bird_to_truck_closest_p04", "bird_to_truck_closest_p05", "bird_to_truck_closest_p06", "bird_to_truck_closest_p07", "bird_to_truck_closest_p08"], "pair_number": null, "pair_numbers": ["1", "2", "3", "4", "5", "6", "7", "8"], "target_pair_left_index": null, "target_pair_right_index": null}, {"row_id": "C6-3", "dataset": "C6", "anchor": "bird", "partner": "bird", "target_class": "truck", "target_classes": ["truck"], "target_a_class_name": "truck", "target_b_class_name": "truck", "n": 8, "I_a_s": -0.09375, "I_b_s": -0.078125, "I_a_s_sem": 0.03125, "I_b_s_sem": 0.05756159356351619, "I_a_c": -0.07938813955775004, "I_b_c": -0.09676558532805757, "I_a_c_sem": 0.0321548329641488, "I_b_c_sem": 0.04385938546498552, "solo_anc_s": 0.421875, "solo_par_s": 0.296875, "dual_anc_s": 0.328125, "dual_par_s": 0.21875, "solo_anc_c": 0.40238390619919073, "solo_par_c": 0.30062834092495905, "dual_anc_c": 0.3229957666414407, "dual_par_c": 0.20386275559690148, "d_ab": 0.13970445096492767, "cos_source": 0.8602955490350723, "d_anc_tgt": 0.6593060493469238, "d_par_tgt": 0.6593060493469238, "a_cross": null, "b_cross": null, "target_target_distance": 0.13970445096492767, "cross_alignment_gap": 0.13970445096492767, "gradient_cosine": 0.21403708308935165, "cos_attack": 0.13970445096492767, "cos_attack_dir": 0.13970445096492767, "motif_label": "c6_random", "source_stratum": "random", "alignment_type": "target_pair_similarity", "condition": "bird_to_truck_random", "pair_key": "bird_to_truck_random", "pair_keys": ["bird_to_truck_random_p01", "bird_to_truck_random_p02", "bird_to_truck_random_p03", "bird_to_truck_random_p04", "bird_to_truck_random_p05", "bird_to_truck_random_p06", "bird_to_truck_random_p07", "bird_to_truck_random_p08"], "pair_number": null, "pair_numbers": ["1", "2", "3", "4", "5", "6", "7", "8"], "target_pair_left_index": null, "target_pair_right_index": null}, {"row_id": "C6-4", "dataset": "C6", "anchor": "cat", "partner": "cat", "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane", "n": 8, "I_a_s": 0.078125, "I_b_s": -0.078125, "I_a_s_sem": 0.04687499999999999, "I_b_s_sem": 0.05249096435850378, "I_a_c": 0.06423879251815379, "I_b_c": -0.002636532623000676, "I_a_c_sem": 0.0331926928484882, "I_b_c_sem": 0.026898771960389846, "solo_anc_s": 0.828125, "solo_par_s": 0.703125, "dual_anc_s": 0.90625, "dual_par_s": 0.625, "solo_anc_c": 0.7750870937015861, "solo_par_c": 0.6301180620612286, "dual_anc_c": 0.8393258862197399, "dual_par_c": 0.6274815294382279, "d_ab": 0.019109278917312622, "cos_source": 0.9808907210826874, "d_anc_tgt": 0.5680851936340332, "d_par_tgt": 0.5680851936340332, "a_cross": null, "b_cross": null, "target_target_distance": 0.019109278917312622, "cross_alignment_gap": 0.019109278917312622, "gradient_cosine": 0.45855074003338814, "cos_attack": 0.019109278917312622, "cos_attack_dir": 0.019109278917312622, "motif_label": "c6_closest", "source_stratum": "closest", "alignment_type": "target_pair_similarity", "condition": "cat_to_airplane_closest", "pair_key": "cat_to_airplane_closest", "pair_keys": ["cat_to_airplane_closest_p01", "cat_to_airplane_closest_p02", "cat_to_airplane_closest_p03", "cat_to_airplane_closest_p04", "cat_to_airplane_closest_p05", "cat_to_airplane_closest_p06", "cat_to_airplane_closest_p07", "cat_to_airplane_closest_p08"], "pair_number": null, "pair_numbers": ["1", "2", "3", "4", "5", "6", "7", "8"], "target_pair_left_index": null, "target_pair_right_index": null}, {"row_id": "C6-5", "dataset": "C6", "anchor": "cat", "partner": "cat", "target_class": "airplane", "target_classes": ["airplane"], "target_a_class_name": "airplane", "target_b_class_name": "airplane", "n": 8, "I_a_s": -0.0625, "I_b_s": -0.046875, "I_a_s_sem": 0.04091585441924857, "I_b_s_sem": 0.04048740434646664, "I_a_c": -0.05483492198618478, "I_b_c": -0.0066142631790171436, "I_a_c_sem": 0.03996545422516211, "I_b_c_sem": 0.016754132095572333, "solo_anc_s": 0.84375, "solo_par_s": 0.734375, "dual_anc_s": 0.78125, "dual_par_s": 0.6875, "solo_anc_c": 0.7899522302759578, "solo_par_c": 0.6779214231683, "dual_anc_c": 0.7351173082897731, "dual_par_c": 0.6713071599892828, "d_ab": 0.3461465835571289, "cos_source": 0.6538534164428711, "d_anc_tgt": 0.5680851936340332, "d_par_tgt": 0.5680851936340332, "a_cross": null, "b_cross": null, "target_target_distance": 0.3461465835571289, "cross_alignment_gap": 0.3461465835571289, "gradient_cosine": 0.16389141511172056, "cos_attack": 0.3461465835571289, "cos_attack_dir": 0.3461465835571289, "motif_label": "c6_random", "source_stratum": "random", "alignment_type": "target_pair_similarity", "condition": "cat_to_airplane_random", "pair_key": "cat_to_airplane_random", "pair_keys": ["cat_to_airplane_random_p01", "cat_to_airplane_random_p02", "cat_to_airplane_random_p03", "cat_to_airplane_random_p04", "cat_to_airplane_random_p05", "cat_to_airplane_random_p06", "cat_to_airplane_random_p07", "cat_to_airplane_random_p08"], "pair_number": null, "pair_numbers": ["1", "2", "3", "4", "5", "6", "7", "8"], "target_pair_left_index": null, "target_pair_right_index": null}]}};
+
+const ROLE = { bird: 'near', cat: 'mid', frog: 'far' };
+const ANCHOR_COLORS = {
+  bird: '#2b6cb0', cat: '#c2414d', frog: '#2f8f46',
+  dog: '#2b6cb0', deer: '#2f8f46', horse: '#7c3aed',
+  ship: '#0f766e', truck: '#b45309', airplane: '#64748b',
+};
+const FALLBACK_COLORS = ['#2b6cb0', '#c2414d', '#2f8f46', '#7c3aed', '#0f766e', '#b45309', '#64748b'];
+const P = Plot;
+
+let currentDatasetName = 'C1';
+let currentMetric = 'confidence';
+let allRows = [];
+let rows = [];
+let colorScale = null;
+let trend = null;
+let currentPlotMode = 'quadrant';
+let useDarkPointStroke = false;
+const currentAlignmentModeByDataset = {
+  C1: 'attack',
+  C2: 'attack',
+  C2mini: 'attack',
+  C6: 'target_pair',
+};
+const METRIC_LABEL = {
+  success: 'Δ success vs solo',
+  confidence: 'Δ target confidence vs solo',
+};
+const METRIC_UNIT = {
+  success: 'percentage points',
+  confidence: 'raw confidence score',
+};
+const activeMotifs = new Set();
+const MOTIF_LABELS = {
+  own_aligned_easy: 'Aligned easy targets',
+  own_aligned_far_apart: 'Aligned targets far apart',
+  cross_aligned_swapped: 'Swapped targets',
+  both_hard_far: 'Hard targets far apart',
+  c2_mini_easy_close: 'Mini easy close',
+  c2_mini_easy_far: 'Mini easy far',
+  c2_mini_hard_close: 'Mini hard close',
+  c2_mini_hard_far: 'Mini hard far',
+  fork_far_apart: 'Same-source fork',
+  c6_closest: 'Closest target images',
+  c6_median: 'Median target images',
+  c6_q75: '75th-percentile target images',
+};
+const MOTIF_DESCRIPTIONS = {
+  c2_mini_easy_close: 'Dog -> cat and frog -> bird. Both source-to-target jumps are easy, and the two targets are close.',
+  c2_mini_easy_far: 'Dog -> cat and frog -> truck. One easy dog target is paired with a farther frog target.',
+  c2_mini_hard_close: 'Dog -> truck and frog -> automobile. Both jumps are harder, with close vehicle targets.',
+  c2_mini_hard_far: 'Dog -> ship and frog -> horse. Both jumps are harder, and the two targets are farther apart.',
+  fork_far_apart: 'Frog runs two same-source attacks at once, forked toward horse and ship, which are far apart in feature space.',
+  c6_closest: 'Two target images from the same true class are chosen from the closest clean-representation pair for that class.',
+  c6_median: 'Two target images from the same true class are chosen near the median clean-representation distance for that class.',
+  c6_q75: 'Two target images from the same true class are chosen near the 75th-percentile clean-representation distance for that class.',
+};
+const ALIGNMENT_MODES = {
+  C1: {
+    attack: {
+      key: 'cos_attack',
+      axisLabel: 'cos(δ_A, δ_B)',
+      titleLabel: 'attack-direction alignment',
+      detailLabel: 'cos(δ_A, δ_B)',
+      subtitleText: 'attack-direction alignment',
+    },
+    source: {
+      key: 'cos_source',
+      axisLabel: 'cos(A, B)',
+      titleLabel: 'source-class cosine',
+      detailLabel: 'cos(A, B)',
+      subtitleText: 'source-class cosine',
+    },
+  },
+  C2: {
+    cross: {
+      key: 'cross_alignment_gap',
+      axisLabel: 'cross-alignment gap',
+      titleLabel: 'cross-target alignment gap',
+      detailLabel: 'cross-alignment gap',
+      subtitleText: 'cross-target alignment gap',
+    },
+    attack: {
+      key: 'cos_attack_dir',
+      axisLabel: 'cos(δ_A, δ_B)',
+      titleLabel: 'attack-direction alignment',
+      detailLabel: 'cos(δ_A, δ_B)',
+      subtitleText: 'attack-direction alignment',
+    },
+    source: {
+      key: 'cos_source',
+      axisLabel: 'cos(A, B)',
+      titleLabel: 'source-class cosine',
+      detailLabel: 'cos(A, B)',
+      subtitleText: 'source-class cosine',
+    },
+  },
+};
+ALIGNMENT_MODES.C2mini = ALIGNMENT_MODES.C2;
+ALIGNMENT_MODES.C6 = {
+  target_pair: {
+    key: 'target_target_distance',
+    axisLabel: 'd(target image A, target image B)',
+    titleLabel: 'target-pair distance',
+    detailLabel: 'd(target image A, target image B)',
+    subtitleText: 'target-image pair distance',
+  },
+  gradient: {
+    key: 'gradient_cosine',
+    axisLabel: 'cos(gradient A, gradient B)',
+    titleLabel: 'target-gradient cosine',
+    detailLabel: 'cos(gradient A, gradient B)',
+    subtitleText: 'target-gradient cosine',
+  },
+  source_target: {
+    key: 'd_anc_tgt',
+    axisLabel: 'd(source class, poison class)',
+    titleLabel: 'source-to-poison class distance',
+    detailLabel: 'd(source class, poison class)',
+    subtitleText: 'source-to-poison class distance',
+  },
+};
+
+function isC2LikeDataset() {
+  return currentDatasetName === 'C2' || currentDatasetName === 'C2mini';
+}
+
+function isMotifDataset() {
+  return isC2LikeDataset() || currentDatasetName === 'C6';
+}
+
+function prepareRows(data) {
+  const suf = currentMetric === 'confidence' ? 'c' : 's';
+  const scale = currentMetric === 'confidence' ? 1 : 100;
+  return data.map((d, index) => {
+    const ia = d[`I_a_${suf}`];
+    const ib = d[`I_b_${suf}`];
+    const iaSem = d[`I_a_${suf}_sem`];
+    const ibSem = d[`I_b_${suf}_sem`];
+    return {
+      ...d,
+      row_id: d.row_id || `${currentDatasetName}-${index}`,
+      target_class: d.target_class || 'airplane',
+      target_classes: d.target_classes || [d.target_class || 'airplane'],
+      'Attacker A': d.anchor,
+      'Attacker B': d.partner,
+      'Target class': d.target_class || 'airplane',
+      Ia:     ia * scale,
+      Ib:     ib * scale,
+      Isem_a: (iaSem || 0) * scale,
+      Isem_b: (ibSem || 0) * scale,
+      Isum:   (ia + ib) * scale,
+      Imean:  (ia + ib) * scale / 2,
+      Iworst: Math.min(ia, ib) * scale,
+    };
+  });
+}
+
+function metricDigits() {
+  return currentMetric === 'confidence' ? 3 : 1;
+}
+
+function metricUnit() {
+  return METRIC_UNIT[currentMetric];
+}
+
+function metricAxisUnit() {
+  return currentMetric === 'confidence' ? 'raw score change' : 'percentage points';
+}
+
+function metricShortLabel() {
+  return currentMetric === 'confidence' ? 'Δ target confidence' : 'Δ success';
+}
+
+function formatMetricValue(value) {
+  return `${value >= 0 ? '+' : ''}${value.toFixed(metricDigits())}`;
+}
+
+function metricLimit(data = rows) {
+  if (currentMetric !== 'confidence') {
+    return 20;
+  }
+  const values = data.flatMap(d => [d.Ia, d.Ib]);
+  const maxAbs = Math.max(0.05, ...values.map(v => Math.abs(v)));
+  return Math.ceil((maxAbs * 1.25) / 0.05) * 0.05;
+}
+
+function quadrantRects(limit) {
+  return [
+    { x: 0,      y: 0,      w:  limit, h:  limit, fill: '#e5f4e9' },
+    { x: -limit, y: -limit, w:  limit, h:  limit, fill: '#fde8eb' },
+    { x: 0,      y: -limit, w:  limit, h:  limit, fill: '#fff1dc' },
+    { x: -limit, y: 0,      w:  limit, h:  limit, fill: '#e5f0fb' },
+  ];
+}
+
+function attackerColor(name) {
+  if (ANCHOR_COLORS[name]) return ANCHOR_COLORS[name];
+  const names = [...new Set(rows.map(row => row.anchor))].sort();
+  const idx = Math.max(0, names.indexOf(name));
+  return FALLBACK_COLORS[idx % FALLBACK_COLORS.length];
+}
+
+function regression(data, xAccessor, yAccessor) {
+  const n = data.length;
+  const xs = data.map(xAccessor);
+  const ys = data.map(yAccessor);
+  const xbar = d3.mean(xs);
+  const ybar = d3.mean(ys);
+  if (n < 2) {
+    return { slope: 0, intercept: ybar || 0, r: null };
+  }
+  let sxx = 0, syy = 0, sxy = 0;
+  for (let i = 0; i < n; i++) {
+    const dx = xs[i] - xbar;
+    const dy = ys[i] - ybar;
+    sxx += dx * dx;
+    syy += dy * dy;
+    sxy += dx * dy;
+  }
+  if (sxx === 0 || syy === 0) {
+    return { slope: 0, intercept: ybar || 0, r: null };
+  }
+  const slope = sxy / sxx;
+  const intercept = ybar - slope * xbar;
+  const r = sxy / Math.sqrt(sxx * syy);
+  return { slope, intercept, r };
+}
+
+function defaultPointStroke() {
+  return useDarkPointStroke ? '#17202a' : '#ffffff';
+}
+
+function currentAlignmentConfig() {
+  const options = ALIGNMENT_MODES[currentDatasetName];
+  const selected = currentAlignmentModeByDataset[currentDatasetName];
+  if (options && options[selected]) return options[selected];
+  return {
+    key: 'cross_alignment_gap',
+    axisLabel: DATASETS[currentDatasetName].alignment_label,
+    titleLabel: 'alignment',
+    detailLabel: DATASETS[currentDatasetName].alignment_label,
+    subtitleText: 'alignment',
+  };
+}
+
+function alignmentValue(d) {
+  const value = d[currentAlignmentConfig().key];
+  return value == null || !Number.isFinite(value) ? 0 : value;
+}
+
+function renderAlignmentControls() {
+  const wrap = document.getElementById('alignment-picker-wrap');
+  const options = ALIGNMENT_MODES[currentDatasetName];
+  wrap.classList.toggle('is-hidden', !options);
+  if (!options) {
+    wrap.removeAttribute('open');
+    document.getElementById('alignment-controls').innerHTML = '';
+    return;
+  }
+  document.getElementById('alignment-controls').innerHTML = Object.entries(options).map(([mode, config]) => {
+    const checked = mode === currentAlignmentModeByDataset[currentDatasetName] ? 'checked' : '';
+    return `<label class="column-option"><input type="radio" name="alignment-mode" value="${mode}" ${checked}>${config.detailLabel}</label>`;
+  }).join('');
+  document.querySelectorAll('input[name="alignment-mode"]').forEach(input => {
+    input.addEventListener('change', () => {
+      if (!input.checked || input.value === currentAlignmentModeByDataset[currentDatasetName]) return;
+      currentAlignmentModeByDataset[currentDatasetName] = input.value;
+      renderPlots();
+    });
+  });
+}
+
+function plotCopy() {
+  const dataset = DATASETS[currentDatasetName].label;
+  const metricLabel = METRIC_LABEL[currentMetric];
+  const metricName = currentMetric === 'confidence' ? 'target confidence' : 'success rate';
+  const alignment = currentAlignmentConfig();
+  return {
+    trend: {
+      title: `${dataset}: alignment vs cooperation (${metricName})`,
+      subtitle: `${metricShortLabel()}, ${metricUnit()}. x = ${alignment.subtitleText}, y = I_A + I_B. Values below zero mean the pair does worse than solo.`,
+      stat: trend.r == null
+        ? 'trend unavailable for fewer than two distinct points'
+        : `r=${trend.r.toFixed(2)}  slope=${trend.slope.toFixed(metricDigits())}/${alignment.detailLabel}`,
+    },
+    quadrant: {
+      title: `${dataset}: cooperation quadrant (${metricName})`,
+      subtitle: `${metricShortLabel()}, ${metricUnit()}. x = I_A, y = I_B. Color = ${alignment.subtitleText}.`,
+      stat: `${rows.length} cells`,
+    },
+  };
+}
+
+function buildTrendChart() {
+  if (!rows.length) return emptyPlot('No rows available for this dataset yet.');
+  const alignment = currentAlignmentConfig();
+  const alignmentValues = rows.map(alignmentValue);
+  const alignmentMin = Math.min(...alignmentValues);
+  const alignmentMax = Math.max(...alignmentValues);
+  const trendPad = Math.max(0.02, (alignmentMax - alignmentMin) * 0.08);
+  const trendX = [alignmentMin - trendPad, alignmentMax + trendPad];
+  const trendLine = trendX.map(x => ({ x, y: trend.slope * x + trend.intercept }));
+  const yValues = rows.map(r => r.Isum);
+  const minPad = currentMetric === 'confidence' ? 0.02 : 3;
+  const yPad = Math.max(minPad, (Math.max(...yValues) - Math.min(...yValues)) * 0.12);
+
+  return P.plot({
+    width: 900,
+    height: 430,
+    marginLeft: 74,
+    marginBottom: 58,
+    marginTop: 24,
+    marginRight: 34,
+    x: {
+      domain: trendX,
+      label: alignment.axisLabel,
+      labelOffset: 42,
+      grid: true,
+      nice: false,
+      tickSize: 4,
+    },
+    y: {
+      domain: [Math.min(...yValues) - yPad, Math.max(...yValues) + yPad],
+      label: 'I_A + I_B',
+      labelOffset: 48,
+      grid: true,
+      nice: false,
+      tickSize: 4,
+    },
+    style: {
+      background: 'transparent',
+      fontFamily: 'Inter, system-ui, sans-serif',
+      fontSize: '12px',
+      color: '#17202a',
+    },
+    marks: [
+      P.ruleY([0], { stroke: '#7c8795', strokeWidth: 1, strokeDasharray: '3,4' }),
+      P.line(trendLine, {
+        x: 'x',
+        y: 'y',
+        stroke: '#1f2937',
+        strokeWidth: 2.4,
+        strokeOpacity: 0.9,
+      }),
+      P.dot(rows, {
+        x: alignmentValue,
+        y: 'Isum',
+        r: 12,
+        fill: d => colorScale(alignmentValue(d)),
+        stroke: defaultPointStroke,
+        strokeWidth: useDarkPointStroke ? 2.5 : 2,
+        fillOpacity: 0.95,
+        channels: {
+          'Attacker A': 'Attacker A',
+          'Attacker B': 'Attacker B',
+        },
+        tip: {
+          format: {
+            x: false,
+            y: false,
+            fill: false,
+            'Attacker A': true,
+            'Attacker B': true,
+          },
+        },
+      }),
+    ],
+  });
+}
+
+function buildQuadrantChart() {
+  if (!rows.length) return emptyPlot('No rows available for this dataset yet.');
+  const limit = metricLimit();
+  return P.plot({
+    width: 900,
+    height: 640,
+    marginLeft: 70,
+    marginBottom: 60,
+    marginTop: 36,
+    marginRight: 36,
+    x: { domain: [-limit, limit], label: 'I_A', labelOffset: 44,
+         grid: true, nice: false, tickSize: 4 },
+    y: { domain: [-limit, limit], label: 'I_B', labelOffset: 44,
+         grid: true, nice: false, tickSize: 4 },
+    style: {
+      background: 'transparent',
+      fontFamily: 'Inter, system-ui, sans-serif',
+      fontSize: '12px',
+      color: '#17202a',
+    },
+    marks: [
+      P.rect(quadrantRects(limit), { x1: 'x', y1: 'y', x2: d => d.x + d.w, y2: d => d.y + d.h,
+                      fill: 'fill', fillOpacity: 0.46 }),
+      P.ruleX([0], { stroke: '#5b6675', strokeWidth: 1, strokeOpacity: 0.75 }),
+      P.ruleY([0], { stroke: '#5b6675', strokeWidth: 1, strokeOpacity: 0.75 }),
+      P.link([{x1: -limit, y1: -limit, x2: limit, y2: limit}], {
+        x1: 'x1', y1: 'y1', x2: 'x2', y2: 'y2',
+        stroke: '#8b96a6', strokeDasharray: '3,5', strokeWidth: 1,
+      }),
+      P.text(
+        [
+          {x:  limit*0.95, y:  limit*0.95, t: 'mutual cooperation', c: '#12642b'},
+          {x: -limit*0.95, y: -limit*0.95, t: 'mutual degradation', c: '#a61b2a'},
+          {x:  limit*0.95, y: -limit*0.95, t: 'A improves, B degrades', c: '#96500e'},
+          {x: -limit*0.95, y:  limit*0.95, t: 'A degrades, B improves', c: '#1f5b99'},
+        ],
+        { x: 'x', y: 'y', text: 't', fill: 'c', fontWeight: 600, fontSize: 11,
+          textAnchor: d => d.x > 0 ? 'end' : 'start' }
+      ),
+      P.dot(rows, {
+        x: 'Ia', y: 'Ib',
+        r: 11.33,
+        fill: d => colorScale(alignmentValue(d)),
+        stroke: defaultPointStroke,
+        strokeWidth: useDarkPointStroke ? 2.5 : 2,
+        fillOpacity: 0.95,
+        channels: {
+          'Attacker A': 'Attacker A',
+          'Attacker B': 'Attacker B',
+        },
+        tip: {
+          format: {
+            x: false,
+            y: false,
+            fill: false,
+            'Attacker A': true,
+            'Attacker B': true,
+          },
+        },
+      }),
+    ],
+  });
+}
+
+function emptyPlot(message) {
+  const wrap = document.createElement('div');
+  wrap.className = 'placeholder';
+  wrap.style.minHeight = '360px';
+  wrap.style.display = 'grid';
+  wrap.style.placeItems = 'center';
+  wrap.textContent = message;
+  return wrap;
+}
+
+function renderColorbar() {
+  if (!rows.length) {
+    document.getElementById('colorbar').innerHTML = '';
+    return;
+  }
+  const alignment = currentAlignmentConfig();
+  const alignmentValues = rows.map(alignmentValue);
+  const alignmentMin = Math.min(...alignmentValues);
+  const alignmentMax = Math.max(...alignmentValues);
+  const w = 180, h = 12;
+  document.getElementById('colorbar').innerHTML = '';
+  const svg = d3.create('svg').attr('width', w + 80).attr('height', h + 28).style('vertical-align','middle');
+  const defs = svg.append('defs');
+  const grad = defs.append('linearGradient').attr('id', `cosgrad-${currentDatasetName}`);
+  const stops = 20;
+  for (let i = 0; i <= stops; i++) {
+    const t = i / stops;
+    grad.append('stop').attr('offset', `${100*t}%`)
+        .attr('stop-color', colorScale(alignmentMin + t * (alignmentMax - alignmentMin)));
+  }
+  svg.append('rect').attr('x', 0).attr('y', 4).attr('width', w).attr('height', h)
+     .attr('fill', `url(#cosgrad-${currentDatasetName})`).attr('rx', 3);
+  svg.append('text').attr('x', 0).attr('y', h + 22).attr('fill', '#5f6b7a').attr('font-size', 11)
+     .text(alignmentMin.toFixed(2));
+  svg.append('text').attr('x', w).attr('y', h + 22).attr('fill', '#5f6b7a').attr('font-size', 11)
+     .attr('text-anchor', 'end').text(alignmentMax.toFixed(2));
+  svg.append('text').attr('x', w + 8).attr('y', h).attr('fill', '#17202a').attr('font-size', 12)
+     .text(alignment.axisLabel);
+  document.getElementById('colorbar').append(svg.node());
+}
+
+// ---------- click-to-detail binding ----------
+function bindPointClicks(svg) {
+  const circles = svg.querySelectorAll('g[aria-label="dot"] circle');
+  circles.forEach((node, i) => {
+    node.style.cursor = 'pointer';
+    node.addEventListener('click', () => {
+      document.querySelectorAll('g[aria-label="dot"] circle').forEach(c => {
+        c.setAttribute('stroke', defaultPointStroke());
+        c.setAttribute('stroke-width', useDarkPointStroke ? '2.5' : '2');
+      });
+      node.setAttribute('stroke', '#17202a');
+      node.setAttribute('stroke-width', '3');
+      renderDetails(rows[i]);
+    });
+  });
+}
+
+function renderPlots() {
+  renderAlignmentControls();
+  if (!rows.length) {
+    useDarkPointStroke = true;
+    colorScale = () => '#9aa6b2';
+    trend = { slope: 0, intercept: 0, r: null };
+    document.getElementById('trend').innerHTML = '';
+    document.getElementById('plot').innerHTML = '';
+    document.getElementById('trend').append(emptyPlot('No rows available for this dataset yet.'));
+    document.getElementById('plot').append(emptyPlot('No rows available for this dataset yet.'));
+    renderColorbar();
+    setPlotMode(currentPlotMode);
+    return;
+  }
+  const alignmentValues = rows.map(alignmentValue);
+  const alignmentMin = Math.min(...alignmentValues);
+  const alignmentMax = Math.max(...alignmentValues);
+  const alignmentSpan = alignmentMax - alignmentMin;
+  useDarkPointStroke = rows.length <= 1 || !Number.isFinite(alignmentSpan) || Math.abs(alignmentSpan) < 1e-9;
+  colorScale = d3.scaleSequential()
+    .domain(useDarkPointStroke ? [alignmentMin - 0.01, alignmentMax + 0.01] : [alignmentMin, alignmentMax])
+    .interpolator(t => d3.interpolateRdBu(t));
+  trend = regression(rows, alignmentValue, d => d.Isum);
+
+  document.getElementById('trend').innerHTML = '';
+  document.getElementById('plot').innerHTML = '';
+  const trendChart = buildTrendChart();
+  const chart = buildQuadrantChart();
+  document.getElementById('trend').append(trendChart);
+  document.getElementById('plot').append(chart);
+  if (rows.length) {
+    bindPointClicks(trendChart);
+    bindPointClicks(chart);
+  }
+  renderColorbar();
+  setPlotMode(currentPlotMode);
+}
+
+function setPlotMode(mode) {
+  currentPlotMode = mode;
+  const copy = plotCopy();
+  const showingTrend = mode === 'trend';
+  document.getElementById('trend').classList.toggle('is-hidden', !showingTrend);
+  document.getElementById('plot').classList.toggle('is-hidden', showingTrend);
+  document.getElementById('quadrant-legend').classList.toggle('is-hidden', showingTrend);
+  document.getElementById('trend-button').classList.toggle('active', showingTrend);
+  document.getElementById('quadrant-button').classList.toggle('active', !showingTrend);
+  document.getElementById('plot-title').textContent = copy[mode].title;
+  document.getElementById('plot-subtitle').innerHTML = copy[mode].subtitle;
+  document.getElementById('trend-stat').textContent = copy[mode].stat;
+}
+
+function setMainView(view) {
+  const tableMode = view === 'table';
+  const filterMode = view === 'filter';
+  document.body.classList.toggle('table-mode', tableMode);
+  document.body.classList.toggle('full-mode', tableMode || filterMode);
+  document.getElementById('plot-card').classList.toggle('is-hidden', view !== 'plot');
+  document.getElementById('table-card').classList.toggle('is-hidden', !tableMode);
+  document.getElementById('filter-card').classList.toggle('is-hidden', !filterMode);
+  document.getElementById('plot-view-button').classList.toggle('active', view === 'plot');
+  document.getElementById('table-view-button').classList.toggle('active', tableMode);
+  document.getElementById('filter-view-button').classList.toggle('active', filterMode);
+}
+
+document.getElementById('trend-button').addEventListener('click', () => setPlotMode('trend'));
+document.getElementById('quadrant-button').addEventListener('click', () => setPlotMode('quadrant'));
+document.getElementById('plot-view-button').addEventListener('click', () => setMainView('plot'));
+document.getElementById('table-view-button').addEventListener('click', () => setMainView('table'));
+document.getElementById('filter-view-button').addEventListener('click', () => setMainView('filter'));
+
+function setMetric(metric) {
+  if (metric === currentMetric) return;
+  currentMetric = metric;
+  document.getElementById('metric-success-button').classList.toggle('active', metric === 'success');
+  document.getElementById('metric-confidence-button').classList.toggle('active', metric === 'confidence');
+  allRows = prepareRows(DATASETS[currentDatasetName].rows);
+  rows = motifFilteredRows();
+  renderPlots();
+  renderTable();
+  renderFilteredTable();
+  document.getElementById('placeholder').style.display = '';
+  document.getElementById('detail').style.display = 'none';
+}
+document.getElementById('metric-success-button').addEventListener('click', () => setMetric('success'));
+document.getElementById('metric-confidence-button').addEventListener('click', () => setMetric('confidence'));
+
+function quadrant(ia, ib) {
+  if (ia >= 0 && ib >= 0) return { tag: 'mutual cooperation', cls: 'q-coop' };
+  if (ia <  0 && ib <  0) return { tag: 'mutual degradation', cls: 'q-suppress' };
+  if (ia >= 0 && ib <  0) return { tag: 'A improves, B degrades', cls: 'q-asym-a' };
+  return { tag: 'A degrades, B improves', cls: 'q-asym-b' };
+}
+
+function fmtPct(x, digits = 1) { return (x * 100).toFixed(digits) + '%'; }
+function fx(x, d=3) { return x.toFixed(d); }
+
+function plainChange(x) {
+  return formatMetricValue(x);
+}
+
+function classForSigned(x) {
+  return x >= 0 ? 'val-pos' : (x < 0 ? 'val-neg' : '');
+}
+
+function escapeHTML(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function motifDescription(motif) {
+  return MOTIF_DESCRIPTIONS[motif] || '';
+}
+
+function motifDescriptionHtml(motifs) {
+  const described = motifs
+    .map(motif => ({
+      label: MOTIF_LABELS[motif] || motif,
+      text: motifDescription(motif),
+    }))
+    .filter(item => item.text);
+  if (!described.length) return '';
+  return described
+    .map(item => `<div><strong>${escapeHTML(item.label)}:</strong> ${escapeHTML(item.text)}</div>`)
+    .join('');
+}
+
+const tableColumns = [
+  { key: 'anchor', label: 'A source', value: d => d.anchor, format: d => escapeHTML(d.anchor) },
+  { key: 'partner', label: 'B source', value: d => d.partner, format: d => escapeHTML(d.partner) },
+  { key: 'target_class', label: 'Target', value: d => d.target_class, format: d => escapeHTML(d.target_class) },
+  { key: 'motif_label', label: 'Motif', value: d => d.motif_label || '', format: d => escapeHTML(MOTIF_LABELS[d.motif_label] || d.motif_label || 'C1 layered') },
+  { key: 'Ia', label: 'A change', value: d => d.Ia, numeric: true, format: d => `<span class="${classForSigned(d.Ia)}">${plainChange(d.Ia)}</span>` },
+  { key: 'Ib', label: 'B change', value: d => d.Ib, numeric: true, format: d => `<span class="${classForSigned(d.Ib)}">${plainChange(d.Ib)}</span>` },
+  { key: 'Imean', label: 'Mean A/B change', value: d => d.Imean, numeric: true, format: d => `<span class="${classForSigned(d.Imean)}">${plainChange(d.Imean)}</span>` },
+  { key: 'Iworst', label: 'Worst single change', value: d => d.Iworst, numeric: true, format: d => `<span class="${classForSigned(d.Iworst)}">${plainChange(d.Iworst)}</span>` },
+  { key: 'cos_attack', label: () => currentDatasetName === 'C6' ? 'Target-pair distance' : 'Attack alignment', value: d => d.cos_attack, numeric: true, format: d => fx(d.cos_attack) },
+  { key: 'd_ab', label: () => currentDatasetName === 'C6' ? 'Target image distance' : 'Source distance', value: d => d.d_ab, numeric: true, format: d => fx(d.d_ab) },
+];
+
+let tableSort = { key: 'Ia', dir: 'asc' };
+const columnVisibilityByState = {};
+
+function columnStateKey() {
+  return `${currentDatasetName}:${currentMetric}`;
+}
+
+function defaultColumnVisible(column) {
+  if (column.key === 'motif_label') return isMotifDataset();
+  if (column.key === 'Iworst') return false;
+  return true;
+}
+
+function columnVisibility() {
+  const stateKey = columnStateKey();
+  if (!columnVisibilityByState[stateKey]) {
+    columnVisibilityByState[stateKey] = Object.fromEntries(
+      tableColumns.map(column => [column.key, defaultColumnVisible(column)])
+    );
+  }
+  tableColumns.forEach(column => {
+    if (!(column.key in columnVisibilityByState[stateKey])) {
+      columnVisibilityByState[stateKey][column.key] = defaultColumnVisible(column);
+    }
+  });
+  return columnVisibilityByState[stateKey];
+}
+
+function visibleTableColumns() {
+  const visibility = columnVisibility();
+  const visible = tableColumns.filter(column => visibility[column.key]);
+  return visible.length ? visible : tableColumns.slice(0, 1);
+}
+
+function ensureVisibleSortColumn() {
+  const visibleKeys = new Set(visibleTableColumns().map(column => column.key));
+  if (!visibleKeys.has(tableSort.key)) {
+    const fallback = visibleTableColumns().find(column => column.numeric) || visibleTableColumns()[0];
+    tableSort = { key: fallback.key, dir: fallback.numeric ? 'asc' : 'asc' };
+  }
+}
+
+function toggleColumn(key, checked) {
+  const visibility = columnVisibility();
+  visibility[key] = checked;
+  if (!tableColumns.some(column => visibility[column.key])) {
+    visibility[key] = true;
+  }
+  ensureVisibleSortColumn();
+  renderTable();
+  renderFilteredTable();
+}
+
+function renderColumnControls() {
+  const visibility = columnVisibility();
+  const controlsHtml = tableColumns.map(column => {
+    const checked = visibility[column.key] ? 'checked' : '';
+    return `<label class="column-option"><input type="checkbox" data-column="${column.key}" ${checked}>${column.label}</label>`;
+  }).join('');
+  ['table-column-controls', 'filter-column-controls'].forEach(id => {
+    document.getElementById(id).innerHTML = controlsHtml;
+  });
+  document.querySelectorAll('.column-option input').forEach(input => {
+    input.addEventListener('change', () => toggleColumn(input.dataset.column, input.checked));
+  });
+}
+
+const presetSorts = {
+  anchorDrop: { key: 'Ia', dir: 'asc' },
+  partnerDrop: { key: 'Ib', dir: 'asc' },
+  meanDrop: { key: 'Imean', dir: 'asc' },
+  alignmentDesc: { key: 'cos_attack', dir: 'desc' },
+  alignmentAsc: { key: 'cos_attack', dir: 'asc' },
+};
+
+function sortRows(data) {
+  ensureVisibleSortColumn();
+  const column = tableColumns.find(c => c.key === tableSort.key);
+  const sign = tableSort.dir === 'asc' ? 1 : -1;
+  return [...data].sort((a, b) => {
+    const av = column.value(a);
+    const bv = column.value(b);
+    if (typeof av === 'string') return sign * av.localeCompare(bv);
+    return sign * (av - bv);
+  });
+}
+
+function renderRowsTable(containerId, data, rerender) {
+  ensureVisibleSortColumn();
+  const columns = visibleTableColumns();
+  const sorted = sortRows(data);
+  const headers = columns.map(col => {
+    const mark = col.key === tableSort.key ? (tableSort.dir === 'asc' ? ' ▲' : ' ▼') : '';
+    const label = typeof col.label === 'function' ? col.label() : col.label;
+    return `<th data-key="${col.key}" class="${col.numeric ? 'num' : ''}">${label}${mark}</th>`;
+  }).join('');
+  const body = sorted.map(row => {
+    const cells = columns.map(col => {
+      const cls = col.numeric ? ' class="num"' : '';
+      return `<td${cls}>${col.format(row)}</td>`;
+    }).join('');
+    return `<tr data-row-id="${escapeHTML(row.row_id)}">${cells}</tr>`;
+  }).join('');
+
+  document.getElementById(containerId).innerHTML = `<table>
+    <thead><tr>${headers}</tr></thead>
+    <tbody>${body}</tbody>
+  </table>`;
+
+  document.querySelectorAll(`#${containerId} th`).forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.key;
+      tableSort = {
+        key,
+        dir: tableSort.key === key && tableSort.dir === 'asc' ? 'desc' : 'asc',
+      };
+      rerender();
+    });
+  });
+  document.querySelectorAll(`#${containerId} tbody tr`).forEach(tr => {
+    tr.addEventListener('click', () => {
+      const row = rows.find(d => d.row_id === tr.dataset.rowId);
+      if (row) renderDetails(row);
+    });
+  });
+}
+
+function renderTable() {
+  renderColumnControls();
+  document.getElementById('table-unit').textContent =
+    `${metricShortLabel()}; change columns use ${metricUnit()}.`;
+  renderRowsTable('table-wrap', rows, renderTable);
+}
+
+function motifFilteredRows() {
+  if (!isMotifDataset() || activeMotifs.size === 0) return allRows;
+  return allRows.filter(row => activeMotifs.has(row.motif_label));
+}
+
+function renderMotifFilter() {
+  const controls = document.getElementById('motif-controls');
+  controls.classList.toggle('is-hidden', !isMotifDataset());
+  if (!isMotifDataset()) {
+    document.getElementById('motif-filter').innerHTML = '';
+    document.getElementById('motif-description').textContent = '';
+    return;
+  }
+  document.getElementById('motif-filter-label').textContent = `${DATASETS[currentDatasetName].label} motif filter`;
+  const motifs = [...new Set(allRows.map(row => row.motif_label).filter(Boolean))].sort();
+  const motifCounts = d3.rollup(allRows, values => values.length, row => row.motif_label);
+  document.getElementById('motif-filter').innerHTML = motifs.map(motif => {
+    const active = activeMotifs.has(motif);
+    const count = motifCounts.get(motif) || 0;
+    return `<button class="filter-chip ${active ? 'active' : ''}" type="button" data-motif="${escapeHTML(motif)}">${escapeHTML(MOTIF_LABELS[motif] || motif)} (${count})</button>`;
+  }).join('');
+
+  document.querySelectorAll('#motif-filter .filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const motif = chip.dataset.motif;
+      if (activeMotifs.has(motif)) {
+        activeMotifs.delete(motif);
+      } else {
+        activeMotifs.add(motif);
+      }
+      rows = motifFilteredRows();
+      renderMotifFilter();
+      renderPlots();
+      renderTable();
+      renderFilteredTable();
+    });
+  });
+  const description = document.getElementById('motif-description');
+  if (currentDatasetName === 'C2mini' || currentDatasetName === 'C6') {
+    const selectedMotifs = activeMotifs.size ? motifs.filter(motif => activeMotifs.has(motif)) : motifs;
+    description.innerHTML = motifDescriptionHtml(selectedMotifs);
+  } else {
+    description.textContent = activeMotifs.size === 0
+      ? `No motif selected: showing all ${DATASETS[currentDatasetName].label} motifs.`
+      : `${activeMotifs.size} motif${activeMotifs.size === 1 ? '' : 's'} selected.`;
+  }
+}
+
+const filterState = {
+  anchor: new Set(),
+  partner: new Set(),
+  target_class: new Set(),
+};
+
+const filterConfig = [
+  { key: 'anchor', elementId: 'filter-anchor' },
+  { key: 'partner', elementId: 'filter-partner' },
+  { key: 'target_class', elementId: 'filter-target' },
+];
+
+function rowMatchesFilter(row, key) {
+  const selected = filterState[key];
+  if (selected.size === 0) return true;
+  if (key === 'target_class') {
+    return row.target_classes.some(value => selected.has(value));
+  }
+  return selected.has(row[key]);
+}
+
+function rowsMatchingFilters({ skipKey = null } = {}) {
+  return rows.filter(row => filterConfig.every(({ key }) => {
+    if (key === skipKey) return true;
+    return rowMatchesFilter(row, key);
+  }));
+}
+
+function valuesFromRows(data, key) {
+  const values = key === 'target_class'
+    ? data.flatMap(row => row.target_classes)
+    : data.map(row => row[key]);
+  return [...new Set(values)].sort((a, b) => String(a).localeCompare(String(b)));
+}
+
+function availableValues(key) {
+  return valuesFromRows(rowsMatchingFilters({ skipKey: key }), key);
+}
+
+function pruneUnavailableFilters() {
+  let changed = true;
+  while (changed) {
+    changed = false;
+    filterConfig.forEach(({ key }) => {
+      const available = new Set(availableValues(key));
+      [...filterState[key]].forEach(value => {
+        if (!available.has(value)) {
+          filterState[key].delete(value);
+          changed = true;
+        }
+      });
+    });
+  }
+}
+
+function filteredRows() {
+  return rowsMatchingFilters();
+}
+
+function renderFilterChips() {
+  pruneUnavailableFilters();
+  filterConfig.forEach(({ key, elementId }) => {
+    const chips = availableValues(key).sort((a, b) => {
+      const aActive = filterState[key].has(a);
+      const bActive = filterState[key].has(b);
+      if (aActive !== bActive) return aActive ? -1 : 1;
+      return String(a).localeCompare(String(b));
+    }).map(value => {
+      const active = filterState[key].has(value);
+      return `<button class="filter-chip ${active ? 'active' : ''}" type="button" data-key="${key}" data-value="${escapeHTML(value)}">${escapeHTML(value)}</button>`;
+    }).join('');
+    document.getElementById(elementId).innerHTML = chips;
+  });
+
+  document.querySelectorAll('#filter-anchor .filter-chip, #filter-partner .filter-chip, #filter-target .filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const key = chip.dataset.key;
+      const value = chip.dataset.value;
+      if (filterState[key].has(value)) {
+        filterState[key].delete(value);
+      } else {
+        filterState[key].add(value);
+      }
+      renderFilteredTable();
+    });
+  });
+}
+
+function renderFilteredTable() {
+  pruneUnavailableFilters();
+  renderColumnControls();
+  renderFilterChips();
+  const data = filteredRows();
+  document.getElementById('filter-summary').textContent =
+    `${data.length} of ${rows.length} cells shown`;
+  document.getElementById('filter-table-unit').textContent =
+    `${metricShortLabel()}; change columns use ${metricUnit()}.`;
+  renderRowsTable('filter-table-wrap', data, renderFilteredTable);
+}
+
+document.getElementById('clear-filters').addEventListener('click', () => {
+  Object.values(filterState).forEach(selected => selected.clear());
+  renderFilteredTable();
+});
+
+function selectDataset(name) {
+  currentDatasetName = name;
+  allRows = prepareRows(DATASETS[name].rows);
+  activeMotifs.clear();
+  rows = motifFilteredRows();
+  Object.values(filterState).forEach(selected => selected.clear());
+  document.getElementById('dataset-c1-button').classList.toggle('active', name === 'C1');
+  document.getElementById('dataset-c2-button').classList.toggle('active', name === 'C2');
+  document.getElementById('dataset-c2-mini-button').classList.toggle('active', name === 'C2mini');
+  document.getElementById('dataset-c6-button').classList.toggle('active', name === 'C6');
+  renderMotifFilter();
+  renderPlots();
+  renderTable();
+  renderFilteredTable();
+}
+
+document.getElementById('dataset-c1-button').addEventListener('click', () => selectDataset('C1'));
+document.getElementById('dataset-c2-button').addEventListener('click', () => selectDataset('C2'));
+document.getElementById('dataset-c2-mini-button').addEventListener('click', () => selectDataset('C2mini'));
+document.getElementById('dataset-c6-button').addEventListener('click', () => selectDataset('C6'));
+
+document.getElementById('sort-select').addEventListener('change', ev => {
+  tableSort = presetSorts[ev.target.value];
+  renderTable();
+});
+
+selectDataset('C1');
+setMainView('plot');
+
+function pill(value, {digits = metricDigits(), pm = null, unit = ''} = {}) {
+  const cls = value > 0 ? 'pos' : (value < 0 ? 'neg' : '');
+  const sign = value >= 0 ? '+' : '';
+  const main = `${sign}${value.toFixed(digits)}${unit ? '\u202f' + unit : ''}`;
+  const pmHtml = pm == null ? '' : ` <span class="pm">±\u202f${pm.toFixed(digits)}</span>`;
+  return `<span class="value-pill ${cls}">${main}${pmHtml}</span>`;
+}
+
+function soloValue(value) {
+  if (currentMetric === 'confidence') return value.toFixed(3);
+  return fmtPct(value);
+}
+
+function alternateMetricChange(d, attacker) {
+  if (currentMetric === 'confidence') {
+    return d[`I_${attacker}_s`] * 100;
+  }
+  return d[`I_${attacker}_c`];
+}
+
+function alternateMetricDigits() {
+  return currentMetric === 'confidence' ? 1 : 3;
+}
+
+function alternateMetricUnit() {
+  return currentMetric === 'confidence' ? 'percentage points' : 'raw confidence score';
+}
+
+function renderDetails(d) {
+  document.getElementById('placeholder').style.display = 'none';
+  const q = quadrant(d.Ia, d.Ib);
+  const det = document.getElementById('detail');
+  const c2Like = isC2LikeDataset();
+  const c6Like = currentDatasetName === 'C6';
+  const targetSpecific = c2Like || (
+    d.target_a_class_name && d.target_b_class_name && d.target_a_class_name !== d.target_b_class_name
+  ) || c6Like;
+  const hasCrossGeometry = targetSpecific && d.a_cross != null && d.b_cross != null && d.target_target_distance != null;
+  const hasTargetPairGeometry = c6Like && d.target_target_distance != null;
+  const reps = d.n == null ? currentDatasetName : `n = ${d.n} reps`;
+  const metricLabel = currentMetric === 'confidence' ? 'target confidence' : 'success rate';
+  const combinedLabel = d.Isum >= 0 ? 'above solo' : 'below solo';
+  const solo_a = currentMetric === 'confidence' ? d.solo_anc_c : d.solo_anc_s;
+  const solo_b = currentMetric === 'confidence' ? d.solo_par_c : d.solo_par_s;
+  const dual_a = currentMetric === 'confidence' ? d.dual_anc_c : d.dual_anc_s;
+  const dual_b = currentMetric === 'confidence' ? d.dual_par_c : d.dual_par_s;
+  const scenarioText = motifDescription(d.motif_label);
+  const scenarioBlock = scenarioText ? `
+    <div class="detail-card">
+      <div class="block-label">Scenario</div>
+      <div class="detail-summary">${escapeHTML(scenarioText)}</div>
+    </div>
+  ` : '';
+
+  const soloBlock = solo_a == null ? (d.motif_label ? `
+    <div class="detail-card">
+      <div class="block-label">Motif</div>
+      <div class="kv">
+        <div class="k">Label</div><div class="v"><span class="value-pill">${escapeHTML(d.motif_label)}</span></div>
+      </div>
+    </div>
+  ` : '') : `
+    <div class="detail-card">
+      <div class="block-label">Solo → dual (${metricLabel})</div>
+      <div class="formula">\\(I_A = \\overline{x_A^{\\text{dual}}} - \\overline{x_A^{\\text{solo}}}\\), where \\(x\\) is the per-rep ${metricLabel}.</div>
+      <div class="kv">
+        <div class="k">\\(A\\)</div><div class="v"><span class="value-pill">${soloValue(solo_a)}</span><span class="arrow">→</span><span class="value-pill">${soloValue(dual_a)}</span></div>
+        <div class="k">\\(B\\)</div><div class="v"><span class="value-pill">${soloValue(solo_b)}</span><span class="arrow">→</span><span class="value-pill">${soloValue(dual_b)}</span></div>
+      </div>
+    </div>
+  `;
+
+  const otherMetric = currentMetric === 'confidence' ? 'success rate' : 'target confidence';
+  const otherIa = alternateMetricChange(d, 'a');
+  const otherIb = alternateMetricChange(d, 'b');
+  const otherBlock = `
+    <div class="detail-card">
+      <div class="block-label">For comparison: ${otherMetric}</div>
+      <div class="formula">Unit: ${alternateMetricUnit()}.</div>
+      <div class="kv">
+        <div class="k">\\(I_A\\)</div><div class="v">${pill(otherIa, {digits: alternateMetricDigits()})}</div>
+        <div class="k">\\(I_B\\)</div><div class="v">${pill(otherIb, {digits: alternateMetricDigits()})}</div>
+      </div>
+    </div>
+  `;
+
+  det.style.display = 'block';
+  const targetA = escapeHTML(d.target_a_class_name || d.target_class || 'airplane');
+  const targetB = escapeHTML(d.target_b_class_name || d.target_class || 'airplane');
+  det.innerHTML = `
+    <div class="attacker-stack">
+      <div class="attacker-route">
+        <span class="attacker-route-main">
+          <span class="attacker-name">${escapeHTML(d.anchor)}</span>
+          <span class="attacker-arrow">-&gt;</span>
+          <span class="attacker-target">${targetA}</span>
+        </span>
+        <span class="attacker-role">A</span>
+      </div>
+      <div class="attacker-route">
+        <span class="attacker-route-main">
+          <span class="attacker-name">${escapeHTML(d.partner)}</span>
+          <span class="attacker-arrow">-&gt;</span>
+          <span class="attacker-target">${targetB}</span>
+        </span>
+        <span class="attacker-role">B</span>
+      </div>
+    </div>
+    <div class="role-sub">
+      <span class="qtag ${q.cls}">${q.tag}</span>
+      <span class="n-chip">${reps}</span>
+    </div>
+    <div class="detail-summary">
+      Combined shift is <strong class="${classForSigned(d.Isum)}">${formatMetricValue(d.Isum)}</strong>
+      ${metricUnit()} ${combinedLabel}.
+    </div>
+
+    <div class="detail-card">
+      <div class="block-label">Interaction (${metricLabel})</div>
+      <div class="formula">\\(I_A\\), \\(I_B\\) = change in ${metricLabel} when each attacker runs alongside its partner vs. alone. Unit: ${metricUnit()}.</div>
+      <div class="kv">
+        <div class="k">\\(I_A\\)</div><div class="v">${pill(d.Ia, {pm: d.Isem_a})}</div>
+        <div class="k">\\(I_B\\)</div><div class="v">${pill(d.Ib, {pm: d.Isem_b})}</div>
+        <div class="k">\\(I_A + I_B\\)</div><div class="v">${pill(d.Isum)}</div>
+      </div>
+    </div>
+
+    ${soloBlock}
+    ${scenarioBlock}
+
+    <div class="detail-card">
+      <div class="block-label">Geometry (cosine distances)</div>
+      <div class="formula">\\(d(x, y) = 1 - \\cos(\\phi_x, \\phi_y)\\) between penultimate-layer features, so \\(\\cos(A, B) = 1 - d(A, B)\\).</div>
+      ${hasTargetPairGeometry
+        ? `<div class="formula">For C6, A and B are two target images from the same true class. The alignment diagnostic is their clean-representation distance; smaller values mean the target images are closer before poisoning.</div>`
+        : !targetSpecific
+        ? `<div class="formula">For C1 attack-direction alignment: \\(\\vec{\\delta}_A = \\mathrm{normalize}(c_T - c_A)\\), \\(\\vec{\\delta}_B = \\mathrm{normalize}(c_T - c_B)\\), and \\(\\cos(\\vec{\\delta}_A, \\vec{\\delta}_B) = \\vec{\\delta}_A \\cdot \\vec{\\delta}_B\\).</div>`
+        : `<div class="formula">For target-specific attack-direction alignment: \\(\\vec{\\delta}_A = \\mathrm{normalize}(c_{T_A} - c_A)\\), \\(\\vec{\\delta}_B = \\mathrm{normalize}(c_{T_B} - c_B)\\), and \\(\\cos(\\vec{\\delta}_A, \\vec{\\delta}_B) = \\vec{\\delta}_A \\cdot \\vec{\\delta}_B\\). ${hasCrossGeometry ? 'Cross-alignment gap = \\([d(A, T_B) + d(B, T_A)] - [d(A, T_A) + d(B, T_B)]\\).' : ''}</div>`}
+      <div class="kv">
+        <div class="k">${hasTargetPairGeometry ? 'Target image distance' : '\\(d(A, B)\\)'}</div><div class="v"><span class="value-pill">${fx(d.d_ab)}</span></div>
+        <div class="k">${!targetSpecific ? '\\(d(A, T)\\)' : '\\(d(A, T_A)\\)'}</div><div class="v"><span class="value-pill">${fx(d.d_anc_tgt)}</span></div>
+        <div class="k">${!targetSpecific ? '\\(d(B, T)\\)' : '\\(d(B, T_B)\\)'}</div><div class="v"><span class="value-pill">${fx(d.d_par_tgt)}</span></div>
+        ${hasCrossGeometry
+          ? `<div class="k">\\(d(A, T_B)\\)</div><div class="v"><span class="value-pill">${fx(d.a_cross)}</span></div>
+        <div class="k">\\(d(B, T_A)\\)</div><div class="v"><span class="value-pill">${fx(d.b_cross)}</span></div>
+        <div class="k">\\(d(T_A, T_B)\\)</div><div class="v"><span class="value-pill">${fx(d.target_target_distance)}</span></div>
+        <div class="k">Cross gap</div><div class="v"><span class="value-pill">${fx(d.cross_alignment_gap)}</span></div>`
+          : ''}
+        <div class="k">\\(\\cos(A, B)\\)</div><div class="v"><span class="value-pill">${fx(d.cos_source)}</span></div>
+        <div class="k">${hasTargetPairGeometry ? 'Gradient cosine' : '\\(\\cos(\\vec{\\delta}_A, \\vec{\\delta}_B)\\)'}</div><div class="v"><span class="value-pill">${fx(hasTargetPairGeometry ? d.gradient_cosine : (targetSpecific ? (d.cos_attack_dir ?? d.cos_attack) : d.cos_attack))}</span></div>
+      </div>
+    </div>
+
+    ${otherBlock}
+  `;
+  if (window.renderMathInElement) {
+    renderMathInElement(det, {
+      delimiters: [
+        {left: '\\[', right: '\\]', display: true},
+        {left: '\\(', right: '\\)', display: false},
+      ],
+      throwOnError: false,
+    });
+  }
+}
+</script>
+</body>
+</html>
