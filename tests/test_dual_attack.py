@@ -1,4 +1,5 @@
 import argparse
+import csv
 import importlib.util
 import os
 import sys
@@ -45,6 +46,9 @@ build_c1_experiment = _load_script_module('prepare_c1_experiment').build_c1_expe
 build_c2_experiment = _load_script_module('prepare_c2_experiment').build_c2_experiment
 build_c1_plan = _load_script_module('prepare_c1_experiment').build_c1_plan
 build_c2_plan = _load_script_module('prepare_c2_experiment').build_c2_plan
+prepare_c6 = _load_script_module('prepare_c6_target_pair_similarity')
+build_c6_experiment = prepare_c6.build_c6_experiment
+summarize_c6 = _load_script_module('summarize_c6_target_pair_similarity')
 
 
 class DualAttackPrepareConfigTests(unittest.TestCase):
@@ -428,6 +432,129 @@ class DualAttackPlannerTests(unittest.TestCase):
         self.assertIn('G', experiment['dual_jobs'][0])
         self.assertIn('a_self', experiment['dual_jobs'][0])
 
+    def test_build_c6_experiment_includes_selected_bins_without_budget_controls(self):
+        pair_selections = []
+        for pair_bin in ['closest', 'random']:
+            for pair_number in [1, 2]:
+                pair_selections.append(dict(
+                    left_index=100 + len(pair_selections) * 2,
+                    right_index=101 + len(pair_selections) * 2,
+                    feature_cosine_distance=0.1 * pair_number,
+                    feature_cosine_similarity=1.0 - 0.1 * pair_number,
+                    pair_bin=pair_bin,
+                    bin_quantile_value=0.1 * pair_number,
+                    pair_number=pair_number,
+                    repeat_slot=pair_number - 1,
+                    target_class=0,
+                    target_class_name='airplane',
+                    poison_class=5,
+                    poison_class_name='dog',
+                    gradient_cosine=0.2 * pair_number,
+                    selection_method='clustered_closest' if pair_bin == 'closest' else 'random_disjoint',
+                ))
+        pair_summaries = [dict(
+            target_class=0,
+            target_class_name='airplane',
+            poison_class=5,
+            poison_class_name='dog',
+            selected_pairs=pair_selections,
+        )]
+        common_args = dict(self.common_args, budget=0.01)
+        experiment = build_c6_experiment(
+            experiment_id='C6_target_pair_similarity',
+            output_root='artifacts/c6/c6_target_pair_similarity',
+            common_args=common_args,
+            scheduler={},
+            class_names=self.class_names,
+            rankings=self.rankings,
+            distance_matrix=self.distance_matrix,
+            pair_selections=pair_selections,
+            pair_summaries=pair_summaries,
+            target_poison_pairs=[('airplane', 'dog')],
+            repeats=2,
+            victim_seeds=[0, 1],
+            distance_artifact_path='artifact.pt',
+            clean_model_path='clean.pt',
+        )
+
+        self.assertEqual([entry['name'] for entry in experiment['metadata']['pair_bins']],
+                         ['closest', 'random'])
+        self.assertEqual(experiment['metadata']['pairs_per_bin'], 2)
+        self.assertEqual(len(experiment['dual_jobs']), 2 * 2)
+        self.assertEqual(len(experiment['brew_jobs']), 2 * 2 * 2)
+        self.assertEqual(len(experiment['solo_jobs']), len(experiment['brew_jobs']))
+        self.assertFalse(experiment['metadata']['doubled_budget_controls'])
+        self.assertNotIn('doubled_budget', experiment['metadata'])
+        self.assertEqual(
+            sorted({job['attacker']['budget_multiplier'] for job in experiment['brew_jobs']}),
+            [1],
+        )
+        self.assertEqual(
+            sorted({job['pair_bin'] for job in experiment['dual_jobs']}),
+            ['closest', 'random'],
+        )
+        self.assertTrue(experiment['metadata']['clustered_pair_selection'])
+        self.assertEqual(
+            experiment['metadata']['pair_selection_strategy'],
+            'clustered_closest_and_random_disjoint_target_pairs',
+        )
+        self.assertEqual(
+            sorted({job['repeat_slot'] for job in experiment['dual_jobs']}),
+            [0, 1],
+        )
+
+    def test_c6_clustered_closest_pairs_cover_feature_clusters(self):
+        features = torch.tensor([
+            [1.00, 0.00],
+            [0.99, 0.01],
+            [0.00, 1.00],
+            [0.01, 0.99],
+            [-1.00, 0.00],
+            [-0.99, -0.01],
+        ], dtype=torch.float)
+        pairs = prepare_c6._select_clustered_closest_pairs(
+            features,
+            [10, 11, 20, 21, 30, 31],
+            pairs_per_bin=3,
+            used_indices=set(),
+        )
+
+        self.assertEqual(len(pairs), 3)
+        self.assertEqual({pair['selection_method'] for pair in pairs}, {'clustered_closest'})
+        self.assertEqual({pair['cluster_size'] for pair in pairs}, {2})
+        self.assertEqual(
+            {frozenset((pair['left_index'], pair['right_index'])) for pair in pairs},
+            {frozenset((10, 11)), frozenset((20, 21)), frozenset((30, 31))},
+        )
+
+    def test_c6_random_pairs_are_disjoint_from_existing_selection(self):
+        features = torch.tensor([
+            [1.00, 0.00],
+            [0.99, 0.01],
+            [0.00, 1.00],
+            [0.01, 0.99],
+            [-1.00, 0.00],
+            [-0.99, -0.01],
+        ], dtype=torch.float)
+        used_indices = {10, 11}
+        pairs = prepare_c6._select_random_pairs(
+            features,
+            [10, 11, 20, 21, 30, 31],
+            pairs_per_bin=2,
+            used_indices=used_indices,
+            seed_key='test-random',
+        )
+
+        selected_indices = {
+            index
+            for pair in pairs
+            for index in (pair['left_index'], pair['right_index'])
+        }
+        self.assertEqual(len(pairs), 2)
+        self.assertEqual(len(selected_indices), 4)
+        self.assertFalse({10, 11} & selected_indices)
+        self.assertEqual({pair['selection_method'] for pair in pairs}, {'random_disjoint'})
+
     def test_build_c2_experiment_reuses_repeat_slots_across_targets(self):
         experiment = build_c2_experiment(
             experiment_id='C2_dog_target_sweep_v1',
@@ -618,6 +745,17 @@ class DualAttackPlannerTests(unittest.TestCase):
 
 
 class DualAttackRuntimeTests(unittest.TestCase):
+    def _write_csv(self, path, rows):
+        fieldnames = []
+        for row in rows:
+            for key in row:
+                if key not in fieldnames:
+                    fieldnames.append(key)
+        with open(path, 'w', newline='') as handle:
+            writer = csv.DictWriter(handle, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows)
+
     def test_build_args_namespace_preserves_lists(self):
         args = build_args_namespace(
             common_args=dict(dataset='CIFAR10', net=['ResNet18'], scenario='from-scratch'),
@@ -700,6 +838,68 @@ class DualAttackRuntimeTests(unittest.TestCase):
     def test_artifact_poison_indices_accepts_lists(self):
         poison_indices = _artifact_poison_indices([4, 1, 9])
         self.assertTrue(torch.equal(poison_indices, torch.tensor([4, 1, 9], dtype=torch.long)))
+
+    def test_summarize_c6_experiment_computes_lift_and_quadrant(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.makedirs(os.path.join(tmpdir, 'solo'))
+            os.makedirs(os.path.join(tmpdir, 'dual'))
+            self._write_csv(os.path.join(tmpdir, 'solo', 'a.csv'), [
+                dict(attacker_id='a', success=0),
+                dict(attacker_id='a', success=1),
+            ])
+            self._write_csv(os.path.join(tmpdir, 'solo', 'b.csv'), [
+                dict(attacker_id='b', success=0),
+                dict(attacker_id='b', success=0),
+            ])
+            self._write_csv(os.path.join(tmpdir, 'dual', 'ab.csv'), [
+                dict(attacker_id='a', success=1),
+                dict(attacker_id='a', success=1),
+                dict(attacker_id='b', success=1),
+                dict(attacker_id='b', success=0),
+            ])
+            experiment = dict(
+                experiment_id='c6_demo',
+                solo_jobs=[
+                    dict(attacker=dict(attacker_id='a'), output_path='solo/a.csv'),
+                    dict(attacker=dict(attacker_id='b'), output_path='solo/b.csv'),
+                ],
+                dual_jobs=[
+                    dict(
+                        output_path='dual/ab.csv',
+                        pairing_id='pair1',
+                        condition='airplane_to_dog_closest',
+                        pair_bin='closest',
+                        selection_method='clustered_closest',
+                        repeat_slot=0,
+                        pair_number=1,
+                        pair_key='airplane_to_dog_closest_p01',
+                        target_pair_left_index=10,
+                        target_pair_right_index=11,
+                        shared_target_class_name='airplane',
+                        shared_poison_class_name='dog',
+                        feature_cosine_distance=0.012,
+                        feature_cosine_similarity=0.988,
+                        gradient_cosine=0.4,
+                        cluster_id=0,
+                        cluster_size=2,
+                        attackers=[dict(attacker_id='a'), dict(attacker_id='b')],
+                    ),
+                ],
+            )
+
+            rows = summarize_c6.summarize_c6_experiment(experiment, tmpdir)
+
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(row['pair_bin'], 'closest')
+        self.assertEqual(row['asr_a_alone'], 0.5)
+        self.assertEqual(row['asr_b_alone'], 0.0)
+        self.assertEqual(row['asr_a_combined'], 1.0)
+        self.assertEqual(row['asr_b_combined'], 0.5)
+        self.assertEqual(row['lift_a'], 0.5)
+        self.assertEqual(row['lift_b'], 0.5)
+        self.assertEqual(row['lift'], 0.5)
+        self.assertEqual(row['quadrant'], 'collaboration')
 
     def test_prepare_model_for_seed_uses_victim_seed_when_modelkey_is_fixed(self):
         class DummyModel:
@@ -810,6 +1010,84 @@ class DualAttackRuntimeTests(unittest.TestCase):
         self.assertEqual(row['cross_alignment_gap'], 0.145)
         self.assertEqual(row['alignment_type'], 'own_aligned')
         self.assertEqual(row['merge_rule'], 'assign_one_owner')
+
+    def test_target_rows_include_c6_pair_metadata(self):
+        class DummyNetwork:
+            def eval(self):
+                return self
+
+            def __call__(self, target_images):
+                return torch.tensor([[0.1, 0.8, 0.1]], dtype=torch.float)
+
+        class DummyTrainset:
+            classes = ['airplane', 'dog', 'truck']
+
+        class DummyKettle:
+            trainset = DummyTrainset()
+            targetset = [(torch.zeros(3, 2, 2), 0, 123)]
+            setup = dict(device=torch.device('cpu'), dtype=torch.float)
+
+        experiment = dict(experiment_id='c6_demo', family='C6')
+        job = dict(
+            job_id='dual_demo',
+            pairing_id='pair_demo',
+            condition='airplane_to_dog_closest',
+            pair_key='airplane_to_dog_closest_p01',
+            pair_number=1,
+            repeat_slot=0,
+            pair_bin='closest',
+            selection_method='clustered_closest',
+            cluster_id=2,
+            cluster_size=44,
+            feature_cosine_distance=0.012,
+            feature_cosine_similarity=0.988,
+            gradient_cosine=0.456,
+            target_target_distance=0.012,
+        )
+        attack_artifacts = [
+            dict(
+                artifact_path='/tmp/brew.pt',
+                job_id='brew_a',
+                target_adv_class=1,
+                target_true_class=0,
+                target_index=123,
+                source_class=0,
+                source_class_name='airplane',
+                target_true_class_name='airplane',
+                target_adv_class_name='dog',
+                attacker=dict(
+                    attacker_id='a',
+                    attacker_role='A',
+                    pair_bin='closest',
+                    selection_method='clustered_closest',
+                    feature_cosine_distance=0.012,
+                    gradient_cosine=0.456,
+                ),
+            )
+        ]
+
+        row = _target_rows(
+            experiment=experiment,
+            job=job,
+            run_type='dual',
+            victim_seed=0,
+            victim_run_id=0,
+            network=DummyNetwork(),
+            kettle=DummyKettle(),
+            attack_artifacts=attack_artifacts,
+            clean_accuracy=0.8,
+            overlap_stats={},
+        )[0]
+
+        self.assertEqual(row['pair_bin'], 'closest')
+        self.assertEqual(row['selection_method'], 'clustered_closest')
+        self.assertEqual(row['attacker_role'], 'A')
+        self.assertEqual(row['repeat_slot'], 0)
+        self.assertEqual(row['cluster_id'], 2)
+        self.assertEqual(row['cluster_size'], 44)
+        self.assertEqual(row['feature_cosine_distance'], 0.012)
+        self.assertEqual(row['feature_cosine_similarity'], 0.988)
+        self.assertEqual(row['gradient_cosine'], 0.456)
 
     def test_validate_brew_artifact_rejects_mismatched_poisonkey(self):
         experiment = dict(

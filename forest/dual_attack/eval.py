@@ -98,6 +98,7 @@ def _target_rows(
         adv_class = int(artifact['target_adv_class'])
         true_class = int(artifact['target_true_class'])
         brew_args = artifact.get('brew_config', {}).get('args', {})
+        attacker = artifact['attacker']
         loss = F.cross_entropy(outputs[attack_idx:attack_idx + 1], torch.tensor([adv_class], device=outputs.device))
         rows.append(dict(
             experiment_id=experiment['experiment_id'],
@@ -109,7 +110,7 @@ def _target_rows(
             run_type=run_type,
             victim_run_id=victim_run_id,
             victim_seed=victim_seed,
-            attacker_id=artifact['attacker']['attacker_id'],
+            attacker_id=attacker['attacker_id'],
             source_class=int(artifact['source_class']),
             source_class_name=artifact['source_class_name'],
             target_index=int(artifact['target_index']),
@@ -127,8 +128,19 @@ def _target_rows(
             brew_artifact_path=artifact['artifact_path'],
             brew_job_id=artifact['job_id'],
             brew_loss=artifact.get('brew_loss'),
-            source_target_distance=artifact['attacker'].get('source_target_distance'),
-            source_target_rank=artifact['attacker'].get('source_target_rank'),
+            source_target_distance=attacker.get('source_target_distance'),
+            source_target_rank=attacker.get('source_target_rank'),
+            attacker_role=attacker.get('attacker_role', ''),
+            repeat_slot=job.get('repeat_slot', attacker.get('repeat_slot', '')),
+            pair_key=job.get('pair_key', attacker.get('pair_key', '')),
+            pair_number=job.get('pair_number', attacker.get('pair_number', '')),
+            pair_bin=job.get('pair_bin', attacker.get('pair_bin', '')),
+            selection_method=job.get('selection_method', attacker.get('selection_method', '')),
+            cluster_id=job.get('cluster_id', attacker.get('cluster_id', '')),
+            cluster_size=job.get('cluster_size', attacker.get('cluster_size', '')),
+            feature_cosine_distance=job.get('feature_cosine_distance', attacker.get('feature_cosine_distance', '')),
+            feature_cosine_similarity=job.get('feature_cosine_similarity', attacker.get('feature_cosine_similarity', '')),
+            gradient_cosine=job.get('gradient_cosine', attacker.get('gradient_cosine', '')),
             condition=job.get('condition', artifact['attacker'].get('bucket', '')),
             distance_bucket=job.get('distance_bucket', artifact['attacker'].get('bucket', '')),
             symmetric=job.get('symmetric', ''),
@@ -159,7 +171,7 @@ def _target_rows(
             overlap_total=overlap_stats.get('overlap_total', 0),
             effective_unique_poison_count=overlap_stats.get('effective_unique_poison_count', ''),
             overlaps_lost_by_attacker=overlap_stats.get('lost_by_attacker', {}).get(
-                artifact['attacker']['attacker_id'], 0
+                attacker['attacker_id'], 0
             ),
         ))
     return rows

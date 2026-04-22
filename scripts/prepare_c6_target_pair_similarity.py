@@ -5,19 +5,21 @@ experiments, but changes target-image selection. For each shared true target
 class, target pairs are selected by cosine distance between clean ResNet-18
 penultimate image representations:
 
-  closest, median / 50th percentile, 75th percentile
+  closest, random
 
-Target images are disjoint across all selected bins within a class. Each fixed
-target pair is repeated with independent poison-id seeds, then evaluated as
-A alone, B alone, A+B combined, A alone with 2x budget, and B alone with 2x
-budget.
+Target images are clustered in clean feature space, then the closest pair
+inside each cluster is selected. A disjoint random-pair bin is also selected
+from the same target class. Each selected pair is one repeat and is evaluated
+as A alone, B alone, and A+B combined.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import math
 import os
+import random
 
 import torch
 import torch.nn.functional as F
@@ -44,8 +46,7 @@ TARGET_POISON_PAIRS = (
 
 PAIR_BINS = (
     dict(name='closest', quantile=0.0),
-    dict(name='median', quantile=0.50),
-    dict(name='q75', quantile=0.75),
+    dict(name='random', quantile=None),
 )
 
 # Match the recent standard dual-attack setting.
@@ -128,6 +129,8 @@ def _candidate_pairs_for_class(features, indices):
     distances = distance_matrix[left, right]
     pairs = [
         dict(
+            left_position=int(i),
+            right_position=int(j),
             left_index=int(indices[int(i)]),
             right_index=int(indices[int(j)]),
             feature_cosine_distance=float(distance),
@@ -138,42 +141,153 @@ def _candidate_pairs_for_class(features, indices):
     return pairs, distances
 
 
-def _select_pairs_for_bin(candidates, used_indices, *, bin_name, quantile_value, pairs_per_bin):
-    if bin_name == 'closest':
-        ranked = sorted(
-            candidates,
-            key=lambda pair: (
-                pair['feature_cosine_distance'],
-                pair['left_index'],
-                pair['right_index'],
-            ),
-        )
-    else:
-        ranked = sorted(
-            candidates,
-            key=lambda pair: (
-                abs(pair['feature_cosine_distance'] - quantile_value),
-                pair['feature_cosine_distance'],
-                pair['left_index'],
-                pair['right_index'],
-            ),
+def _cosine_kmeans_labels(normalized_features, cluster_count, *, max_iter=50):
+    if cluster_count < 1:
+        raise ValueError('Expected at least one cluster.')
+    if normalized_features.shape[0] < cluster_count:
+        raise ValueError(
+            f'Need at least {cluster_count} target images for clustered closest-pair selection; '
+            f'found {normalized_features.shape[0]}.'
         )
 
-    selected = []
-    for pair in ranked:
-        if pair['left_index'] in used_indices or pair['right_index'] in used_indices:
-            continue
-        selected.append(dict(pair, pair_bin=bin_name, bin_quantile_value=float(quantile_value)))
-        used_indices.add(pair['left_index'])
-        used_indices.add(pair['right_index'])
-        if len(selected) == pairs_per_bin:
+    init_positions = torch.linspace(
+        0,
+        normalized_features.shape[0] - 1,
+        steps=cluster_count,
+        device=normalized_features.device,
+    ).round().long()
+    centroids = normalized_features[init_positions].clone()
+    labels = torch.full((normalized_features.shape[0],), -1, dtype=torch.long, device=normalized_features.device)
+
+    for _ in range(max_iter):
+        similarities = normalized_features @ centroids.t()
+        next_labels = torch.argmax(similarities, dim=1)
+        if torch.equal(next_labels, labels):
             break
+        labels = next_labels
+
+        next_centroids = []
+        nearest_similarity = similarities.max(dim=1).values
+        for cluster_id in range(cluster_count):
+            members = normalized_features[labels == cluster_id]
+            if len(members) == 0:
+                replacement = normalized_features[torch.argmin(nearest_similarity)]
+                next_centroids.append(replacement)
+            else:
+                next_centroids.append(F.normalize(members.mean(dim=0, keepdim=True), dim=1).squeeze(0))
+        centroids = torch.stack(next_centroids, dim=0)
+
+    return labels.cpu()
+
+
+def _stable_int_seed(value):
+    return int(hashlib.md5(str(value).encode()).hexdigest()[:8], 16)
+
+
+def _select_clustered_closest_pairs(features, indices, *, pairs_per_bin, used_indices):
+    normalized = F.normalize(features, dim=1)
+    labels = _cosine_kmeans_labels(normalized, pairs_per_bin)
+    candidates, all_distances = _candidate_pairs_for_class(features, indices)
+    closest_distance = float(all_distances.min().item())
+    selected = []
+
+    for cluster_id in range(pairs_per_bin):
+        cluster_positions = set(torch.nonzero(labels == cluster_id, as_tuple=False).flatten().tolist())
+        cluster_candidates = [
+            pair for pair in candidates
+            if pair['left_position'] in cluster_positions and pair['right_position'] in cluster_positions
+        ]
+        cluster_candidates.sort(key=lambda pair: (
+            pair['feature_cosine_distance'],
+            pair['left_index'],
+            pair['right_index'],
+        ))
+        for pair in cluster_candidates:
+            if pair['left_index'] in used_indices or pair['right_index'] in used_indices:
+                continue
+            selected.append(dict(
+                pair,
+                pair_bin='closest',
+                bin_quantile_value=closest_distance,
+                selection_method='clustered_closest',
+                cluster_id=cluster_id,
+                cluster_size=len(cluster_positions),
+                pair_number=len(selected) + 1,
+                repeat_slot=len(selected),
+            ))
+            used_indices.add(pair['left_index'])
+            used_indices.add(pair['right_index'])
+            break
+
+    if len(selected) < pairs_per_bin:
+        ranked = sorted(
+            candidates,
+            key=lambda pair: (
+                pair['feature_cosine_distance'],
+                pair['left_index'],
+                pair['right_index'],
+            ),
+        )
+        for pair in ranked:
+            if pair['left_index'] in used_indices or pair['right_index'] in used_indices:
+                continue
+            selected.append(dict(
+                pair,
+                pair_bin='closest',
+                bin_quantile_value=closest_distance,
+                selection_method='global_closest_fallback',
+                cluster_id='',
+                cluster_size='',
+                pair_number=len(selected) + 1,
+                repeat_slot=len(selected),
+            ))
+            used_indices.add(pair['left_index'])
+            used_indices.add(pair['right_index'])
+            if len(selected) == pairs_per_bin:
+                break
 
     if len(selected) != pairs_per_bin:
         raise ValueError(
-            f'Could only select {len(selected)} disjoint pairs for {bin_name}; '
-            f'needed {pairs_per_bin}.'
+            f'Could only select {len(selected)} clustered closest pairs; needed {pairs_per_bin}.'
         )
+    return selected
+
+
+def _select_random_pairs(features, indices, *, pairs_per_bin, used_indices, seed_key):
+    candidates, all_distances = _candidate_pairs_for_class(features, indices)
+    closest_distance = float(all_distances.min().item())
+    available = [int(index) for index in indices if int(index) not in used_indices]
+    rng = random.Random(_stable_int_seed(seed_key))
+    rng.shuffle(available)
+
+    if len(available) < 2 * pairs_per_bin:
+        raise ValueError(
+            f'Could only find {len(available)} unused target images for random pairs; '
+            f'needed {2 * pairs_per_bin}.'
+        )
+
+    pair_by_indices = {}
+    for pair in candidates:
+        pair_by_indices[(pair['left_index'], pair['right_index'])] = pair
+        pair_by_indices[(pair['right_index'], pair['left_index'])] = pair
+    selected = []
+    for offset in range(pairs_per_bin):
+        left_index = available[2 * offset]
+        right_index = available[2 * offset + 1]
+        pair = pair_by_indices[(left_index, right_index)]
+        selected.append(dict(
+            pair,
+            pair_bin='random',
+            bin_quantile_value=closest_distance,
+            selection_method='random_disjoint',
+            cluster_id='',
+            cluster_size='',
+            pair_number=offset + 1,
+            repeat_slot=offset,
+        ))
+        used_indices.add(pair['left_index'])
+        used_indices.add(pair['right_index'])
+
     return selected
 
 
@@ -227,24 +341,28 @@ def _target_pair_selections(
             batch_size,
             setup,
         )
-        candidates, all_distances = _candidate_pairs_for_class(features, indices)
         used_indices = set()
         class_pairs = []
         for bin_spec in PAIR_BINS:
-            quantile_value = (
-                float(all_distances.min().item())
-                if bin_spec['name'] == 'closest'
-                else float(torch.quantile(all_distances, bin_spec['quantile']).item())
-            )
-            class_pairs.extend(_select_pairs_for_bin(
-                candidates,
-                used_indices,
-                bin_name=bin_spec['name'],
-                quantile_value=quantile_value,
-                pairs_per_bin=pairs_per_bin,
-            ))
+            if bin_spec['name'] == 'closest':
+                class_pairs.extend(_select_clustered_closest_pairs(
+                    features,
+                    indices,
+                    pairs_per_bin=pairs_per_bin,
+                    used_indices=used_indices,
+                ))
+            elif bin_spec['name'] == 'random':
+                class_pairs.extend(_select_random_pairs(
+                    features,
+                    indices,
+                    pairs_per_bin=pairs_per_bin,
+                    used_indices=used_indices,
+                    seed_key=f'c6-random:{target_name}->{poison_name}',
+                ))
+            else:
+                raise ValueError(f'Unsupported C6 pair bin {bin_spec["name"]}.')
 
-        for pair_number, pair in enumerate(class_pairs, start=1):
+        for pair in class_pairs:
             gradient_cosine = _gradient_cosine(
                 model,
                 validset,
@@ -255,7 +373,6 @@ def _target_pair_selections(
             )
             selections.append(dict(
                 pair,
-                pair_number=pair_number,
                 target_class=target_idx,
                 target_class_name=target_name,
                 poison_class=poison_idx,
@@ -271,12 +388,16 @@ def _target_pair_selections(
             selected_pairs=[
                 dict(
                     pair_number=pair['pair_number'],
+                    repeat_slot=pair.get('repeat_slot', ''),
                     pair_bin=pair['pair_bin'],
                     left_index=pair['left_index'],
                     right_index=pair['right_index'],
                     feature_cosine_distance=pair['feature_cosine_distance'],
                     feature_cosine_similarity=pair['feature_cosine_similarity'],
                     gradient_cosine=pair['gradient_cosine'],
+                    selection_method=pair.get('selection_method', ''),
+                    cluster_id=pair.get('cluster_id', ''),
+                    cluster_size=pair.get('cluster_size', ''),
                 )
                 for pair in selections
                 if pair['target_class'] == target_idx and pair['poison_class'] == poison_idx
@@ -342,6 +463,9 @@ def _build_attacker_spec(
         feature_cosine_distance=float(pair['feature_cosine_distance']),
         feature_cosine_similarity=float(pair['feature_cosine_similarity']),
         gradient_cosine=float(pair['gradient_cosine']),
+        selection_method=pair.get('selection_method', ''),
+        cluster_id=pair.get('cluster_id', ''),
+        cluster_size=pair.get('cluster_size', ''),
     )
     return dict(
         job_id=brew_job_id,
@@ -382,6 +506,7 @@ def _dual_job(pair, repeat_slot, left_attacker, right_attacker, output_root, vic
         distance_bucket=pair['pair_bin'],
         pair_key=pair_key,
         pair_number=int(pair['pair_number']),
+        repeat_slot=int(pair.get('repeat_slot', repeat_slot)),
         pair_bin=pair['pair_bin'],
         target_pair_left_index=int(pair['left_index']),
         target_pair_right_index=int(pair['right_index']),
@@ -393,6 +518,9 @@ def _dual_job(pair, repeat_slot, left_attacker, right_attacker, output_root, vic
         feature_cosine_similarity=float(pair['feature_cosine_similarity']),
         target_target_distance=float(pair['feature_cosine_distance']),
         gradient_cosine=float(pair['gradient_cosine']),
+        selection_method=pair.get('selection_method', ''),
+        cluster_id=pair.get('cluster_id', ''),
+        cluster_size=pair.get('cluster_size', ''),
         attackers=[left_attacker, right_attacker],
         brew_artifact_paths=[
             os.path.join(output_root, 'brews', f'{left_attacker["brew_job_id"]}.pt'),
@@ -441,48 +569,36 @@ def build_c6_experiment(
         source_target_rank = target_rank_cache[poison_class][target_class]
         source_target_distance = float(distance_matrix[poison_class, target_class])
 
-        for repeat_slot in range(repeats):
-            standard_specs = []
-            for role, target_index in (('A', pair['left_index']), ('B', pair['right_index'])):
-                standard_spec = _build_attacker_spec(
-                    pair=pair,
-                    role=role,
-                    target_index=target_index,
-                    repeat_slot=repeat_slot,
-                    budget_multiplier=1,
-                    base_budget=base_budget,
-                    source_target_distance=source_target_distance,
-                    source_target_rank=source_target_rank,
-                    brew_dir=brew_dir,
-                )
-                doubled_spec = _build_attacker_spec(
-                    pair=pair,
-                    role=role,
-                    target_index=target_index,
-                    repeat_slot=repeat_slot,
-                    budget_multiplier=2,
-                    base_budget=base_budget,
-                    source_target_distance=source_target_distance,
-                    source_target_rank=source_target_rank,
-                    brew_dir=brew_dir,
-                )
-                for spec in (standard_spec, doubled_spec):
-                    attacker_id = spec['attacker']['attacker_id']
-                    if attacker_id in seen_attacker_ids:
-                        raise ValueError(f'Duplicate attacker id generated: {attacker_id}')
-                    seen_attacker_ids.add(attacker_id)
-                    brew_jobs.append(spec)
-                    solo_jobs.append(_solo_job(spec, solo_dir, victim_seeds))
-                standard_specs.append(standard_spec)
+        repeat_slot = int(pair.get('repeat_slot', int(pair['pair_number']) - 1))
+        standard_specs = []
+        for role, target_index in (('A', pair['left_index']), ('B', pair['right_index'])):
+            standard_spec = _build_attacker_spec(
+                pair=pair,
+                role=role,
+                target_index=target_index,
+                repeat_slot=repeat_slot,
+                budget_multiplier=1,
+                base_budget=base_budget,
+                source_target_distance=source_target_distance,
+                source_target_rank=source_target_rank,
+                brew_dir=brew_dir,
+            )
+            attacker_id = standard_spec['attacker']['attacker_id']
+            if attacker_id in seen_attacker_ids:
+                raise ValueError(f'Duplicate attacker id generated: {attacker_id}')
+            seen_attacker_ids.add(attacker_id)
+            brew_jobs.append(standard_spec)
+            solo_jobs.append(_solo_job(standard_spec, solo_dir, victim_seeds))
+            standard_specs.append(standard_spec)
 
-            dual_jobs.append(_dual_job(
-                pair,
-                repeat_slot,
-                standard_specs[0]['attacker'],
-                standard_specs[1]['attacker'],
-                output_root,
-                victim_seeds,
-            ))
+        dual_jobs.append(_dual_job(
+            pair,
+            repeat_slot,
+            standard_specs[0]['attacker'],
+            standard_specs[1]['attacker'],
+            output_root,
+            victim_seeds,
+        ))
 
     scheduler_payload = dict(scheduler or {})
     per_stage = dict(scheduler_payload.get('per_stage', {}))
@@ -503,11 +619,11 @@ def build_c6_experiment(
             ],
             pair_bins=[dict(bin_spec) for bin_spec in PAIR_BINS],
             pairs_per_bin=math.floor(len(pair_selections) / (len(target_poison_pairs) * len(PAIR_BINS))),
-            pair_selection_strategy='within_class_clean_representation_cosine_distance',
-            disjoint_target_images='within target class across all selected bins',
-            doubled_budget_controls=True,
+            pair_selection_strategy='clustered_closest_and_random_disjoint_target_pairs',
+            disjoint_target_images='within target class across all selected pairs',
+            clustered_pair_selection=True,
+            doubled_budget_controls=False,
             base_budget=base_budget,
-            doubled_budget=base_budget * 2,
             distance_artifact_path=distance_artifact_path,
             clean_model_path=clean_model_path,
             selected_pair_summaries=pair_summaries,
@@ -541,8 +657,8 @@ if __name__ == '__main__':
         help='Saved class-distance matrix artifact with clean-model metadata.',
     )
     parser.add_argument('--output', default='artifacts/c6/c6_target_pair_similarity.json', type=str)
-    parser.add_argument('--pairs-per-bin', default=5, type=int)
-    parser.add_argument('--repeats', default=8, type=int)
+    parser.add_argument('--repeats', default=8, type=int,
+                        help='Number of target-image pairs to select per bin and target/poison class pair.')
     parser.add_argument('--target-poison-pairs', default='', type=str,
                         help='Comma-separated target:poison pairs. Defaults to airplane:dog,bird:truck,cat:airplane.')
     parser.add_argument('--train-clean-if-missing', action='store_true',
@@ -581,7 +697,7 @@ if __name__ == '__main__':
         class_to_valid_indices=class_to_valid_indices,
         class_names=class_names,
         target_poison_pairs=target_poison_pairs,
-        pairs_per_bin=args.pairs_per_bin,
+        pairs_per_bin=args.repeats,
         batch_size=batch_size,
         setup=setup,
     )
