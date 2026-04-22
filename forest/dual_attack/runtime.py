@@ -25,16 +25,18 @@ def _job_args(experiment, job, force_dryrun=False):
     return args
 
 
-def _expected_brew_args(experiment, attacker):
+def _expected_brew_args(experiment, attacker, brew_arg_overrides=None):
+    overrides = dict(brew_arg_overrides or {})
+    overrides.update(
+        poisonkey=attacker['poisonkey'],
+        poison_ids_seed=attacker.get('poison_ids_seed'),
+        explicit_poison_ids=attacker.get('explicit_poison_ids'),
+        name=attacker['brew_job_id'],
+        targets=1,
+    )
     return build_args_namespace(
         experiment.get('common_args'),
-        dict(
-            poisonkey=attacker['poisonkey'],
-            poison_ids_seed=attacker.get('poison_ids_seed'),
-            explicit_poison_ids=attacker.get('explicit_poison_ids'),
-            name=attacker['brew_job_id'],
-            targets=1,
-        ),
+        overrides,
     )
 
 
@@ -93,7 +95,7 @@ def _localize_brew_artifact(artifact, experiment, job, args):
 
 
 def _try_reuse_brew_artifact(experiment, job, args, cache_dir=None):
-    expected_args = _expected_brew_args(experiment, job['attacker'])
+    expected_args = _expected_brew_args(experiment, job['attacker'], job.get('arg_overrides'))
     cache_path = _brew_cache_path(args, job['attacker'], cache_dir=cache_dir)
 
     if os.path.isfile(job['artifact_path']):
@@ -202,7 +204,12 @@ def run_solo_job(experiment, job, force_dryrun=False):
     args = _job_args(experiment, job, force_dryrun=force_dryrun)
     artifact = load_brew_artifact(job['brew_artifact_path'])
     artifact['artifact_path'] = job['brew_artifact_path']
-    validate_brew_artifact(experiment, artifact, job['attacker'], _expected_brew_args(experiment, job['attacker']))
+    validate_brew_artifact(
+        experiment,
+        artifact,
+        job['attacker'],
+        _expected_brew_args(experiment, job['attacker'], job.get('brew_arg_overrides')),
+    )
     rows = evaluate_job(
         args,
         experiment,

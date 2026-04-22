@@ -87,6 +87,7 @@ def _target_rows(
     class_names = kettle.trainset.classes
     rows = []
     network.eval()
+    kettle_args = getattr(kettle, 'args', None)
     with torch.no_grad():
         target_images = torch.stack([entry[0] for entry in kettle.targetset]).to(**kettle.setup)
         outputs = network(target_images)
@@ -101,8 +102,8 @@ def _target_rows(
         rows.append(dict(
             experiment_id=experiment['experiment_id'],
             family=experiment['family'],
-            eps=brew_args.get('eps', getattr(kettle.args, 'eps', '')),
-            budget=brew_args.get('budget', getattr(kettle.args, 'budget', '')),
+            eps=brew_args.get('eps', getattr(kettle_args, 'eps', '')),
+            budget=brew_args.get('budget', getattr(kettle_args, 'budget', '')),
             job_id=job['job_id'],
             pairing_id=job.get('pairing_id', ''),
             run_type=run_type,
